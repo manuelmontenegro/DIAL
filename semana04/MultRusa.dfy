@@ -90,7 +90,6 @@ method MultRusaIterativo(x: int, y: int) returns (r: int)
     decreases y'    
   {
     if y' % 2 == 0 {
-      var oldX := x'; var oldY := y';
       x', y', s := 2 * x', y' / 2, s;
     } else {
       assert y' % 2 == 1;
