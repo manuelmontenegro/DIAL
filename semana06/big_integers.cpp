@@ -67,7 +67,6 @@ BigInteger::BigInteger(int n) {
   }
 }
 
-
 BigInteger BigInteger::operator+(const BigInteger &other) const {
   int carry = 0;
   int i = 0;
