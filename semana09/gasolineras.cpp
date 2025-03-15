@@ -5,7 +5,6 @@
 
 // Solución al problema de la ruta en carretera
 
-#include <algorithm>
 #include <iostream>
 #include <utility>
 #include <vector>
