@@ -39,8 +39,10 @@ int main() {
   auto [num_paradas, paradas] = gasolineras(distancias, 30);
   cout << "Número de paradas: " << num_paradas << '\n';
   cout << "Paradas en gasolineras:";
-  for (int x : paradas) {
-    cout << ' ' << x;
+  for (int i = 0; i < paradas.size(); i++) {
+    if (paradas[i]) {
+      cout << ' ' << i;
+    }
   }
   cout << '\n';
   return 0;
