@@ -3,7 +3,7 @@
 // Manuel Montenegro Montes
 // --------------------------
 
-// Solución al problema de la mochila entera.
+// Solución al problema de la mochila real.
 
 // Se ordenan los elementos según su densidad. Se van metiendo los elementos
 // de mayor a menor densidad. El último elemento que no quepa entero se
