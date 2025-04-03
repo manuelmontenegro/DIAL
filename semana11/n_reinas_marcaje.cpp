@@ -23,7 +23,7 @@ void imprimir_solucion(const vector<int> &sol) {
 
 bool es_factible(int n, int k, int col, vector<bool> &cols,
                  vector<bool> &diag_ps, vector<bool> &diag_ss) {
-  return !cols[col] && !diag_ps[k - col + (n - 1)] && !diag_ss[k + col];
+  return !cols[col] && !diag_ps[col - k + (n - 1)] && !diag_ss[k + col];
 }
 
 void n_reinas(int n, int k, vector<int> &sol, vector<bool> &cols,
@@ -36,13 +36,13 @@ void n_reinas(int n, int k, vector<int> &sol, vector<bool> &cols,
         sol[k] = col;
 
         cols[col] = true;
-        diag_ps[k - col + (n - 1)] = true;
+        diag_ps[col - k + (n - 1)] = true;
         diag_ss[k + col] = true;
 
         n_reinas(n, k + 1, sol, cols, diag_ps, diag_ss);
 
         cols[col] = false;
-        diag_ps[k - col + (n - 1)] = false;
+        diag_ps[col - k + (n - 1)] = false;
         diag_ss[k + col] = false;
       }
     }
