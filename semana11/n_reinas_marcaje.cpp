@@ -21,8 +21,8 @@ void imprimir_solucion(const vector<int> &sol) {
   cout << "]\n";
 }
 
-bool es_factible(int n, int k, int col, vector<bool> &cols,
-                 vector<bool> &diag_ps, vector<bool> &diag_ss) {
+bool es_factible(int n, int k, int col, const vector<bool> &cols,
+                 const vector<bool> &diag_ps, const vector<bool> &diag_ss) {
   return !cols[col] && !diag_ps[col - k + (n - 1)] && !diag_ss[k + col];
 }
 
