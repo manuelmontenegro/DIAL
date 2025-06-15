@@ -58,10 +58,10 @@ void viajante(const Grafo<int> &g, int min_arista, int k, vector<int> &sol,
   } else {
     for (int c = 0; c < g.size(); c++) {
       if (es_factible(g, k, c, sol, visitadas)) {
+        sol[k] = c;
         int coste_optimista =
             coste_acum + g[sol[k - 1]][c] + (g.size() - k) * min_arista;
         if (coste_optimista < coste_mejor) {
-          sol[k] = c;
           visitadas[c] = true;
           viajante(g, min_arista, k + 1, sol, coste_acum + g[sol[k - 1]][c],
                    visitadas, sol_mejor, coste_mejor);
