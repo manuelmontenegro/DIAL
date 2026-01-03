@@ -1,0 +1,2627 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Manuel Montenegro Montes Dpto. de Sistemas Informáticos y Computación Facultad de Informática Universidad Complutense de Madrid">
+  <title>Especificación y verificación formal de algoritmos</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="dist/reset.css">
+  <link rel="stylesheet" href="dist/reveal.css">
+  <link rel="stylesheet" href="css/nnfx-light.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <style>
+    .reveal .sourceCode {  /* see #7635 */
+      overflow: visible;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <link rel="stylesheet" href="css/dial.css" id="theme">
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide" data-background-image="img/RedBackground.jpg" class="center">
+  <p class="subtitle">Tema 1</p>
+  <h1 class="title">Especificación y verificación formal de
+algoritmos</h1>
+<div id="author-container">
+<div class="author">
+<strong>Manuel Montenegro Montes</strong><br>Dpto. de Sistemas
+Informáticos y Computación<br>Facultad de Informática<br>Universidad
+Complutense de Madrid
+</div>
+</div>
+</section>
+
+<section id="introducción" class="slide level2">
+<h2>Introducción</h2>
+<table>
+<tr>
+<th>
+<span class="color_tema"><strong>Especificación</strong></span>
+</th>
+<td>
+<em>¿<strong>Qué</strong> problema hay que resolver?</em>
+</td>
+<td class="fragment">
+<span class="color_tema">Lenguaje de
+especificación</span><br/>(términos, fórmulas lógicas)<br/> <em>Sección
+1.1</em>
+</td>
+</tr>
+<tr>
+<th>
+<span class="color_tema"><strong>Implementación</strong></span>
+</th>
+<td>
+<em>¿<strong>Cómo</strong> se resuelve el problema?</em><br/>
+</td>
+<td class="fragment">
+<span class="color_tema">Lenguaje de programación</span><br/>(C++,
+pseudocódigo, etc.)<br/> <em>Sección 1.2</em>
+</td>
+</tr>
+</table>
+</section>
+<section>
+<section id="especificación-de-algoritmos"
+class="title-slide slide level1 center"
+data-background-image="img/RedBackground.jpg">
+<h1 class="center" data-background-image="img/RedBackground.jpg"><span
+class="sc_number">1.1</span>Especificación de algoritmos</h1>
+
+</section>
+<section id="especificaciones-informales" class="slide level2">
+<h2>Especificaciones informales</h2>
+<p><em>Escribir una función <code>buscarElem</code> que, dado un vector
+<code>V</code> de enteros, determine el índice, dentro del vector, en el
+que se encuentra un número entero <code>x</code> pasado como
+parámetro.</em></p>
+<p><em>Por ejemplo, si <code>V = [1, 6, -3, 5]</code> y
+<code>x = 6</code>, la función devolvería <code>1</code></em>.</p>
+<p> </p>
+<div class="fragment">
+<h3 id="problemas">Problemas</h3>
+<ul>
+<li><p>Si <code>x</code> aparece varias veces en <code>V</code>, ¿qué
+debe devolver?</p>
+<ul>
+<li>¿La primera aparición de <code>x</code>? ¿La última? ¿Cualquiera de
+ellas?</li>
+</ul></li>
+<li><p>Si <code>x</code> no aparece en <code>V</code>, ¿qué debe
+devolver?</p></li>
+</ul>
+</div>
+</section>
+<section id="especificaciones-formales" class="slide level2">
+<h2>Especificaciones formales</h2>
+<ul>
+<li><p>Una <strong>especificación formal</strong> define el
+comportamiento de una función de manera precisa y sin dar detalles sobre
+su implementación.</p></li>
+<li><p>Ventajas:</p>
+<p>👍 Elimina la ambigüedad del lenguaje natural.</p>
+<p>👍 Permite aplicar técnicas de razonamiento formal a los
+programas.</p></li>
+</ul>
+<div class="fragment">
+<ul>
+<li>Utilizaremos especificaciones <em>pre/post</em>, basadas en el uso
+de <strong>precondiciones</strong> y
+<strong>postcondiciones</strong>.</li>
+</ul>
+</div>
+</section>
+<section id="cabecera-de-las-funciones" class="slide level2">
+<h2>Cabecera de las funciones</h2>
+<div class="pseudo">
+<p><strong>method</strong> <span
+class="meta">nombre</span>(x<sub>1</sub><span class="colon">:</span>
+<span class="meta">tipo<sub>1</sub></span>, …, x<sub>n</sub><span
+class="colon">:</span> <span class="meta">tipo<sub>n</sub></span>)
+<strong>returns</strong> (y<sub>1</sub><span class="colon">:</span>
+<span class="meta">tipo<sub>1</sub></span>, …, y<sub>m</sub><span
+class="colon">:</span> <span class="meta">tipo<sub>m</sub></span>)</p>
+</div>
+<div class="fragment">
+<ul>
+<li>Los parámetros pueden ser de tipo <code>int</code>,
+<code>bool</code>, <code>real</code>, o <code>array&lt;T&gt;</code> para
+un tipo <code>T</code>.</li>
+<li>Si un parámetro o resultado es de tipo <code>array</code>, la
+descripción incluye la longitud de ese array.
+<ul>
+<li>Por ejemplo: <code>V[0..n)</code>.</li>
+</ul></li>
+<li>Si un parámetro es de entrada/salida, introducimos la palabra
+<code>inout</code> antes del nombre del parámetro.</li>
+</ul>
+<aside class="notes">
+<ul>
+<li>En algunos lenguajes hay que hacer <code>V.length</code>, en otros
+hay que pasar explícitamente la <code>n</code>.</li>
+</ul>
+</aside>
+</div>
+</section>
+<section id="ejemplo" class="slide level2">
+<h2>Ejemplo</h2>
+<div class="pseudo">
+<p><strong>method</strong> buscarElem(V[0..n)<span
+class="colon">:</span> <span class="type">array&lt;<span
+class="type">int</span>&gt;</span>, x<span class="colon">:</span> <span
+class="type">int</span>) <strong>returns</strong> (i<span
+class="colon">:</span> <span class="type">int</span>)</p>
+</div>
+</section>
+<section id="especificación-prepost-de-un-método" class="slide level2">
+<h2>Especificación pre/post de un método</h2>
+<div class="pseudo">
+<p><strong>method</strong> <span
+class="meta">nombre</span>(x<sub>1</sub><span class="colon">:</span>
+<span class="meta">tipo<sub>1</sub></span>, …, x<sub>n</sub><span
+class="colon">:</span> <span class="meta">tipo<sub>n</sub></span>)
+<strong>returns</strong> (y<sub>1</sub><span class="colon">:</span>
+<span class="meta">tipo<sub>1</sub></span>, …, y<sub>m</sub><span
+class="colon">:</span> <span
+class="meta">tipo<sub>m</sub></span>)<br>  <strong>requires</strong>
+<span class="meta">P</span> <span
+class="arrow_box_left fragment fade-left">Precondición</span><br>  <strong>ensures</strong>
+<span class="meta">Q</span> <span
+class="arrow_box_left fragment fade-left">Postcondición</span></p>
+</div>
+<ul>
+<li><p><span class="pseudo inline">P</span> y <span
+class="pseudo inline">Q</span> son <strong>fórmulas
+lógicas</strong>.</p></li>
+<li><p><span class="pseudo inline">P</span> solamente puede mencionar
+los parámetros del método.</p></li>
+<li><p><span class="pseudo inline">Q</span> puede mencionar los
+parámetros y los resultados del método.</p></li>
+</ul>
+</section>
+<section id="precondición" class="slide level2">
+<h2>Precondición</h2>
+<div class="pseudo">
+<p><strong>method</strong> <span
+class="meta">nombre</span>(x<sub>1</sub><span class="colon">:</span>
+<span class="meta">tipo<sub>1</sub></span>, …, x<sub>n</sub><span
+class="colon">:</span> <span class="meta">tipo<sub>n</sub></span>)
+<strong>returns</strong> (y<sub>1</sub><span class="colon">:</span>
+<span class="meta">tipo<sub>1</sub></span>, …, y<sub>m</sub><span
+class="colon">:</span> <span
+class="meta">tipo<sub>m</sub></span>)<br>  <strong>requires</strong>
+<span class="meta">P</span> <span
+class="arrow_box_left">Precondición</span><br>  <strong>ensures</strong>
+<span class="meta">Q</span></p>
+</div>
+<ul>
+<li class="fragment"><p>Indica los requisitos que han de cumplir los
+argumentos del método para poder llamarlo.</p>
+<ul>
+<li class="fragment">Si no hay requisitos, la precondición es la fórmula
+<span class="pseudo inline"><span class="type">true</span></span>.</li>
+</ul></li>
+<li class="fragment"><p>Si los argumentos satisfacen la precondición, se
+garantiza que el método terminará devolviendo un resultado
+correcto.</p></li>
+<li class="fragment"><p>Si los argumentos <em>no</em> satisfacen la
+precondición:</p>
+<ul>
+<li class="fragment">El método puede fallar durante su ejecución.</li>
+<li class="fragment">El método puede no terminar.</li>
+<li class="fragment">El método puede devolver un resultado
+incorrecto.</li>
+</ul></li>
+</ul>
+</section>
+<section id="precondición-ejemplos" class="slide level2">
+<h2>Precondición: ejemplos</h2>
+<div class="pseudo">
+<p><strong>method</strong> buscarElem(V[0..n)<span
+class="colon">:</span> <span class="type">array&lt;<span
+class="type">int</span>&gt;</span>, x<span class="colon">:</span> <span
+class="type">int</span>) <strong>returns</strong> (i<span
+class="colon">:</span> <span
+class="type">int</span>)<br>  <strong>requires</strong> n &gt;= 0</p>
+</div>
+<p>Indica que la longitud del vector <code>V</code> no es negativa.</p>
+<div class="fragment">
+<div class="pseudo">
+<p><strong>method</strong> buscarElem(V[0..n)<span
+class="colon">:</span> <span class="type">array&lt;<span
+class="type">int</span>&gt;</span>, x<span class="colon">:</span> <span
+class="type">int</span>) <strong>returns</strong> (i<span
+class="colon">:</span> <span
+class="type">int</span>)<br>  <strong>requires</strong> n &gt;= 0 <span
+class="math inline">\({\wedge}\)</span> (<span
+class="math inline">\(\exists\)</span>i <span class="colon">:</span> 0
+&lt;= i &lt; n <span class="colon">:</span> V[i] == x)</p>
+</div>
+<p>Indica que la longitud de <code>V</code> no es negativa, y que el
+elemento <code>x</code> se encuentra en el vector <code>V</code> al
+menos una vez.</p>
+<aside class="notes">
+<p>Con esto ya, respondemos a alguna de las preguntas sobre qué pasa si
+el elemento no está en el vector.</p>
+</aside>
+</div>
+</section>
+<section id="postcondición" class="slide level2">
+<h2>Postcondición</h2>
+<div class="pseudo">
+<p><strong>method</strong> <span
+class="meta">nombre</span>(x<sub>1</sub><span class="colon">:</span>
+<span class="meta">tipo<sub>1</sub></span>, …, x<sub>n</sub><span
+class="colon">:</span> <span class="meta">tipo<sub>n</sub></span>)
+<strong>returns</strong> (y<sub>1</sub><span class="colon">:</span>
+<span class="meta">tipo<sub>1</sub></span>, …, y<sub>m</sub><span
+class="colon">:</span> <span
+class="meta">tipo<sub>m</sub></span>)<br>  <strong>requires</strong>
+<span class="meta">P</span><br>  <strong>ensures</strong> <span
+class="meta">Q</span> <span
+class="arrow_box_left">Postcondición</span></p>
+</div>
+<ul>
+<li>Indica las propiedades que satisface la salida, con respecto a la
+entrada.</li>
+<li>Si los argumentos de una llamada satisfacen la precondición
+<code>P</code>, el método garantiza que el resultado devuelto satisface
+la postcondición <code>Q</code>.</li>
+</ul>
+</section>
+<section id="postcondición-ejemplos" class="slide level2">
+<h2>Postcondición: ejemplos</h2>
+<div class="pseudo">
+<p><strong>method</strong> buscarElem(V[0..n)<span
+class="colon">:</span> <span class="type">array&lt;<span
+class="type">int</span>&gt;</span>, x<span class="colon">:</span> <span
+class="type">int</span>) <strong>returns</strong> (i<span
+class="colon">:</span> <span
+class="type">int</span>)<br>  <strong>requires</strong> n &gt;= 0 <span
+class="math inline">\({\wedge}\)</span> (<span
+class="math inline">\(\exists\)</span>i <span class="colon">:</span> 0
+&lt;= i &lt; n <span class="colon">:</span> V[i] ==
+x)<br>  <strong>ensures</strong> 0 &lt;= i &lt; n <span
+class="math inline">\({\wedge}\)</span> V[i] == x</p>
+</div>
+<p>Garantiza que el índice devuelto está dentro de los límites del
+vector, y que contiene el elemento buscado.<br/> Si <code>x</code>
+aparece varias veces en <code>V</code>, no especifica cuál de las
+apariciones se devuelve.</p>
+<p> </p>
+<div class="fragment">
+<div class="pseudo">
+<p><strong>method</strong> buscarElem(V[0..n)<span
+class="colon">:</span> <span class="type">array&lt;<span
+class="type">int</span>&gt;</span>, x<span class="colon">:</span> <span
+class="type">int</span>) <strong>returns</strong> (i<span
+class="colon">:</span> <span
+class="type">int</span>)<br>  <strong>requires</strong> n &gt;= 0 <span
+class="math inline">\({\wedge}\)</span> (<span
+class="math inline">\(\exists\)</span>i <span class="colon">:</span> 0
+&lt;= i &lt; n <span class="colon">:</span> V[i] ==
+x)<br>  <strong>ensures</strong> 0 &lt;= i &lt; n <span
+class="math inline">\({\wedge}\)</span> V[i] == x <span
+class="math inline">\({\wedge}\)</span> <span class="hl">(<span
+class="math inline">\(\forall\)</span>j <span class="colon">:</span> 0
+&lt;= j &lt; i <span class="colon">:</span> V[j] != x)</span></p>
+</div>
+<p>Si <code>x</code> aparece varias veces en <code>V</code>, se devuelve
+el índice de la primera aparición.</p>
+</div>
+</section>
+<section id="especificación-alternativa-de-buscarelem"
+class="slide level2">
+<h2>Especificación alternativa de <code>buscarElem</code></h2>
+<div class="pseudo">
+<p><strong>method</strong> buscarElem(V[0..n)<span
+class="colon">:</span> <span class="type">array&lt;<span
+class="type">int</span>&gt;</span>, x<span class="colon">:</span> <span
+class="type">int</span>) <strong>returns</strong> (i<span
+class="colon">:</span> <span
+class="type">int</span>)<br>  <strong>requires</strong> n &gt;=
+0<br>  <strong>ensures</strong> -1 &lt;= i &lt; n<br>          <span
+class="math inline">\({\wedge}\)</span> (i &gt;= 0  ==&gt; V[i] == x
+<span class="math inline">\({\wedge}\)</span> (<span
+class="math inline">\(\forall\)</span>j <span class="colon">:</span> 0
+&lt;= j &lt; i <span class="colon">:</span> V[j] !=
+x))<br>          <span class="math inline">\({\wedge}\)</span> (i == -1
+==&gt; (<span class="math inline">\(\forall\)</span>j <span
+class="colon">:</span> 0 &lt;= j &lt; n <span class="colon">:</span>
+V[j] != x))</p>
+</div>
+<ul>
+<li class="fragment"><p>El método ya no exige que <span
+class="pseudo inline">x</span> pertenezca al vector.</p></li>
+<li class="fragment"><p>Si devuelve un número positivo, es el índice de
+la primera aparición de <span class="pseudo inline">x</span> en <span
+class="pseudo inline">V</span>.</p></li>
+<li class="fragment"><p>Si devuelve <code>-1</code>, entonces <span
+class="pseudo inline">x</span> no se encuentra en el vector.</p></li>
+</ul>
+</section>
+<section id="ejemplos-algoritmos-numéricos"
+class="slide level2 subsection center">
+<h2 class="subsection center">Ejemplos: algoritmos numéricos</h2>
+</section>
+<section id="división-de-números-naturales" class="slide level2">
+<h2>División de números naturales</h2>
+<p><em>La función <code>divide</code>, dados dos números naturales
+<code>a</code> y <code>b</code>, devuelve el cociente y el resto que
+resultan de dividir <code>a</code> entre <code>b</code>.</em></p>
+<div class="fragment">
+<h3 id="primer-intento">Primer intento</h3>
+<div class="pseudo">
+<p><strong>method</strong> divide(a<span class="colon">:</span> <span
+class="type">int</span>, b<span class="colon">:</span> <span
+class="type">int</span>) <strong>returns</strong> (q<span
+class="colon">:</span> <span class="type">int</span>, r<span
+class="colon">:</span> <span
+class="type">int</span>)<br>  <strong>requires</strong> a &gt;= 0 <span
+class="math inline">\({\wedge}\)</span> b &gt;
+0<br>  <strong>ensures</strong> a == b * q + r</p>
+</div>
+<div class="fragment">
+<p><strong>Problema:</strong> un algoritmo que devuelva <code>0</code>
+como cociente y <code>a</code> como resto satisface la
+especificación.</p>
+<p>La especificación no refleja la intención del programador/a.</p>
+</div>
+</div>
+</section>
+<section class="slide level2">
+
+<h3 id="segundo-intento">Segundo intento</h3>
+<div class="pseudo">
+<p><strong>method</strong> divide(a<span class="colon">:</span> <span
+class="type">int</span>, b<span class="colon">:</span> <span
+class="type">int</span>) <strong>returns</strong> (q<span
+class="colon">:</span> <span class="type">int</span>, r<span
+class="colon">:</span> <span
+class="type">int</span>)<br>  <strong>requires</strong> a &gt;= 0 <span
+class="math inline">\({\wedge}\)</span> b &gt;
+0<br>  <strong>ensures</strong> a == b * q + r <span
+class="math inline">\({\wedge}\)</span> <span class="hl">0 &lt;= r &lt;
+b</span></p>
+</div>
+<p>Dados <code>a</code> y <code>b</code> como en la precondición,
+solamente existe un par <code>(q, r)</code> que satisface la
+postcondición.</p>
+</section>
+<section id="raíz-cuadrada-real" class="slide level2">
+<h2>Raíz cuadrada real</h2>
+<div class="pseudo">
+<p><strong>method</strong> raiz(a<span class="colon">:</span> <span
+class="type">real</span>) <strong>returns</strong> (r<span
+class="colon">:</span> <span
+class="type">real</span>)<br>  <strong>requires</strong> a &gt;=
+0<br>  <strong>ensures</strong> r<sup>2</sup> == a</p>
+</div>
+<div class="fragment">
+<div class="pseudo">
+<p><strong>method</strong> raiz(a<span class="colon">:</span> <span
+class="type">real</span>) <strong>returns</strong> (r<span
+class="colon">:</span> <span
+class="type">real</span>)<br>  <strong>requires</strong> a &gt;=
+0<br>  <strong>ensures</strong> <span class="hl">r &gt;= 0</span> <span
+class="math inline">\({\wedge}\)</span> r<sup>2</sup> == a</p>
+</div>
+</div>
+<div class="fragment">
+<div class="pseudo">
+<p><strong>method</strong> raiz(a<span class="colon">:</span> <span
+class="type">real</span>) <strong>returns</strong> (r<span
+class="colon">:</span> <span
+class="type">real</span>)<br>  <strong>requires</strong> a &gt;=
+0<br>  <strong>ensures</strong> r &gt;= 0 <span
+class="math inline">\({\wedge}\)</span> <span class="hl">|r<sup>2</sup>
+- a| &lt;= 0.0001</span></p>
+</div>
+</div>
+</section>
+<section id="raíz-cuadrada-entera" class="slide level2">
+<h2>Raíz cuadrada entera</h2>
+<div class="pseudo">
+<p><strong>method</strong> raizEntera(a<span class="colon">:</span>
+<span class="type">int</span>) <strong>returns</strong> (r<span
+class="colon">:</span> <span
+class="type">int</span>)<br>  <strong>requires</strong> a &gt;=
+0<br>  <strong>ensures</strong> r &gt;= 0 <span
+class="math inline">\({\wedge}\)</span> r<sup>2</sup> &lt;= a &lt; (r +
+1)<sup>2</sup></p>
+</div>
+<aside class="notes">
+<ul>
+<li>Dejar como ejercicio el máximo</li>
+</ul>
+</aside>
+</section>
+<section id="ejemplos-parámetros-de-entradasalida"
+class="slide level2 subsection center">
+<h2 class="subsection center">Ejemplos: parámetros de
+entrada/salida</h2>
+</section>
+<section id="intercambiar-dos-parámetros" class="slide level2">
+<h2>Intercambiar dos parámetros</h2>
+<p><em>La función <code>intercambiar</code>, dados dos parámetros de
+entrada/salida, intercambia sus valores</em>.</p>
+<div class="fragment">
+<h3 id="primer-intento-1">Primer intento</h3>
+<div class="pseudo">
+<p><strong>method</strong> intercambiar(<strong>inout</strong> x<span
+class="colon">:</span> <span class="type">int</span>,
+<strong>inout</strong> y<span class="colon">:</span> <span
+class="type">int</span>)<br>  <strong>requires</strong> <span
+class="type">true</span><br>  <strong>ensures</strong> x == y <span
+class="math inline">\({\wedge}\)</span> y == x</p>
+</div>
+<ul>
+<li class="fragment"><p>Cualquier algoritmo que asigne a <code>x</code>
+e <code>y</code> un mismo valor satisface la especificación.</p></li>
+<li class="fragment"><p>¿Cómo hacemos referencia a los valores que
+tienen <code>x</code> e <code>y</code> <strong>antes</strong> de
+ejecutar <code>intercambiar</code>?</p></li>
+</ul>
+<aside class="notes">
+<p>x == 0 y == 0</p>
+</aside>
+</div>
+</section>
+<section class="slide level2">
+
+<h3 id="segundo-intento-1">Segundo intento</h3>
+<div class="pseudo">
+<p><strong>method</strong> intercambiar(<strong>inout</strong> x<span
+class="colon">:</span> <span class="type">int</span>,
+<strong>inout</strong> y<span class="colon">:</span> <span
+class="type">int</span>)<br>  <strong>requires</strong> x == <span
+class="hl">x<sub>old</sub></span> <span
+class="math inline">\({\wedge}\)</span> y == <span
+class="hl">y<sub>old</sub></span><br>  <strong>ensures</strong> x ==
+y<sub>old</sub> <span class="math inline">\({\wedge}\)</span> y ==
+x<sub>old</sub></p>
+</div>
+<ul>
+<li class="fragment"><p>Introducimos dos variables nuevas: <span
+class="pseudo inline">x<sub>old</sub></span>,   <span
+class="pseudo inline">y<sub>old</sub></span>.</p>
+<ul>
+<li class="fragment">Estas variables no son parámetros ni variables de
+programa; solo sirven para especificar.</li>
+</ul></li>
+<li class="fragment"><p>En la precondición, decimos que <span
+class="pseudo inline">x<sub>old</sub></span> e <span
+class="pseudo inline">y<sub>old</sub></span> son los valores de
+<code>x</code> e <code>y</code> antes de ejecutar
+<code>intercambiar</code>.</p></li>
+</ul>
+</section>
+<section id="modificar-los-elementos-de-un-vector" class="slide level2">
+<h2>Modificar los elementos de un vector</h2>
+<p><em>La función <code>suma</code>, dado un array de números enteros y
+un valor entero <code>x</code>, modifica el array sumando <code>x</code>
+a todos sus elementos</em>.</p>
+<div class="fragment">
+<div class="pseudo">
+<p><strong>method</strong> suma(<strong>inout</strong> V[0..n)<span
+class="colon">:</span> <span class="type">array&lt;<span
+class="type">int</span>&gt;</span>, x<span class="colon">:</span> <span
+class="type">int</span>)<br>  <strong>requires</strong> n &gt;= 0 <span
+class="math inline">\({\wedge}\)</span> V ==
+V<sub>old</sub><br>  <strong>ensures</strong> (<span
+class="math inline">\(\forall\)</span>i <span class="colon">:</span> 0
+&lt;= i &lt; n <span class="colon">:</span> V[i] == V<sub>old</sub>[i] +
+x)</p>
+</div>
+</div>
+</section></section>
+<section>
+<section id="implementación-de-algoritmos"
+class="title-slide slide level1 center"
+data-background-image="img/RedBackground.jpg">
+<h1 class="center" data-background-image="img/RedBackground.jpg"><span
+class="sc_number">1.2</span>Implementación de algoritmos</h1>
+
+</section>
+<section id="sentencias" class="slide level2">
+<h2>Sentencias</h2>
+<div class="pseudo center">
+<p>S ::= <strong>skip</strong>;                          <span
+class="comment">// No hacer nada</span><br>    | x :=
+e;                        <span class="comment">//
+Asignación</span><br>    | x<sub>1</sub>, …, x<sub>n</sub> :=
+e<sub>1</sub>, …,
+e<sub>n</sub>;        <span style="display:inline-block;margin-left:0.4em"><span
+class="comment">// Asignación simultánea</span></span><br>    |
+x<sub>1</sub>, …, x<sub>m</sub> := f(e<sub>1</sub>, …,
+e<sub>n</sub>);     <span style="display:inline-block;margin-left:0.4em"><span
+class="comment">// Llamada a función</span></span><br>    |
+S<sub>1</sub>  S<sub>2</sub>                         <span style="display:inline-block;margin-left:0.2em"><span
+class="comment">// Composición secuencial</span></span><br>    |
+<strong>if</strong> b S<sub>1</sub> <strong>else</strong>
+S<sub>2</sub>                <span style="display:inline-block;margin-left:0.2em"><span
+class="comment">// Condicional</span></span><br>    |
+<strong>while</strong> b S                      <span class="comment">//
+Bucle</span></p>
+</div>
+<p> </p>
+<div class="fragment">
+<ul>
+<li><p>Denotamos variables por <span class="pseudo inline">x</span>,
+<span class="pseudo inline">x<sub>1</sub></span>, <code>y</code>,
+<code>z</code>, etc.</p>
+<ul>
+<li>Suponemos que cada variable ha sido declarada de antemano.</li>
+</ul></li>
+<li><p>Denotamos las expresiones aritméticas por <span
+class="pseudo inline">e</span>, <span
+class="pseudo inline">e<sub>1</sub></span>, etc.</p></li>
+<li><p>Denotamos las expresiones booleanas por <span
+class="pseudo inline">b</span>, <span
+class="pseudo inline">b<sub>1</sub></span>, etc.</p></li>
+</ul>
+</div>
+</section>
+<section id="sobre-la-asignación-simultánea" class="slide level2">
+<h2>Sobre la asignación simultánea</h2>
+<div class="pseudo center">
+<p>x<sub>1</sub>, …, x<sub>n</sub> := e<sub>1</sub>, …,
+e<sub>n</sub></p>
+</div>
+<p> </p>
+<p>Evalúa los valores de las expresiones <span
+class="pseudo inline">e<sub>1</sub></span>, …, <span
+class="pseudo inline">e<sub>n</sub></span> y <em>después</em> actualiza
+los valores de las variables <span
+class="pseudo inline">x<sub>1</sub></span>, …, <span
+class="pseudo inline">x<sub>n</sub></span> correspondientes.</p>
+<div class="fragment">
+<p>Por ejemplo:</p>
+<div class="pseudo">
+<p>x, y := y, x    <span
+class="arrow_box_left fragment fade-left">Intercambia los valores de
+<code>x</code> e <code>y</code></span></p>
+</div>
+</div>
+</section>
+<section id="tipos" class="slide level2">
+<h2>Tipos</h2>
+<ul>
+<li><p>Suponemos que el lenguaje tiene un sistema de tipos que asigna un
+tipo a cada variable y cada expresión.</p></li>
+<li><p>Sintaxis de tipos:</p>
+<div class="pseudo center">
+<p>T ::= <span class="type">int</span><br>    | <span
+class="type">bool</span><br>    | <span
+class="type">real</span><br>    | <span
+class="type">array&lt;T&gt;</span></p>
+</div></li>
+<li><p>El sistema de tipos prohibe expresiones tales como
+<code>3 + true</code>, <code>v[2.5]</code>.</p></li>
+</ul>
+</section>
+<section id="funciones-métodos" class="slide level2">
+<h2>Funciones (métodos)</h2>
+<ul>
+<li>Utilizamos la misma sintaxis vista en la especificación de
+métodos.</li>
+<li>Los métodos pueden incorporar una precondición y postcondición.</li>
+</ul>
+<div class="pseudo">
+<p><strong>method</strong> <span class="meta">nombre</span>(<span
+class="meta">x<sub>1</sub></span><span class="colon">:</span> <span
+class="meta">tipo<sub>1</sub></span>, …, <span
+class="meta">x<sub>n</sub></span><span class="colon">:</span> <span
+class="meta">tipo<sub>n</sub></span>) <strong>returns</strong> (<span
+class="meta">y<sub>1</sub></span><span class="colon">:</span> <span
+class="meta">tipo<sub>1</sub></span>, …, <span
+class="meta">y<sub>m</sub></span><span class="colon">:</span> <span
+class="meta">tipo<sub>m</sub></span>)<br>  <strong>requires</strong>
+<span class="meta">P</span> <br>  <strong>ensures</strong> <span
+class="meta">Q</span><br>{<br>  <strong>var</strong> <span
+class="meta">z<sub>1</sub></span><span class="colon">:</span> <span
+class="meta">tipo’<sub>1</sub></span>, …, <span
+class="meta">z<sub>k</sub></span><span class="colon">:</span> <span
+class="meta">tipo’<sub>k</sub></span>  <span
+class="arrow_box_left fragment fade-left">Variables
+locales</span><br>  <span class="meta">S</span>   <span
+class="arrow_box_left fragment fade-left">Cuerpo del
+método</span><br>}</p>
+</div>
+</section>
+<section id="declaración-e-inicialización" class="slide level2">
+<h2>Declaración e inicialización</h2>
+<p>A veces inicializaremos una variable en su declaración:</p>
+<div class="pseudo">
+<p><strong>var</strong> x<span class="colon">:</span> <span
+class="type">int</span> := 5</p>
+</div>
+<div class="fragment">
+<p>Equivale a:</p>
+<div class="pseudo">
+<p><strong>var</strong> x<span class="colon">:</span> <span
+class="type">int</span>; <span class="comment">// en el inicio del
+método</span><br><br>…<br><br>x := 5;</p>
+</div>
+</div>
+</section>
+<section id="expresiones-aritméticas" class="slide level2">
+<h2>Expresiones aritméticas</h2>
+<div class="pseudo center">
+<p>e ::= c     <span class="comment">// literal
+(constante)</span><br>    | x     <span class="comment">//
+variable</span><br>    | e<sub>1</sub> + e<sub>2</sub><br>    |
+e<sub>1</sub> - e<sub>2</sub><br>    | e<sub>1</sub> *
+e<sub>2</sub><br>    | e<sub>1</sub> / e<sub>2</sub><br>    | …<br>    |
+V[e]  <span class="comment">// acceso a array</span></p>
+</div>
+<p>Dejamos abierto el conjunto de operadores aritméticos
+disponibles.</p>
+</section>
+<section id="expresiones-booleanas" class="slide level2">
+<h2>Expresiones booleanas</h2>
+<div class="columns">
+<div class="column" style="width:40%;">
+<div class="pseudo">
+<p>b ::= <span class="type">true</span>        <br>    | <span
+class="type">false</span>  <br>    | x <span class="comment">// variable
+booleana</span><br>    | e<sub>1</sub> == e<sub>2</sub><br>    |
+e<sub>1</sub> &lt;= e<sub>2</sub><br>    | …<br>    | b<sub>1</sub>
+<span class="math inline">\({\wedge}\)</span> b<sub>2</sub> <br>    |
+b<sub>1</sub> <span class="math inline">\({\vee}\)</span> b<sub>2</sub>
+<br>    | <span class="math inline">\(\neg\)</span>b</p>
+</div>
+</div><div class="column">
+<ul>
+<li class="fragment"><p>Operadores relacionales habituales: <span
+class="pseudo inline">==</span>, <span class="pseudo inline">!=</span>,
+<span class="pseudo inline">&lt;</span>, <span
+class="pseudo inline">&lt;=</span>, …</p></li>
+<li class="fragment"><p>Los operadores <span class="pseudo inline"><span
+class="math inline">\({\wedge}\)</span></span> y <span
+class="pseudo inline"><span class="math inline">\({\vee}\)</span></span>
+utilizan <strong>evaluación de cortocircuito</strong>.</p>
+<ul>
+<li class="fragment">En la expresion <span
+class="pseudo inline">b<sub>1</sub> <span
+class="math inline">\({\wedge}\)</span> b<sub>2</sub></span>, si <span
+class="pseudo inline">b<sub>1</sub></span> toma el valor <span
+class="pseudo inline"><span class="type">false</span></span>, no se
+evalúa <span class="pseudo inline">b<sub>2</sub></span>.</li>
+<li class="fragment">En la expresion <span
+class="pseudo inline">b<sub>1</sub> <span
+class="math inline">\({\vee}\)</span> b<sub>2</sub></span>, si <span
+class="pseudo inline">b<sub>1</sub></span> toma el valor <span
+class="pseudo inline"><span class="type">true</span></span>, no se
+evalúa <span class="pseudo inline">b<sub>2</sub></span>.</li>
+</ul>
+<div class="fragment">
+<p>Esto nos permite expresiones como:</p>
+<div class="pseudo">
+<p>0 &lt;= i &lt; n <span class="math inline">\({\wedge}\)</span> <span
+class="hl">V[i] &gt; 0</span>   <span class="comment">// suponiendo
+V[0..n)</span></p>
+</div>
+</div></li>
+</ul>
+</div>
+</div>
+</section>
+<section id="ejemplo-división-entera" class="slide level2">
+<h2>Ejemplo: división entera</h2>
+<div class="pseudo">
+<p><strong>method</strong> divide(a<span class="colon">:</span> <span
+class="type">int</span>, b<span class="colon">:</span> <span
+class="type">int</span>) <strong>returns</strong> (q<span
+class="colon">:</span> <span class="type">int</span>, r<span
+class="colon">:</span> <span
+class="type">int</span>)<br>  <strong>requires</strong> a &gt;= 0 <span
+class="math inline">\({\wedge}\)</span> b &gt;
+0<br>  <strong>ensures</strong> a == b * q + r <span
+class="math inline">\({\wedge}\)</span> 0 &lt;= b &lt; r<br>{<br>    q
+:= 0;<br>    r := a;<br>    <strong>while</strong> r &gt;= b
+{<br>        q := q + 1; r := r - b;<br>    }<br>}</p>
+</div>
+</section>
+<section id="ejemplo-intercambio-de-valores-de-parámetros"
+class="slide level2">
+<h2>Ejemplo: intercambio de valores de parámetros</h2>
+<div class="pseudo">
+<p><strong>method</strong> intercambiar(<strong>inout</strong> x<span
+class="colon">:</span> <span class="type">int</span>,
+<strong>inout</strong> y<span class="colon">:</span> <span
+class="type">int</span>)<br>  <strong>requires</strong> x ==
+x<sub>old</sub> <span class="math inline">\({\wedge}\)</span> y ==
+y<sub>old</sub><br>  <strong>ensures</strong> x == y<sub>old</sub> <span
+class="math inline">\({\wedge}\)</span> y ==
+x<sub>old</sub><br>{<br>  x, y := y, x;<br>}</p>
+</div>
+</section>
+<section id="programas-como-transformadores-de-estados"
+class="slide level2 subsection center">
+<h2 class="subsection center">Programas como transformadores de
+estados</h2>
+</section>
+<section id="estados" class="slide level2">
+<h2>Estados</h2>
+<ul>
+<li><p>Un <strong>estado</strong> <span
+class="math inline">\(\sigma\)</span> es una función que asocia cada
+variable con un valor de su tipo correspondiente.</p></li>
+<li><p><em>Por ejemplo:</em> <span class="math inline">\([\texttt{x}
+\mapsto 3, \texttt{y} \mapsto 6]\)</span>.</p></li>
+</ul>
+</section>
+<section id="transformadores-de-estados-en-sentencias"
+class="slide level2">
+<h2>Transformadores de estados en sentencias</h2>
+<ul>
+<li><strong>Estado inicial</strong>: valores de las variables antes de
+ejecutar la sentencia.</li>
+<li><strong>Estado final</strong>: valores de las variables después de
+ejecutar la sentencia.</li>
+</ul>
+<div class="fragment">
+<div class="pseudo">
+<p><span class="comment">// Estado inicial<span class="colon">:</span>
+<span class="math inline">\(\sigma = [\texttt{x} \mapsto 3, \texttt{y}
+\mapsto 1]\)</span></span><br>x := x + 1; y := 2 * x;<br><span
+class="comment">// Estado final<span class="colon">:</span> <span
+class="math inline">\(\sigma&#39; = [\texttt{x} \mapsto 4, \texttt{y}
+\mapsto 8]\)</span></span></p>
+</div>
+</div>
+<div class="fragment">
+<ul>
+<li><p>Si <span class="math inline">\(S\)</span> es la sentencia del
+ejemplo anterior, decimos que <span class="math inline">\(S\)</span>
+<strong>transforma</strong> el estado <span
+class="math inline">\(\sigma\)</span> en <span
+class="math inline">\(\sigma&#39;\)</span>.</p>
+<p>Notación: <span class="color_tema"><span class="math inline">\(\sigma
+\stackrel{S}{\rightsquigarrow} \sigma&#39;\)</span></span></p></li>
+</ul>
+</div>
+</section></section>
+<section>
+<section id="verificación-de-algoritmos-sin-bucles"
+class="title-slide slide level1 center"
+data-background-image="img/RedBackground.jpg">
+<h1 class="center" data-background-image="img/RedBackground.jpg"><span
+class="sc_number">1.3</span>Verificación de algoritmos sin bucles</h1>
+
+</section>
+<section id="qué-significa-verificar" class="slide level2">
+<h2>¿Qué significa «verificar»?</h2>
+<ul>
+<li><p><strong>Verificar formalmente</strong> un programa significa
+utilizar métodos matemáticos y lógicos para demostrar, de manera
+rigurosa, que la implementación de un programa cumple con su
+especificación.</p></li>
+<li><p>No se basa en pruebas empíricas (<em>tests</em>), sino en
+razonamientos matemáticos.</p></li>
+</ul>
+<div class="columns">
+<div class="column fragment" style="width:50%;">
+<h3 style="text-align:center" id="ventajas">Ventajas</h3>
+<ul class="no_bolos">
+<li class="hands_up">
+Más garantías sobre la corrección de los programas, porque tiene en
+cuenta todos los casos posibles.
+</li>
+<li class="hands_up">
+Permite detectar errores en fases tempranas de desarrollo.
+</li>
+</ul>
+</div><div class="column fragment" style="width:50%;">
+<h3 style="text-align:center" id="inconvenientes">Inconvenientes</h3>
+<ul class="no_bolos">
+<li class="hands_down">
+Más costosa en términos de tiempo y recursos.
+</li>
+<li class="hands_down">
+Requiere capacitación en matemáticas y lógica.
+</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="qué-necesitamos-para-verificar-una-función"
+class="slide level2">
+<h2>¿Qué necesitamos para verificar una función?</h2>
+<ol type="1">
+<li><p>La <strong>implementación</strong> de la función (es decir, una
+sentencia <code>S</code>).</p></li>
+<li><p>La <strong>especificación</strong> de la función (es decir, una
+precondición <code>P</code> y una postcondición
+<code>Q</code>).</p></li>
+</ol>
+<!--
+. . .
+
+3. Un conjunto de **axiomas** y **reglas** que nos permitan deducir que el programa `S` satisface la especificación dada.
+
+. . .
+
+::::columns
+:::{.column .color_tema width="50%"}
+En este curso, utilizaremos los axiomas y reglas de la **lógica de Hoare**.
+:::
+
+:::{.column style="text-align:center"}
+![](05/TonyHoare.jpg){style="width:40%;box-shadow:5px 5px 20px gray"}
+
+<span style="font-size:70%">Charles Anthony Richard Hoare</span><br/>
+<span style="font-size:70%">Foto: *Rama*, Wikimedia Commons, CC BY-SA 2.0 FR</span>
+:::
+::::
+
+## Corrección parcial vs corrección total
+
+- **Corrección parcial:** La función se comporta conforme a su especificación.
+
+- **Corrección total:** La función se comporta conforme a su especificación, y además termina.
+-->
+</section>
+<section id="definición-de-función-correcta-sin-bucles-ni-recursión"
+class="slide level2">
+<h2>Definición de función correcta (sin bucles ni recursión)</h2>
+<p>Dada la siguiente función con su especificación:</p>
+<div class="pseudo">
+<p><strong>method</strong> f(x<sub>1</sub><span class="colon">:</span>
+tipo<sub>1</sub>, …, x<sub>n</sub><span class="colon">:</span>
+tipo<sub>n</sub>) <strong>returns</strong> (y<sub>1</sub><span
+class="colon">:</span> tipo<sub>1</sub>, …, y<sub>m</sub><span
+class="colon">:</span> tipo<sub>m</sub>)<br>  <strong>requires</strong>
+<span class="meta">P</span><br>  <strong>ensures</strong> <span
+class="meta">Q</span><br>{ <br>  <span class="meta">S</span>    <span
+class="arrow_box_left">Suponemos que <code>S</code> no tiene bucles ni
+llamadas a <code>f</code></span><br>}</p>
+</div>
+<ul>
+<li class="fragment"><p>La función es <strong>correcta</strong> si al
+ejecutarla en cualquier estado que satisfaga la precondición, se obtiene
+un estado que satisface la postcondición.</p></li>
+<li class="fragment"><p>Es decir, para todo estado inicial <span
+class="math inline">\(\sigma\)</span> y estado final <span
+class="math inline">\(\sigma&#39;\)</span> se cumple que:</p>
+<p><span class="color_tema"><em>Si <span class="math inline">\(\sigma
+\vDash P\)</span> y <span class="math inline">\(\sigma
+\stackrel{S}{\rightsquigarrow} \sigma&#39;\)</span>, entonces <span
+class="math inline">\(\sigma&#39; \vDash Q\)</span></em></span></p></li>
+</ul>
+</section>
+<section id="definición-de-sentencia-correcta" class="slide level2">
+<h2>Definición de sentencia correcta</h2>
+<p>Generalizamos estas nociones de corrección a
+<strong>sentencias</strong>. Cuando escribimos:</p>
+<div class="pseudo center">
+<p><span class="pre">{ P }</span> S <span class="pre">{ Q }</span></p>
+</div>
+<p>significa:</p>
+<div style="text-align:center">
+<span class="color_tema"><em>Si <span class="math inline">\(\sigma
+\vDash P\)</span> y <span class="math inline">\(\sigma
+\stackrel{S}{\rightsquigarrow} \sigma&#39;\)</span>, entonces <span
+class="math inline">\(\sigma&#39; \vDash Q\)</span></em></span>
+</div>
+<div class="fragment">
+<p>Ejemplos:</p>
+<div class="pseudo center fragment">
+<p><span class="pre">{ x &gt;= 1 }</span> y := x * 2; <span
+class="post">{ x &gt;= 1 <span class="math inline">\({\wedge}\)</span> y
+&gt;= x }</span></p>
+</div>
+<p> </p>
+<div class="pseudo center fragment">
+<p><span class="pre">{ 0 &lt;= x &lt;= 10 }</span> x := x + 1; <span
+class="post">{ 1 &lt;= x &lt;= 11 }</span></p>
+</div>
+</div>
+</section>
+<section id="técnicas-de-verificación-de-sentencias"
+class="slide level2">
+<h2>Técnicas de verificación de sentencias</h2>
+<p>Supongamos una sentencia <code>S</code>, una precondición
+<code>P</code> y una postcondición <code>Q</code>. ¿Cómo podemos
+demostrar lo siguiente?</p>
+<div class="pseudo center">
+<p><span class="pre">{ P }</span> S <span class="pre">{ Q }</span></p>
+</div>
+<div class="fragment">
+<ol type="1">
+<li><p><strong>Lógica de Hoare</strong></p>
+<p>Es un sistema de axiomas y reglas que permiten derivar ternas <span
+class="pseudo"><span class="pre">{ P }</span> S <span class="pre">{ Q
+}</span></span>.</p></li>
+<li><p><strong>Semántica de Transformación de Predicados</strong>
+(Dijkstra) <span class="arrow_box_left fragment fade-left">Este
+tema</span></p>
+<p>Basada en la noción de <em>precondición más débil</em>.</p></li>
+<li><p>Otras técnicas: ejecución simbólica, etc.</p></li>
+</ol>
+</div>
+</section>
+<section id="búsqueda-de-precondición" class="slide level2">
+<h2>Búsqueda de precondición</h2>
+<ul>
+<li><p>Dados una postcondición <code>Q</code> y un programa
+<code>S</code>, ¿qué precondición necesitamos para poder obtener lo
+siguiente?</p>
+<div class="pseudo center">
+<p><span class="pre" style="color:#C05050;">{ ?? }</span> S <span
+class="post">{ Q }</span></p>
+</div></li>
+</ul>
+<div class="fragment">
+<ul>
+<li><p>En general, hay varios candidatos. Por ejemplo, con <span
+class="pseudo"><span class="pre" style="color:#C05050;">{ ?? }</span> x
+:= y + 1; <span class="post">{ x &gt; 0 }</span></span> tenemos, entre
+otras, las siguientes posibles precondiciones:</p>
+<div class="pseudo fragment">
+<p><span class="pre">{ y &gt;= 0 }</span> x := y + 1; <span
+class="post">{ x &gt; 0 }</span></p>
+</div>
+<div class="pseudo fragment">
+<p><span class="pre">{ y &gt; 0 }</span> x := y + 1; <span
+class="post">{ x &gt; 0 }</span></p>
+</div>
+<div class="pseudo fragment">
+<p><span class="pre">{ y == 6 }</span> x := y + 1; <span class="post">{
+x &gt; 0 }</span></p>
+</div></li>
+</ul>
+</div>
+</section>
+<section id="fórmulas-fuertes-y-débiles" class="slide level2">
+<h2>Fórmulas «fuertes» y «débiles»</h2>
+<ul>
+<li><p>Dadas dos fórmulas <span class="math inline">\(P\)</span> y <span
+class="math inline">\(P&#39;\)</span>. Si se cumple <span
+class="math inline">\(P \Rightarrow P&#39;\)</span>, decimos que <span
+class="math inline">\(P\)</span> es <strong>más fuerte</strong> que
+<span class="math inline">\(P&#39;\)</span> o, equivalentemente, <span
+class="math inline">\(P&#39;\)</span> es <strong>más débil</strong> que
+<span class="math inline">\(P\)</span>.</p></li>
+<li><p>Las condiciones más fuertes son más restrictivas, en el sentido
+en que imponen más condiciones.</p></li>
+<li><p>Por ejemplo, <span class="math inline">\(x &gt; 0\)</span> es más
+fuerte que <span class="math inline">\(x \geq 0\)</span>.</p></li>
+</ul>
+</section>
+<section id="fortalecimiento-y-debilitamiento" class="slide level2">
+<h2>Fortalecimiento y debilitamiento</h2>
+<p><strong>Proposición (fortalecimiento de la
+precondición):</strong></p>
+<p>Si <span class="pseudo"><span class="pre">{ P }</span> S <span
+class="pre">{ Q }</span></span>, entonces se cumple <span
+class="pseudo"><span class="pre">{ P’ }</span> S <span class="pre">{ Q
+}</span></span> para cualquier <code>P'</code> más fuerte que
+<code>P</code>.</p>
+<div class="fragment">
+<p><strong>Proposición (debilitamiento de la
+postcondición):</strong></p>
+<p>Si <span class="pseudo"><span class="pre">{ P }</span> S <span
+class="pre">{ Q }</span></span>, entonces se cumple <span
+class="pseudo"><span class="pre">{ P }</span> S <span class="pre">{ Q’
+}</span></span> para cualquier <code>Q'</code> más débil que
+<code>Q</code>.</p>
+</div>
+<div class="fragment">
+<p>En general, nos interesan:</p>
+<ul>
+<li><p>Las precondiciones débiles, porque imponen menos restricciones a
+la hora de ejecutar <code>S</code>.</p></li>
+<li><p>Las postcondiciones fuertes, porque detallan mejor el estado
+final tras ejecutar <code>S</code>.</p></li>
+</ul>
+</div>
+</section>
+<section id="búsqueda-de-la-precondición-más-débil"
+class="slide level2">
+<h2>Búsqueda de la precondición más débil</h2>
+<ul>
+<li><p>Dados una postcondición <code>Q</code> y un programa
+<code>S</code>, ¿cuál es la <strong>precondición más débil</strong> que
+permite obtener lo siguiente?</p>
+<div class="pseudo center">
+<p><span class="pre" style="color:#C05050">{ P }</span> S <span
+class="post">{ Q }</span></p>
+</div></li>
+</ul>
+<div class="fragment">
+<ul>
+<li>Definimos una función <span class="pseudo inline">wp</span>
+(<em>weakest precondition</em>) tal que <span
+class="pseudo inline">wp(S, Q)</span> devuelva la precondición <span
+class="pseudo inline">P</span> más débil que satisfaga <span
+class="pseudo inline"><span class="pre">{ P }</span> S <span
+class="post">{ Q }</span></span>.</li>
+</ul>
+</div>
+<div class="fragment">
+<ul>
+<li>Definimos la función <code>wp</code> por casos, según el tipo de
+sentencia <code>S</code>.</li>
+</ul>
+</div>
+</section>
+<section id="definición-de-wp" class="slide level2">
+<h2>Definición de <code>wp</code></h2>
+<h3 id="sentencia-skip">Sentencia <code>skip</code></h3>
+<div class="pseudo fragment">
+<p>wp(<strong>skip</strong>, Q) === Q</p>
+</div>
+<p>Si tras ejecutar <span
+class="pseudo inline"><strong>skip</strong></span> queremos que se
+satisfaga <code>Q</code>, entonces necesitamos que también se satisfaga
+<code>Q</code> antes de la ejecución.</p>
+</section>
+<section id="definición-de-wp-1" class="slide level2">
+<h2>Definición de <code>wp</code></h2>
+<h3 id="sentencia-de-asignación">Sentencia de asignación</h3>
+<div class="pseudo">
+<p>wp(x := e, Q) === def(e) <span
+class="math inline">\({\wedge}\)</span> Q<span
+style="color:green">[x/e]</span></p>
+</div>
+<p>Para que se cumpla <code>Q</code> tras la asignación
+<code>x := e</code>. Necesitamos que:</p>
+<ul>
+<li class="fragment"><p>La expresión <code>e</code> esté bien
+definida.</p>
+<ul>
+<li class="fragment"><p><code>def(e)</code> es la fórmula que determina
+las condiciones necesarias para que <code>e</code> esté bien
+definida.</p></li>
+<li class="fragment"><p>Por ejemplo: <span class="pseudo inline">def(2 /
+x) === x != 0</span></p></li>
+</ul></li>
+<li class="fragment"><p>Que la expresión <code>e</code> cumpla todo lo
+que <code>Q</code> afirma para la variable <code>x</code>.</p>
+<ul>
+<li class="fragment">La notación <span class="pseudo inline">Q<span
+style="color:green">[x/e]</span></span> refleja la sustitución de las
+apariciones libres de <code>x</code> en <code>Q</code> por
+<code>e</code>.</li>
+</ul></li>
+</ul>
+</section>
+<section id="ejemplo-1" class="slide level2">
+<h2>Ejemplo</h2>
+<div class="pseudo">
+<p><span class="pre" style="color:#C05050;">{ ?? }</span> x := y + 3;
+<span class="post">{ x == 5 }</span></p>
+</div>
+<div class="fragment">
+<p>Calculamos <span class="pseudo inline">wp(x := y + 3, x ==
+5)</span>:</p>
+<div class="pseudo">
+<p>wp(x := y + 3, x == 5)<br>    === def(y + 3) <span
+class="math inline">\({\wedge}\)</span> (x == 5)<span
+style="color:green">[x/(y+3)]</span><br>    === <span
+class="type">true</span> <span class="math inline">\({\wedge}\)</span> y
++ 3 == 5<br>    === y == 2</p>
+</div>
+</div>
+</section>
+<section id="ejemplo-2" class="slide level2">
+<h2>Ejemplo</h2>
+<p>Suponiendo un vector <code>V[0..n)</code>. ¿Qué precondicion
+necesitamos aquí?</p>
+<div class="pseudo">
+<p><span class="pre" style="color:#C05050;">{ ?? }</span> x := x + V[i];
+<span class="post">{ x &gt;= 0 }</span></p>
+</div>
+<div class="fragment">
+<div class="pseudo">
+<p>wp(x := x + V[i], x &gt;= 0)<br>    === def(x + V[i]) <span
+class="math inline">\({\wedge}\)</span> (x &gt;= 0)[<span
+style="color:green">x/(x + V[i]</span>)]<br>    === 0 &lt;= i &lt; n
+<span class="math inline">\({\wedge}\)</span> x + V[i] &gt;= 0</p>
+</div>
+</div>
+</section>
+<section id="inciso-dominio-de-definición-de-expresiones"
+class="slide level2">
+<h2>Inciso: dominio de definición de expresiones</h2>
+<h3 id="def-para-expresiones-aritméticas"><code>def</code> para
+expresiones aritméticas</h3>
+<div class="pseudo">
+<p>def(c) === <span class="type">true</span>              <span
+class="comment">// donde <em>c</em> es una constante (número o
+booleano)</span><br>def(x) === <span
+class="type">true</span>              <span class="comment">// donde
+<em>x</em> es una variable</span><br><br>def(e<sub>1</sub> +
+e<sub>2</sub>)  === def(e<sub>1</sub>) <span
+class="math inline">\({\wedge}\)</span>
+def(e<sub>2</sub>)<br>def(e<sub>1</sub> - e<sub>2</sub>)  ===
+def(e<sub>1</sub>) <span class="math inline">\({\wedge}\)</span>
+def(e<sub>2</sub>)<br>def(e<sub>1</sub> * e<sub>2</sub>)  ===
+def(e<sub>1</sub>) <span class="math inline">\({\wedge}\)</span>
+def(e<sub>2</sub>)<br>def(e<sub>1</sub> / e<sub>2</sub>)  ===
+def(e<sub>1</sub>) <span class="math inline">\({\wedge}\)</span>
+def(e<sub>2</sub>) <span class="math inline">\({\wedge}\)</span>
+e<sub>2</sub> != 0<br><br>def(V[e]) === def(e) <span
+class="math inline">\({\wedge}\)</span> 0 &lt;= e &lt; n    <span
+class="comment">// donde <em>n</em> es la longitud de
+<em>v</em></span></p>
+</div>
+</section>
+<section id="inciso-dominio-de-definición-de-expresiones-1"
+class="slide level2">
+<h2>Inciso: dominio de definición de expresiones</h2>
+<h3 id="def-para-expresiones-booleanas"><code>def</code> para
+expresiones booleanas</h3>
+<div class="pseudo">
+<p>def(<span class="type">true</span>)  === <span
+class="type">true</span><br>def(<span class="type">false</span>) ===
+<span class="type">true</span><br>def(x) === <span
+class="type">true</span>       <span class="comment">// donde <em>x</em>
+es una variable booleana</span><br><br>def(e<sub>1</sub> ==
+e<sub>2</sub>) === def(e<sub>1</sub>) <span
+class="math inline">\({\wedge}\)</span>
+def(e<sub>2</sub>)<br>def(e<sub>1</sub> &lt;= e<sub>2</sub>) ===
+def(e<sub>1</sub>) <span class="math inline">\({\wedge}\)</span>
+def(e<sub>2</sub>)<br>…<br>def(b<sub>1</sub> <span
+class="math inline">\({\wedge}\)</span> b<sub>2</sub>) ===
+def(b<sub>1</sub>) <span class="math inline">\({\wedge}\)</span>
+(b<sub>1</sub> ==&gt; def(b<sub>2</sub>))<br>def(b<sub>1</sub> <span
+class="math inline">\({\vee}\)</span> b<sub>2</sub>) ===
+def(b<sub>1</sub>) <span class="math inline">\({\wedge}\)</span> (<span
+class="math inline">\(\neg\)</span>b<sub>1</sub> ==&gt;
+def(b<sub>2</sub>))<br>def(<span
+class="math inline">\(\neg\)</span>b)     <span
+style="display:inline-block;margin-left:0.4em"> === def(b)</span></p>
+</div>
+</section>
+<section id="definición-de-wp-2" class="slide level2">
+<h2>Definición de <code>wp</code></h2>
+<h3 id="sentencia-de-asignación-múltiple">Sentencia de asignación
+múltiple</h3>
+<div class="pseudo">
+<p>wp(x<sub>1</sub>,…,x<sub>n</sub> := e<sub>1</sub>,…,e<sub>n</sub>, Q)
+=== def(e<sub>1</sub>) <span class="math inline">\({\wedge}\)</span> …
+<span class="math inline">\({\wedge}\)</span> def(e<sub>n</sub>) <span
+class="math inline">\({\wedge}\)</span> Q<span
+style="color:green">[x<sub>1</sub>/e<sub>1</sub>,…,x<sub>n</sub>/e<sub>n</sub>]</span></p>
+</div>
+<div class="fragment">
+<p>Por ejemplo:</p>
+<div class="pseudo">
+<p><span class="pre" style="color:#C05050;">{ ?? }</span> x, y := y, x;
+<span class="post">{ x == 5 <span
+class="math inline">\({\wedge}\)</span> y &gt; 1 }</span></p>
+</div>
+<div class="pseudo">
+<p>wp(x,y := y,x; , (x == 5 <span
+class="math inline">\({\wedge}\)</span> y &gt; 1))<br>=== def(y) <span
+class="math inline">\({\wedge}\)</span> def(x) <span
+class="math inline">\({\wedge}\)</span> (x == 5 <span
+class="math inline">\({\wedge}\)</span> y &gt; 1)<span
+style="color:green">[x/y,y/x]</span><br>=== <span
+class="type">true</span> <span class="math inline">\({\wedge}\)</span>
+<span class="type">true</span> <span
+class="math inline">\({\wedge}\)</span> y == 5 <span
+class="math inline">\({\wedge}\)</span> x &gt; 1<br>=== y == 5 <span
+class="math inline">\({\wedge}\)</span> x &gt; 1</p>
+</div>
+</div>
+</section>
+<section id="definición-de-wp-3" class="slide level2">
+<h2>Definición de <code>wp</code></h2>
+<h3 id="asignación-a-posiciones-de-un-vector">Asignación a posiciones de
+un vector</h3>
+<p>Suponemos que <code>V</code> tiene longitud <code>n</code>:</p>
+<div class="pseudo">
+<p>def(V[k] := e, Q) === def(e) <span
+class="math inline">\({\wedge}\)</span> 0 &lt;= k &lt; n <span
+class="math inline">\({\wedge}\)</span> Q<span
+style="color:green">[V/V’]</span></p>
+</div>
+<p>donde <code>V'</code> denota un vector de longitud <code>n</code> tal
+que:</p>
+<ul>
+<li><p><code>V'[k] = e</code>,</p></li>
+<li><p><code>V'[i] = V[i]</code> para todo <code>i</code> distinto de
+<code>k</code>.</p></li>
+</ul>
+</section>
+<section id="definición-de-wp-4" class="slide level2">
+<h2>Definición de <code>wp</code></h2>
+<h3 id="llamadas-a-función">Llamadas a función</h3>
+<p>Supongamos que la función <code>f</code> tiene la siguiente
+especificación:</p>
+<div class="pseudo">
+<p><strong>method</strong> f(x<sub>1</sub><span class="colon">:</span>
+tipo<sub>1</sub>, …, x<sub>n</sub><span class="colon">:</span>
+tipo<sub>n</sub>) <strong>returns</strong> (y<sub>1</sub><span
+class="colon">:</span> tipo<sub>1</sub>, …, y<sub>m</sub><span
+class="colon">:</span> tipo<sub>n</sub>)<br><strong>requires</strong>
+P<br><strong>ensures</strong> Q</p>
+</div>
+<p>Entonces:</p>
+<div class="pseudo">
+<p>wp(z<sub>1</sub>,…,z<sub>m</sub> := f(e<sub>1</sub>,…,e<sub>n</sub>),
+R)<br>    === def(e<sub>1</sub>) <span
+class="math inline">\({\wedge}\)</span> … <span
+class="math inline">\({\wedge}\)</span> def(e<sub>n</sub>) <span
+class="math inline">\({\wedge}\)</span> P<span
+style="color:green">[x<sub>1</sub>/e<sub>1</sub>,…,x<sub>n</sub>/e<sub>n</sub>]</span>
+<span class="math inline">\({\wedge}\)</span> (Q<span
+style="color:green">[y<sub>1</sub>/z<sub>1</sub>,…,y<sub>n</sub>/z<sub>n</sub>]</span>
+==&gt; R)</p>
+</div>
+</section>
+<section id="definición-de-wp-5" class="slide level2">
+<h2>Definición de <code>wp</code></h2>
+<h3 id="composición-de-sentencias">Composición de sentencias</h3>
+<div class="pseudo center">
+<p><span class="pre" style="color:#C05050;">{ ?? }</span>
+S<sub>1</sub>  S<sub>2</sub> <span class="post">{ Q }</span></p>
+</div>
+<ul>
+<li class="fragment"><p>¿Qué precondición necesitamos antes de ejecutar
+<span class="pseudo inline">S<sub>2</sub></span> para que se cumpla
+<code>Q</code> al final?</p>
+<div class="pseudo fragment">
+<p>  wp(S<sub>2</sub>, Q)</p>
+</div></li>
+<li class="fragment"><p>Denotamos por <code>R</code> el resultado de
+<span class="pseudo inline">wp(S<sub>2</sub>, Q)</span> ¿Qué
+precondición necesitamos antes de ejecutar <span
+class="pseudo inline">S<sub>1</sub></span> para que se cumpla
+<code>R</code> justo antes de ejecutar <span
+class="pseudo inline">S<sub>2</sub></span>?</p>
+<div class="pseudo fragment">
+<p>  wp(S<sub>1</sub>, R)</p>
+</div></li>
+<li class="fragment"><p>Por tanto: <span class="pseudo">wp(S<sub>1</sub>
+S<sub>2</sub>, Q) === wp(S<sub>1</sub>, wp(S<sub>2</sub>,
+Q))</span></p></li>
+</ul>
+</section>
+<section id="ejemplo-3" class="slide level2">
+<h2>Ejemplo</h2>
+<div class="pseudo center">
+<p><span class="pre" style="color:#C05050;">{ ?? }</span> z := x + 1; y
+:= z - 1; x := y + 2; <span class="post">{ x &gt;= 0 }</span></p>
+</div>
+<div class="pseudo">
+<p>wp((z := z + 1; y := z - 1; x := y * 2), x &gt;= 0)<br>  <span
+class="fragment">=== wp(z := z + 1, wp(y := z - 1, wp(x := y * 2, x
+&gt;= 0)))</span><br>  <span class="fragment">=== wp(z := z + 1, wp(y :=
+z - 1, y * 2 &gt;= 0))</span><br>  <span class="fragment">=== wp(z := z
++ 1, (z - 1) * 2 &gt;= 0)</span><br>  <span class="fragment">=== (z + 1
+- 1) * 2 &gt;= 0</span><br>  <span class="fragment">=== z &gt;=
+0</span></p>
+</div>
+</section>
+<section id="definición-de-wp-6" class="slide level2">
+<h2>Definición de <code>wp</code></h2>
+<h3 id="sentencias-condicionales">Sentencias condicionales</h3>
+<div class="pseudo center">
+<p><span class="pre" style="color:#C05050;">{ ?? }</span>
+<strong>if</strong> b { S<sub>1</sub> } <strong>else</strong> {
+S<sub>2</sub> } <span class="post">{ Q }</span></p>
+</div>
+<ul>
+<li class="fragment"><p>Si se cumple la condición <code>b</code>, para
+asegurar <code>Q</code> al final de la ejecución, se ha de cumplir <span
+class="pseudo inline">wp(S<sub>1</sub>, Q)</span> antes de ejecutar
+<span class="pseudo inline">S<sub>1</sub></span>.</p></li>
+<li class="fragment"><p>Si <em>no</em> se cumple la condición
+<code>b</code>, para asegurar <code>Q</code> al final de la ejecución,
+se ha de cumplir <span class="pseudo inline">wp(S<sub>2</sub>, Q)</span>
+antes de ejecutar <span
+class="pseudo inline">S<sub>2</sub></span>.</p></li>
+<li class="fragment"><p>Por tanto:</p>
+<div class="pseudo">
+<p>wp(<strong>if</strong> b S<sub>1</sub> <strong>else</strong>
+S<sub>2</sub>, Q) === def(b) <span
+class="math inline">\({\wedge}\)</span> (b ==&gt; wp(S<sub>1</sub>, Q))
+<span class="math inline">\({\wedge}\)</span> (<span
+class="math inline">\(\neg\)</span>b ==&gt; wp(S<sub>2</sub>, Q))</p>
+</div></li>
+</ul>
+</section>
+<section id="ejemplo-4" class="slide level2">
+<h2>Ejemplo</h2>
+<div class="pseudo center">
+<p><span class="pre" style="color:#C05050;">{ ?? }</span>
+<strong>if</strong> y &lt;= x { y := x; } <strong>else</strong> {
+<strong>skip</strong>; } <span class="post">{ y &gt;= x }</span></p>
+</div>
+<div class="fragment">
+<div class="pseudo">
+<p>wp(<strong>if</strong> y &lt;= x { y := x; } <strong>else</strong> {
+<strong>skip</strong>; }, y &gt;= x)<br>  <span class="fragment">===
+def(y &lt;= x) <span class="math inline">\({\wedge}\)</span> (y &lt;= x
+==&gt; wp(y := x, y &gt;= x)) <span
+class="math inline">\({\wedge}\)</span> (y &gt; x ==&gt;
+wp(<strong>skip</strong>, y &gt;= x))</span><br>  <span
+class="fragment">=== <span class="type">true</span> <span
+class="math inline">\({\wedge}\)</span> (y &lt;= x ==&gt; x &gt;= x)
+<span class="math inline">\({\wedge}\)</span> (y &gt; x ==&gt; y &gt;=
+x)</span><br>  <span class="fragment">=== <span class="type">true</span>
+<span class="math inline">\({\wedge}\)</span> <span
+class="type">true</span> <span class="math inline">\({\wedge}\)</span>
+<span class="type">true</span></span><br>  <span class="fragment">===
+<span class="type">true</span></span></p>
+</div>
+</div>
+</section>
+<section id="verificación-de-sentencias" class="slide level2">
+<h2>Verificación de sentencias</h2>
+<p>Volvamos al problema inicial. Dada una precondición <code>P</code>,
+una postcondición <code>Q</code> y una sentencia <code>S</code> sin
+bucles ni recursión.</p>
+<p>Para demostrar que <code>S</code> es correcto con respecto a la
+especificación, es decir:</p>
+<div class="pseudo center">
+<p><span class="pre">{ P }</span> S <span class="pre">{ Q }</span></p>
+</div>
+<p>basta con demostrar:</p>
+<div class="pseudo center">
+<p>P ==&gt; wp(S, Q)</p>
+</div>
+</section>
+<section id="ejemplo-5" class="slide level2">
+<h2>Ejemplo</h2>
+<div class="pseudo">
+<p><strong>method</strong> max(a<span class="colon">:</span> <span
+class="type">int</span>, b<span class="colon">:</span> <span
+class="type">int</span>) <strong>returns</strong> (m<span
+class="colon">:</span> <span
+class="type">int</span>)<br>  <strong>requires</strong> <span
+class="type">true</span><br>  <strong>ensures</strong> m &gt;= a <span
+class="math inline">\({\wedge}\)</span> m &gt;= b <span
+class="math inline">\({\wedge}\)</span> (m == a <span
+class="math inline">\({\vee}\)</span> m == b)<br><span
+class="fragment">{<br>  <strong>if</strong> a &gt; b { m := a }
+<strong>else</strong> { m := b }<br>}</span></p>
+</div>
+<div class="fragment">
+<p>Si <code>P</code> denota la precondición y <code>Q</code> denota la
+postcondición:</p>
+<div class="pseudo">
+<p>wp(<strong>if</strong> a &gt; b { m := a } <strong>else</strong> { m
+:= b }, Q)<br> <span class="fragment">=== def(a &gt; b) <span
+class="math inline">\({\wedge}\)</span> (a &gt; b ==&gt; wp(m := a, Q))
+<span class="math inline">\({\wedge}\)</span> (a &lt;= b ==&gt; wp(m :=
+b, Q))</span><br> <span class="fragment">=== (a &gt; b ==&gt; Q<span
+style="color:green">[m/a]</span>) <span
+class="math inline">\({\wedge}\)</span> (a &lt;= b ==&gt; Q<span
+style="color:green">[m/b]</span>)</span><br> <span class="fragment">===
+(a &gt; b ==&gt; a &gt;= a <span class="math inline">\({\wedge}\)</span>
+a &gt;= b <span class="math inline">\({\wedge}\)</span> (a == a <span
+class="math inline">\({\vee}\)</span> a == b)) <br>     <span
+class="math inline">\({\wedge}\)</span> (a &lt;= b ==&gt; b &gt;= a
+<span class="math inline">\({\wedge}\)</span> b &gt;= b <span
+class="math inline">\({\wedge}\)</span> (b == a <span
+class="math inline">\({\vee}\)</span> b == b))</span><br> <span
+class="fragment">=== <span class="type">true</span></span></p>
+</div>
+</div>
+<div class="fragment">
+<p>Como <code>P ==&gt; true</code>, la función es correcta.</p>
+</div>
+</section></section>
+<section>
+<section id="verificación-de-bucles"
+class="title-slide slide level1 center"
+data-background-image="img/RedBackground.jpg">
+<h1 class="center" data-background-image="img/RedBackground.jpg"><span
+class="sc_number">1.4</span>Verificación de bucles</h1>
+
+</section>
+<section id="invariante-de-un-bucle"
+class="slide level2 subsection center">
+<h2 class="subsection center">Invariante de un bucle</h2>
+</section>
+<section id="invariante" class="slide level2">
+<h2>Invariante</h2>
+<p>Supongamos un bucle <code>while b { S }</code>.</p>
+<p>El <strong>invariante</strong> de un bucle es una <strong>fórmula
+lógica</strong> que se cumple:</p>
+<ul>
+<li class="fragment">Antes de la primera iteración.
+<ul>
+<li class="fragment">Incluso antes de evaluar la condición del bucle
+(<span class="pseudo inline">b</span>) por primera vez.</li>
+</ul></li>
+<li class="fragment">Después de cada iteración.
+<ul>
+<li class="fragment">Incluyendo la última iteración, antes de evaluar la
+condición del bucle por última vez.</li>
+</ul></li>
+</ul>
+</section>
+<section id="section" class="slide level2 center">
+<h2 class="center"></h2>
+<div class="info_box">
+<p>El principal desafío de la verificación de programas con bucles es
+determinar los invariantes adecuados.</p>
+</div>
+<aside class="notes">
+<ul>
+<li>En el examen, en los ejercicios, etc.</li>
+<li>No hay un procedimiento mecánico, requiere experiencia.</li>
+</ul>
+</aside>
+</section>
+<section id="ejemplo-1-1" class="slide level2">
+<h2>Ejemplo 1</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="pseudo">
+<p><span class="pre">{ n &gt;= 0 }</span><br>i := 0; p :=
+1;<br><strong>while</strong> i &lt; n {<br>  p := p * 2;<br>  i := i +
+1;<br>}</p>
+</div>
+<div class="fragment" style="font-size:80%;float:left">
+<p>Con <code>n = 5</code>:</p>
+</div>
+<div class="fragment" style="font-size:80%;float:right">
+<table>
+<thead>
+<tr>
+<th style="text-align: center;"></th>
+<th style="text-align: right;"><code>i</code></th>
+<th style="text-align: right;"><code>p</code></th>
+<th style="text-align: right;"><code>n</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">Antes del bucle</td>
+<td style="text-align: right;"><code>0</code></td>
+<td style="text-align: right;"><code>1</code></td>
+<td style="text-align: right;"><code>5</code></td>
+</tr>
+<tr>
+<td style="text-align: center;">Tras 1ª iteracion</td>
+<td style="text-align: right;"><code>1</code></td>
+<td style="text-align: right;"><code>2</code></td>
+<td style="text-align: right;"><code>5</code></td>
+</tr>
+<tr>
+<td style="text-align: center;">Tras 2ª iteracion</td>
+<td style="text-align: right;"><code>2</code></td>
+<td style="text-align: right;"><code>4</code></td>
+<td style="text-align: right;"><code>5</code></td>
+</tr>
+<tr>
+<td style="text-align: center;">Tras 3ª iteracion</td>
+<td style="text-align: right;"><code>3</code></td>
+<td style="text-align: right;"><code>8</code></td>
+<td style="text-align: right;"><code>5</code></td>
+</tr>
+<tr>
+<td style="text-align: center;">Tras 4ª iteracion</td>
+<td style="text-align: right;"><code>4</code></td>
+<td style="text-align: right;"><code>16</code></td>
+<td style="text-align: right;"><code>5</code></td>
+</tr>
+<tr>
+<td style="text-align: center;">Tras 5ª iteracion</td>
+<td style="text-align: right;"><code>5</code></td>
+<td style="text-align: right;"><code>32</code></td>
+<td style="text-align: right;"><code>5</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div><div class="column fragment" style="width:50%;">
+<p>Posibles invariantes:</p>
+<p style="text-align:center" class="fragment">
+<span class="pseudo inline">i &gt;= 0</span>
+</p>
+<p style="text-align:center" class="fragment">
+<span class="pseudo inline">i &lt;= n</span>
+</p>
+<p style="text-align:center" class="fragment">
+<span class="pseudo inline">p == 2<sup>i</sup></span>
+</p>
+<p style="text-align:center" class="fragment">
+<span class="pseudo inline">p &gt;= 1</span>
+</p>
+</div>
+</div>
+</section>
+<section id="ejemplo-2-1" class="slide level2">
+<h2>Ejemplo 2</h2>
+<div class="columns">
+<div class="column" style="width:55%;">
+<div class="pseudo">
+<p><span class="comment">// V[0..n) es un array de enteros y n &gt;=
+0</span><br>s := 0; i := 0;<br><strong>while</strong> i &lt; n
+{<br>    s := s + V[i];<br>    i := i + 1;<br>}</p>
+</div>
+<div class="fragment" style="font-size:80%;float:left">
+<p>Con <code>n = 4</code>:</p>
+</div>
+<div class="fragment" style="font-size:70%;float:right">
+<table>
+<thead>
+<tr>
+<th style="text-align: center;"></th>
+<th style="text-align: right;"><code>i</code></th>
+<th style="text-align: right;"><code>n</code></th>
+<th style="text-align: right;"><code>s</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">Antes del bucle</td>
+<td style="text-align: right;"><code>0</code></td>
+<td style="text-align: right;"><code>4</code></td>
+<td style="text-align: right;"><code>0</code></td>
+</tr>
+<tr>
+<td style="text-align: center;">Tras 1ª iteracion</td>
+<td style="text-align: right;"><code>1</code></td>
+<td style="text-align: right;"><code>4</code></td>
+<td style="text-align: right;"><code>v[0]</code></td>
+</tr>
+<tr>
+<td style="text-align: center;">Tras 2ª iteracion</td>
+<td style="text-align: right;"><code>2</code></td>
+<td style="text-align: right;"><code>4</code></td>
+<td style="text-align: right;"><code>v[0] + v[1]</code></td>
+</tr>
+<tr>
+<td style="text-align: center;">Tras 3ª iteracion</td>
+<td style="text-align: right;"><code>3</code></td>
+<td style="text-align: right;"><code>4</code></td>
+<td style="text-align: right;"><code>v[0] + v[1] + v[2]</code></td>
+</tr>
+<tr>
+<td style="text-align: center;">Tras 4ª iteracion</td>
+<td style="text-align: right;"><code>4</code></td>
+<td style="text-align: right;"><code>4</code></td>
+<td
+style="text-align: right;"><code>v[0] + v[1] + v[2] + v[3]</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div><div class="column fragment" style="width:45%;">
+<p>Posibles invariantes:</p>
+<p style="text-align:center" class="fragment">
+<span class="pseudo inline">i &gt;= 0</span>
+</p>
+<p style="text-align:center" class="fragment">
+<span class="pseudo inline">i &lt;= n</span>
+</p>
+<p style="text-align:center" class="fragment">
+<span class="pseudo inline">s == (Σj <span class="colon">:</span> 0
+&lt;= j &lt; i <span class="colon">:</span> V[j])</span>
+</p>
+<p style="text-align:center" class="fragment">
+<span class="pseudo inline">s &gt;= 0</span>
+</p>
+</div>
+</div>
+</section>
+<section id="anotación-de-invariantes-en-los-programas"
+class="slide level2">
+<h2>Anotación de invariantes en los programas</h2>
+<ul>
+<li><p>Suponemos que el/la programador/a ha anotado el invariante en el
+texto de su programa. Por ejemplo:</p>
+<div class="pseudo">
+<p>s := 0; i := 0;<br><strong>while</strong> i &lt; n<br>  <span
+class="hl"><strong>invariant</strong> 0 &lt;= i &lt;= n <span
+class="math inline">\({\wedge}\)</span> s == (Σj <span
+class="colon">:</span> 0 &lt;= j &lt; i <span class="colon">:</span>
+V[j])</span><br>{<br>    s := s + V[i];<br>    i := i + 1;<br>}</p>
+</div></li>
+</ul>
+</section>
+<section id="corrección-parcial-de-bucles-while"
+class="slide level2 subsection center">
+<h2 class="subsection center">Corrección parcial de bucles
+<code>while</code></h2>
+</section>
+<section id="qué-significa-corrección-parcial" class="slide level2">
+<h2>¿Qué significa corrección «parcial»?</h2>
+<p>Supongamos un programa <code>S</code> <em>(con bucles y/o
+recursión)</em>, una precondición <code>P</code> y una postcondición
+<code>Q</code>.</p>
+<p>Decimos que <code>S</code> es <strong>parcialmente correcto</strong>
+con respecto a la especificación (<code>P</code>, <code>Q</code>),</p>
+<div class="pseudo center">
+<p><span class="pre">{ P }</span> S <span class="pre">{ Q }</span></p>
+</div>
+<p>cuando al ejecutar <code>S</code> sobre un estado <span
+class="math inline">\(\sigma\)</span> que satisfaga <code>P</code>, la
+ejecución termina en un estado <span
+class="math inline">\(\sigma&#39;\)</span> que satisface <code>Q</code>,
+<span class="color_tema">o bien no termina</span>.</p>
+<div class="fragment">
+<p>Formalmente:</p>
+<div style="text-align:center">
+<span class="color_tema"><em>Si <span class="math inline">\(\sigma
+\vDash \texttt{P}\)</span> y <span class="math inline">\(\sigma
+\stackrel{\texttt{S}}{\rightsquigarrow} \sigma&#39;\)</span>, entonces
+<span class="math inline">\(\sigma&#39; \vDash
+\texttt{Q}\)</span></em></span>
+</div>
+<p>La condición <span class="math inline">\(\sigma
+\stackrel{\texttt{S}}{\rightsquigarrow} \sigma&#39;\)</span> supone
+implicitamente que la ejecución de <code>S</code> termina.</p>
+</div>
+</section>
+<section id="corrección-parcial-de-bucles-while-1" class="slide level2">
+<h2>Corrección parcial de bucles while</h2>
+<p>Para determinar que un bucle <code>while</code> satisface una
+especificación:</p>
+<div class="pseudo center">
+<p><span class="pre">{ P }</span> <strong>while</strong> b
+<strong>invariant</strong> I { S } <span class="post">{ Q }</span></p>
+</div>
+<p>Hay que demostrar cuatro cosas:</p>
+<ol type="1">
+<li><p>El invariante se cumple antes de realizar la primera iteración:
+<span class="pseudo">P ==&gt; I</span></p></li>
+<li><p>La condición del bucle está bien definida en cada iteración:
+<span class="pseudo">I ==&gt; def(b)</span></p></li>
+<li><p>El invariante se preserva en cada iteración del bucle: <span
+class="pseudo"><span class="pre">{ I <span
+class="math inline">\(\wedge\)</span> b }</span> S <span class="post">{
+I }</span></span></p></li>
+<li><p>Al salir del bucle, se cumple la postcondición: <span
+class="pseudo">I <span class="math inline">\(\wedge\)</span> ¬b ==&gt;
+Q</span></p></li>
+</ol>
+</section>
+<section id="ejemplo-1-2" class="slide level2"
+data-transition="fade-out">
+<h2 data-transition="fade-out">Ejemplo 1</h2>
+<div class="columns">
+<div class="column">
+<div class="pseudo">
+<p><span class="pre">{ i == 0 <span
+class="math inline">\({\wedge}\)</span> p == 1 <span
+class="math inline">\({\wedge}\)</span> n &gt;= 0
+}</span><br><strong>while</strong> i &lt;
+n<br>  <strong>invariant</strong> i &lt;= n <span
+class="math inline">\({\wedge}\)</span> p == 2<sup>i</sup><br>{<br>  p
+:= p * 2;<br>  i := i + 1;<br>}<br><span class="post">{ p ==
+2<sup>n</sup> }</span></p>
+</div>
+</div><div class="column" style="text-align:left">
+<p>🟨 Invariante en entrada</p>
+<p>✅ Condición bien definida</p>
+<p>⬜ Preservación de invariante</p>
+<p>⬜ Condición de salida</p>
+</div>
+</div>
+<div class="fragment">
+<p><strong>Invariante en entrada:</strong></p>
+<div class="pseudo">
+<p>i == 0 <span class="math inline">\({\wedge}\)</span> p == 1 <span
+class="math inline">\({\wedge}\)</span> n &gt;= 0 ==&gt; i &lt;= n <span
+class="math inline">\({\wedge}\)</span> p == 2<sup>i</sup>   <span
+class="fragment">✅</span></p>
+</div>
+</div>
+</section>
+<section id="ejemplo-1-3" class="slide level2"
+data-transition="fade-in slide-out">
+<h2 data-transition="fade-in slide-out">Ejemplo 1</h2>
+<div class="columns">
+<div class="column">
+<div class="pseudo">
+<p><span class="pre">{ i == 0 <span
+class="math inline">\({\wedge}\)</span> p == 1 <span
+class="math inline">\({\wedge}\)</span> n &gt;= 0
+}</span><br><strong>while</strong> i &lt;
+n<br>  <strong>invariant</strong> i &lt;= n <span
+class="math inline">\({\wedge}\)</span> p == 2<sup>i</sup><br>{<br>  p
+:= p * 2;<br>  i := i + 1;<br>}<br><span class="post">{ p ==
+2<sup>n</sup> }</span></p>
+</div>
+</div><div class="column" style="text-align:left">
+<p>✅ Invariante en entrada</p>
+<p>✅ Condición bien definida</p>
+<p>🟨 Preservación de invariante</p>
+<p>⬜ Condición de salida</p>
+</div>
+</div>
+<div class="fragment">
+<p><strong>Preservación de invariante:</strong></p>
+<div class="pseudo">
+<p><span class="pre">{ i &lt;= n <span
+class="math inline">\({\wedge}\)</span> p == 2<sup>i</sup> <span
+class="math inline">\({\wedge}\)</span> i &lt; n }</span> p := p * 2; i
+:= i + 1; <span class="post">{ i &lt;= n <span
+class="math inline">\({\wedge}\)</span> p == 2<sup>i</sup> }</span></p>
+</div>
+</div>
+</section>
+<section class="slide level2">
+
+<div class="pseudo">
+<p><span class="pre">{ i &lt;= n <span
+class="math inline">\({\wedge}\)</span> p == 2<sup>i</sup> <span
+class="math inline">\({\wedge}\)</span> i &lt; n }</span> p := p * 2; i
+:= i + 1; <span class="post">{ i &lt;= n <span
+class="math inline">\({\wedge}\)</span> p == 2<sup>i</sup> }</span></p>
+</div>
+<div class="fragment">
+<div class="pseudo">
+<p>wp((p := p * 2; i := i + 1), i &lt;= n <span
+class="math inline">\({\wedge}\)</span> p == 2<sup>i</sup>)<br>  ===
+wp(p := p * 2, wp(i := i + 1, i &lt;= n <span
+class="math inline">\({\wedge}\)</span> p == 2<sup>i</sup>))<br>  ===
+wp(p := p * 2, (i &lt;= n <span class="math inline">\({\wedge}\)</span>
+p == 2<sup>i</sup>)<span style="color:green">[i/i+1]</span>)<br>  ===
+wp(p := p * 2, i + 1 &lt;= n <span
+class="math inline">\({\wedge}\)</span> p == 2<sup>i+1</sup>)<br>  ===
+(i + 1 &lt;= n <span class="math inline">\({\wedge}\)</span> p ==
+2<sup>i+1</sup>)<span style="color:green">[p/p*2]</span><br>  === i + 1
+&lt;= n <span class="math inline">\({\wedge}\)</span> 2 * p ==
+2<sup>i+1</sup></p>
+</div>
+</div>
+<div class="fragment">
+<p>Tenemos que demostrar:</p>
+<div class="pseudo">
+<p>i &lt;= n <span class="math inline">\({\wedge}\)</span> p ==
+2<sup>i</sup> <span class="math inline">\({\wedge}\)</span> i &lt; n
+==&gt; i + 1 &lt;= n <span class="math inline">\({\wedge}\)</span> 2 * p
+== 2<sup>i+1</sup>  <span class="fragment">✅</span></p>
+</div>
+</div>
+</section>
+<section id="ejemplo-1-4" class="slide level2"
+data-transition="slide-in fade-out">
+<h2 data-transition="slide-in fade-out">Ejemplo 1</h2>
+<div class="columns">
+<div class="column">
+<div class="pseudo">
+<p><span class="pre">{ i == 0 <span
+class="math inline">\({\wedge}\)</span> p == 1 <span
+class="math inline">\({\wedge}\)</span> n &gt;= 0
+}</span><br><strong>while</strong> i &lt;
+n<br>  <strong>invariant</strong> i &lt;= n <span
+class="math inline">\({\wedge}\)</span> p == 2<sup>i</sup><br>{<br>  p
+:= p * 2;<br>  i := i + 1;<br>}<br><span class="post">{ p ==
+2<sup>n</sup> }</span></p>
+</div>
+</div><div class="column" style="text-align:left">
+<p>✅ Invariante en entrada</p>
+<p>✅ Condición bien definida</p>
+<p>✅ Preservación de invariante</p>
+<p>🟨 Condición de salida</p>
+</div>
+</div>
+<div class="fragment">
+<p><strong>Condición de salida del bucle:</strong></p>
+<div class="pseudo">
+<p>i &lt;= n <span class="math inline">\({\wedge}\)</span> p ==
+2<sup>i</sup> <span class="math inline">\({\wedge}\)</span> i &gt;=
+n  ==&gt;  p == 2<sup>n</sup>  <span class="fragment">✅</span></p>
+</div>
+</div>
+</section>
+<section id="ejemplo-1-5" class="slide level2"
+data-transition="fade-in slide-out">
+<h2 data-transition="fade-in slide-out">Ejemplo 1</h2>
+<div class="columns">
+<div class="column">
+<div class="pseudo">
+<p><span class="pre">{ i == 0 <span
+class="math inline">\({\wedge}\)</span> p == 1 <span
+class="math inline">\({\wedge}\)</span> n &gt;= 0
+}</span><br><strong>while</strong> i &lt;
+n<br>  <strong>invariant</strong> i &lt;= n <span
+class="math inline">\({\wedge}\)</span> p == 2<sup>i</sup><br>{<br>  p
+:= p * 2;<br>  i := i + 1;<br>}<br><span class="post">{ p ==
+2<sup>n</sup> }</span></p>
+</div>
+</div><div class="column" style="text-align:left">
+<p>✅ Invariante en entrada</p>
+<p>✅ Condición bien definida</p>
+<p>✅ Preservación de invariante</p>
+<p>✅ Condición de salida</p>
+</div>
+</div>
+</section>
+<section id="ejemplo-2-2" class="slide level2"
+data-transition="slide-in none-out">
+<h2 data-transition="slide-in none-out">Ejemplo 2</h2>
+<div class="columns">
+<div class="column">
+<div class="pseudo">
+<p><span class="pre">{ i == 0 <span
+class="math inline">\({\wedge}\)</span> s == 0 <span
+class="math inline">\({\wedge}\)</span> n &gt;= 0
+}</span><br><strong>while</strong> i &lt;
+n<br>  <strong>invariant</strong> 0 &lt;= i &lt;= n <span
+class="math inline">\({\wedge}\)</span> s == (Σj <span
+class="colon">:</span> 0 &lt;= j &lt; i <span class="colon">:</span>
+V[j])<br>{<br>  s := s + V[i];<br>  i := i + 1;<br>}<br><span
+class="post">{ s == (Σj <span class="colon">:</span> 0 &lt;= j &lt; n
+<span class="colon">:</span> V[j]) }</span></p>
+</div>
+</div><div class="column" style="text-align:left">
+<p>🟨 Invariante en entrada</p>
+<p>✅ Condición bien definida</p>
+<p>⬜ Preservación de invariante</p>
+<p>⬜ Condición de salida</p>
+</div>
+</div>
+<div class="fragment">
+<p>Invariante en entrada:</p>
+<div class="pseudo">
+<p>i == 0 <span class="math inline">\({\wedge}\)</span> s == 0 <span
+class="math inline">\({\wedge}\)</span> n &gt;= 0  ==&gt;  0 &lt;= i
+&lt;= n <span class="math inline">\({\wedge}\)</span> s == (Σj <span
+class="colon">:</span> 0 &lt;= j &lt; i <span class="colon">:</span>
+V[j])  <span class="fragment">✅</span></p>
+</div>
+</div>
+</section>
+<section id="ejemplo-2-3" class="slide level2"
+data-transition="none-in slide-out">
+<h2 data-transition="none-in slide-out">Ejemplo 2</h2>
+<div class="columns">
+<div class="column">
+<div class="pseudo">
+<p><span class="pre">{ i == 0 <span
+class="math inline">\({\wedge}\)</span> s == 0 <span
+class="math inline">\({\wedge}\)</span> n &gt;= 0
+}</span><br><strong>while</strong> i &lt;
+n<br>  <strong>invariant</strong> 0 &lt;= i &lt;= n <span
+class="math inline">\({\wedge}\)</span> s == (Σj <span
+class="colon">:</span> 0 &lt;= j &lt; i <span class="colon">:</span>
+V[j])<br>{<br>  s := s + V[i];<br>  i := i + 1;<br>}<br><span
+class="post">{ s == (Σj <span class="colon">:</span> 0 &lt;= j &lt; n
+<span class="colon">:</span> V[j]) }</span></p>
+</div>
+</div><div class="column" style="text-align:left">
+<p>✅ Invariante en entrada</p>
+<p>✅ Condición bien definida</p>
+<p>🟨 Preservación de invariante</p>
+<p>⬜ Condición de salida</p>
+</div>
+</div>
+<div class="fragment">
+<p>Preservación de invariante:</p>
+<div class="pseudo">
+<p><span class="pre">{ 0 &lt;= i &lt;= n <span
+class="math inline">\({\wedge}\)</span> s == (Σj <span
+class="colon">:</span> 0 &lt;= j &lt; i <span class="colon">:</span>
+V[j]) <span class="math inline">\({\wedge}\)</span> i &lt; n
+}</span><br>s := s + V[i];<br>i := i + 1;<br><span class="post">{ 0
+&lt;= i &lt;= n <span class="math inline">\({\wedge}\)</span> s == (Σj
+<span class="colon">:</span> 0 &lt;= j &lt; i <span
+class="colon">:</span> V[j]) }</span></p>
+</div>
+</div>
+</section>
+<section class="slide level2">
+
+<div class="pseudo">
+<p><span class="pre">{ 0 &lt;= i &lt;= n <span
+class="math inline">\({\wedge}\)</span> s == (Σj <span
+class="colon">:</span> 0 &lt;= j &lt; i <span class="colon">:</span>
+V[j]) <span class="math inline">\({\wedge}\)</span> i &lt; n
+}</span><br>s := s + V[i];<br>i := i + 1;<br><span class="post">{ 0
+&lt;= i &lt;= n <span class="math inline">\({\wedge}\)</span> s == (Σj
+<span class="colon">:</span> 0 &lt;= j &lt; i <span
+class="colon">:</span> V[j]) }</span></p>
+</div>
+<div class="fragment">
+<div class="pseudo">
+<p>wp((s := s + V[i]; i := i + 1;), i &lt;= n <span
+class="math inline">\({\wedge}\)</span> s == (Σj <span
+class="colon">:</span> 0 &lt;= j &lt; i <span class="colon">:</span>
+V[j]))<br>  === def(V[i]) <span class="math inline">\({\wedge}\)</span>
+i + 1 &lt;= n <span class="math inline">\({\wedge}\)</span> s + V[i] ==
+(Σj <span class="colon">:</span> 0 &lt;= j &lt; i + 1 <span
+class="colon">:</span> V[j]))<br>  === 0 &lt;= i &lt; n <span
+class="math inline">\({\wedge}\)</span> i + 1 &lt;= n <span
+class="math inline">\({\wedge}\)</span> s + V[i] == (Σj <span
+class="colon">:</span> 0 &lt;= j &lt; i <span class="colon">:</span>
+V[j])) + V[i]</p>
+</div>
+</div>
+<div class="fragment">
+<p>Tenemos que demostrar:</p>
+<div class="pseudo">
+<p>  0 &lt;= i &lt;= n <span class="math inline">\({\wedge}\)</span> s
+== (Σj <span class="colon">:</span> 0 &lt;= j &lt; i <span
+class="colon">:</span> V[j]) <span
+class="math inline">\({\wedge}\)</span> i &lt; n  <br>==&gt;<br>  0
+&lt;= i &lt; n <span class="math inline">\({\wedge}\)</span> i + 1 &lt;=
+n <span class="math inline">\({\wedge}\)</span> s + V[i] == (Σj <span
+class="colon">:</span> 0 &lt;= j &lt; i + 1 <span class="colon">:</span>
+V[j])) <span class="fragment">✅</span></p>
+</div>
+</div>
+</section>
+<section id="ejemplo-2-4" class="slide level2"
+data-transition="slide-in none-out">
+<h2 data-transition="slide-in none-out">Ejemplo 2</h2>
+<div class="columns">
+<div class="column">
+<div class="pseudo">
+<p><span class="pre">{ i == 0 <span
+class="math inline">\({\wedge}\)</span> s == 0 <span
+class="math inline">\({\wedge}\)</span> n &gt;= 0
+}</span><br><strong>while</strong> i &lt;
+n<br>  <strong>invariant</strong> i &lt;= n <span
+class="math inline">\({\wedge}\)</span> s == (Σj <span
+class="colon">:</span> 0 &lt;= j &lt; i <span class="colon">:</span>
+V[j])<br>{<br>  s := s + V[i];<br>  i := i + 1;<br>}<br><span
+class="post">{ s == (Σj <span class="colon">:</span> 0 &lt;= j &lt; n
+<span class="colon">:</span> V[j]) }</span></p>
+</div>
+</div><div class="column" style="text-align:left">
+<p>✅ Invariante en entrada</p>
+<p>✅ Condición bien definida</p>
+<p>✅ Preservación de invariante</p>
+<p>🟨 Condición de salida</p>
+</div>
+</div>
+<div class="fragment">
+<p>Condición de salida:</p>
+<div class="pseudo">
+<p>i &lt;= n <span class="math inline">\({\wedge}\)</span> s == (Σj
+<span class="colon">:</span> 0 &lt;= j &lt; i <span
+class="colon">:</span> V[j]) <span
+class="math inline">\({\wedge}\)</span> i &gt;= n  ==&gt;  s == (Σj
+<span class="colon">:</span> 0 &lt;= j &lt; n <span
+class="colon">:</span> V[j])    <span class="fragment">✅</span></p>
+</div>
+</div>
+</section>
+<section id="ejemplo-2-5" class="slide level2"
+data-transition="none-in slide-out">
+<h2 data-transition="none-in slide-out">Ejemplo 2</h2>
+<div class="columns">
+<div class="column">
+<div class="pseudo">
+<p><span class="pre">{ i == 0 <span
+class="math inline">\({\wedge}\)</span> s == 0 <span
+class="math inline">\({\wedge}\)</span> n &gt;= 0
+}</span><br><strong>while</strong> i &lt;
+n<br>  <strong>invariant</strong> i &lt;= n <span
+class="math inline">\({\wedge}\)</span> s == (Σj <span
+class="colon">:</span> 0 &lt;= j &lt; i <span class="colon">:</span>
+V[j])<br>{<br>  s := s + V[i];<br>  i := i + 1;<br>}<br><span
+class="post">{ s == (Σj <span class="colon">:</span> 0 &lt;= j &lt; n
+<span class="colon">:</span> V[j]) }</span></p>
+</div>
+</div><div class="column" style="text-align:left">
+<p>✅ Invariante en entrada</p>
+<p>✅ Condición bien definida</p>
+<p>✅ Preservación de invariante</p>
+<p>✅ Condición de salida</p>
+</div>
+</div>
+</section></section>
+<section>
+<section id="verificación-práctica-de-programas-con-bucles"
+class="title-slide slide level1 center"
+data-background-image="img/RedBackground.jpg">
+<h1 class="center" data-background-image="img/RedBackground.jpg"><span
+class="sc_number">1.5</span>Verificación práctica de programas con
+bucles</h1>
+
+</section>
+<section id="bucles-dentro-de-programas" class="slide level2">
+<h2>Bucles dentro de programas</h2>
+<div class="pseudo">
+<p><span class="pre">{ P }</span> <strong>while</strong> b
+<strong>invariant</strong> I { S } <span class="post">{ Q }</span></p>
+</div>
+<div class="fragment">
+<p>Podemos tener sentencias antes y después del bucle</p>
+<div class="pseudo">
+<p><span class="pre">{ P }</span> <span
+class="hl">S<sub>1</sub></span>  <strong>while</strong> b
+<strong>invariant</strong> I { S }  <span
+class="hl">S<sub>2</sub></span> <span class="post">{ Q }</span></p>
+</div>
+</div>
+<div class="fragment">
+<p>¿Qué condiciones intermedias se cumplen antes y después del
+bucle?</p>
+<div class="pseudo">
+<p><span class="pre">{ P }</span> S<sub>1</sub> <span class="pre">{
+<span class="hl">??</span> }</span> <strong>while</strong> b
+<strong>invariant</strong> I { S } <span class="post">{ <span
+class="hl">??</span> }</span> S<sub>2</sub> <span class="post">{ Q
+}</span></p>
+</div>
+</div>
+</section>
+<section id="condiciones-intermedias" class="slide level2">
+<h2>Condiciones intermedias</h2>
+<div class="pseudo">
+<p><span class="pre">{ P }</span> S<sub>1</sub> <span class="pre">{
+<span class="hl"> I </span> }</span> <strong>while</strong> b
+<strong>invariant</strong> I { S } <span class="post">{ <span
+class="hl"> wp(S<sub>2</sub>, Q) </span> }</span> S<sub>2</sub> <span
+class="post">{ Q }</span></p>
+</div>
+<p>Tenemos que demostrar:</p>
+<ol type="1">
+<li><div class="pseudo">
+<p>P ==&gt; wp(S<sub>1</sub>, I)</p>
+</div></li>
+<li><div class="pseudo">
+<p><span class="pre">{ I }</span> <strong>while</strong> b
+<strong>invariant</strong> I { S } <span class="post">{
+wp(S<sub>2</sub>, Q) }</span></p>
+</div></li>
+</ol>
+</section>
+<section id="ejemplo-6" class="slide level2">
+<h2>Ejemplo</h2>
+<div class="pseudo">
+<p><strong>method</strong> sumaVector(v[0..n)<span
+class="colon">:</span> <span class="type">array&lt;<span
+class="type">int</span>&gt;</span>) <strong>returns</strong> (s<span
+class="colon">:</span> <span
+class="type">int</span>)<br>  <strong>requires</strong> n &gt;=
+0<br>  <strong>ensures</strong> s == (Σj <span class="colon">:</span> 0
+&lt;= j &lt; n <span class="colon">:</span> V[j])<br>{<br>  s := 0; i :=
+0;<br>  <strong>while</strong> i &lt;
+n<br>    <strong>invariant</strong> i &lt;= n <span
+class="math inline">\({\wedge}\)</span> s == (Σj <span
+class="colon">:</span> 0 &lt;= j &lt; i <span class="colon">:</span>
+V[j])<br>  {<br>      s := s + V[i];<br>      i := i +
+1;<br>  }<br>}</p>
+</div>
+</section>
+<section id="ejemplo-7" class="slide level2">
+<h2>Ejemplo</h2>
+<div class="pseudo">
+<p><strong>method</strong> sumaVector(v[0..n)<span
+class="colon">:</span> <span class="type">array&lt;<span
+class="type">int</span>&gt;</span>) <strong>returns</strong> (s<span
+class="colon">:</span> <span
+class="type">int</span>)<br>  <strong>requires</strong> n &gt;=
+0<br>  <strong>ensures</strong> s == (Σj <span class="colon">:</span> 0
+&lt;= j &lt; n <span class="colon">:</span> V[j])<br>{<br>  s := 0; i :=
+0;<br>  <span class="pre">{ i &lt;= n <span
+class="math inline">\({\wedge}\)</span> s == (Σj <span
+class="colon">:</span> 0 &lt;= j &lt; i <span class="colon">:</span>
+V[j]) }</span><br>  <strong>while</strong> i &lt; n<br>    …<br>}</p>
+</div>
+<div class="fragment">
+<div class="pseudo">
+<p>wp((s := 0; i := 0), i &lt;= n <span
+class="math inline">\({\wedge}\)</span> s == (Σj <span
+class="colon">:</span> 0 &lt;= j &lt; i <span class="colon">:</span>
+V[j]))<br>  === 0 &lt;= n <span class="math inline">\({\wedge}\)</span>
+0 == (Σj <span class="colon">:</span> 0 &lt;= j &lt; 0 <span
+class="colon">:</span> V[j])</p>
+</div>
+</div>
+<div class="fragment">
+<div class="pseudo">
+<p>n &gt;= 0  ==&gt;  0 &lt;= n <span
+class="math inline">\({\wedge}\)</span> 0 == (Σj <span
+class="colon">:</span> 0 &lt;= j &lt; 0 <span class="colon">:</span>
+V[j]) <span class="fragment">✅</span></p>
+</div>
+</div>
+</section></section>
+<section>
+<section id="terminación-de-bucles"
+class="title-slide slide level1 center"
+data-background-image="img/RedBackground.jpg">
+<h1 class="center" data-background-image="img/RedBackground.jpg"><span
+class="sc_number">1.6</span>Terminación de bucles</h1>
+
+</section>
+<section id="corrección-total" class="slide level2">
+<h2>Corrección total</h2>
+<p>Supongamos un programa <code>S</code> <em>(con bucles y/o
+recursión)</em>, una precondición <code>P</code> y una postcondición
+<code>Q</code>.</p>
+<p>Decimos que <code>S</code> es <strong>totalmente correcto</strong>
+con respecto a la especificación (<code>P</code>, <code>Q</code>),</p>
+<div class="pseudo center">
+<p><span class="pre">{ P }</span> S <span class="pre">{ Q }</span></p>
+</div>
+<p>cuando al ejecutar <code>S</code> sobre un estado <span
+class="math inline">\(\sigma\)</span> que satisfaga <code>P</code>, la
+ejecución <span class="color_tema">siempre termina</span>, y lo hace en
+un estado <span class="math inline">\(\sigma&#39;\)</span> que satisface
+<code>Q</code>.</p>
+<div class="fragment">
+<p>Formalmente:</p>
+<div style="text-align:center">
+<span class="color_tema"><em>Si <span class="math inline">\(\sigma
+\vDash \texttt{P}\)</span>, entonces existe un <span
+class="math inline">\(\sigma&#39;\)</span> tal que <span
+class="math inline">\(\sigma \stackrel{\texttt{S}}{\rightsquigarrow}
+\sigma&#39;\)</span> y <span class="math inline">\(\sigma&#39; \vDash
+\texttt{Q}\)</span></em></span>
+</div>
+</div>
+</section>
+<section id="corrección-total-1" class="slide level2">
+<h2>Corrección total</h2>
+<div style="text-align:center">
+<p><strong>Corrección total <span class="math inline">\(=\)</span>
+Corrección parcial <span class="math inline">\(+\)</span>
+terminación</strong></p>
+</div>
+<div class="fragment">
+<p>¿Qué puede provocar que un programa no termine?</p>
+<table>
+<tr>
+<td>
+<strong>Bucles</strong>
+</td>
+<td>
+<span class="arrow_box_left fragment fade-left">Esta sección</span>
+</td>
+</tr>
+<tr>
+<td>
+<strong>Recursión</strong>
+</td>
+<td>
+<span class="arrow_box_left fragment fade-left">Tema 3</span>
+</td>
+</tr>
+</table>
+</div>
+</section>
+<section id="funciones-de-cota-ranking-functions"
+class="slide level2 subsection center">
+<h2 class="subsection center">Funciones de cota<br/>(<em>ranking
+functions</em>)</h2>
+</section>
+<section id="función-de-cota-en-un-bucle" class="slide level2">
+<h2>Función de cota en un bucle</h2>
+<p>Una <strong>función de cota</strong> es una expresión que depende de
+las variables del bucle y que cumple las siguientes condiciones:</p>
+<ol type="1">
+<li class="fragment"><p>Mantiene un valor ≥ 0 antes de cada iteración
+del bucle.</p></li>
+<li class="fragment"><p>Decrece <span
+class="color_tema"><strong>estrictamente</strong></span> cada vez que
+realizamos una iteración del bucle.</p></li>
+</ol>
+<div class="fragment">
+<p> </p>
+<div class="info_box">
+<p>Encontrar una función de cota para un bucle dado implica demostrar
+que el bucle termina.</p>
+</div>
+</div>
+<div class="fragment">
+<p>El valor de esta función en el estado inicial proporciona una cota
+superior del número de iteraciones que realiza el bucle.</p>
+</div>
+</section>
+<section id="ejemplo-8" class="slide level2">
+<h2>Ejemplo</h2>
+<div class="pseudo">
+<p><span class="pre">{ n &gt;= 0 }</span><br>i := n; s :=
+0;<br><strong>while</strong> i != 0
+<strong>do</strong><br>  <strong>invariant</strong> 0 &lt;=
+i<br>{<br>  s := s + 1;<br>  i := i - 1;<br>}</p>
+</div>
+<p><strong>Función de cota</strong>: <span
+class="pseudo fragment inline">i</span></p>
+<ul>
+<li class="fragment">Según el invariante, <code>i</code> siempre es
+mayor o igual que cero.</li>
+<li class="fragment">En cada iteración decrementamos <code>i</code>, por
+lo que <code>i</code> disminuye.</li>
+</ul>
+</section>
+<section id="ejemplo-2-6" class="slide level2">
+<h2>Ejemplo 2</h2>
+<div class="pseudo">
+<p><span class="pre">{ n &gt;= 0 }</span><br>i := 0; p :=
+1;<br><strong>while</strong> i != n
+<strong>do</strong><br>  <strong>invariant</strong> i &lt;=
+n<br>{<br>  p := p * 2;<br>  i := i + 1;<br>}</p>
+</div>
+<p><strong>Función de cota</strong>: <span
+class="pseudo fragment inline">n - i</span></p>
+<ul>
+<li class="fragment">Según el invariante tenemos <span
+class="pseudo inline">i &lt;= n</span> que implica <span
+class="pseudo inline">n - i &gt;= 0</span></li>
+<li class="fragment">En cada iteración aumentamos <code>i</code>, por lo
+que <code>n - i</code> disminuye estrictamente.</li>
+</ul>
+</section>
+<section id="anotación-decreases" class="slide level2">
+<h2>Anotación <code>decreases</code></h2>
+<ul>
+<li>Si queremos hacer explícita la función de cota de un bucle, la
+podemos indicar en los bucles:</li>
+</ul>
+<div class="pseudo">
+<p>i := 0; p := 1;<br><strong>while</strong> i != n
+<strong>do</strong><br>  <strong>invariant</strong> i &lt;= n<br>  <span
+class="hl"><strong>decreases</strong> n - i</span>   <span
+class="arrow_box_left fragment fade-left">Función de
+cota</span><br>{<br>  p := p * 2;<br>  i := i + 1;<br>}</p>
+</div>
+</section>
+<section id="corrección-total-de-bucles-while"
+class="slide level2 subsection center">
+<h2 class="subsection center">Corrección total de bucles
+<code>while</code></h2>
+</section>
+<section id="verificación-de-bucles-while" class="slide level2">
+<h2>Verificación de bucles <code>while</code></h2>
+<p>Para determinar que un bucle <code>while</code> termina y satisface
+una especificación,</p>
+<div class="pseudo center">
+<p><span class="pre">{ P }</span> <strong>while</strong> b
+<strong>invariant</strong> I <strong>decreases</strong> t { S } <span
+class="post">{ Q }</span></p>
+</div>
+<p>Ademas de las cuatro condiciones vistas anteriormente, hay que
+demostrar:</p>
+<ol start="5" type="1">
+<li><p>La función de cota es ≥ 0: <span class="pseudo">I <span
+class="math inline">\(\wedge\)</span> b ==&gt; t &gt;= 0</span></p></li>
+<li><p>La función de cota decrece en cada iteración: <span
+class="pseudo"><span class="pre">{ I <span
+class="math inline">\(\wedge\)</span> b <span
+class="math inline">\(\wedge\)</span> t = t<sub>old</sub> }</span> S
+<span class="post">{ t &lt; t<sub>old</sub> }</span></span></p></li>
+</ol>
+</section>
+<section id="ejemplo-9" class="slide level2"
+data-transition="slide-in none-out">
+<h2 data-transition="slide-in none-out">Ejemplo</h2>
+<div class="columns">
+<div class="column">
+<div class="pseudo">
+<p><span class="pre">{ i == 0 <span
+class="math inline">\({\wedge}\)</span> p == 1 <span
+class="math inline">\({\wedge}\)</span> n &gt;= 0
+}</span><br><strong>while</strong> i &lt; n
+<strong>do</strong><br>  <strong>invariant</strong> i &lt;= n <span
+class="math inline">\({\wedge}\)</span> p ==
+2<sup>i</sup><br>  <strong>decreases</strong> n - i<br>{<br>  p := p *
+2;<br>  i := i + 1<br>}<br><span class="post">{ p == 2<sup>n</sup>
+}</span></p>
+</div>
+</div><div class="column" style="text-align:left">
+<p>✅ Invariante en entrada</p>
+<p>✅ Condición bien definida</p>
+<p>✅ Preservación de invariante</p>
+<p>✅ Condición de salida</p>
+<p>🟨 Función de cota ≥ 0</p>
+<p>⬜ Función de cota decreciente</p>
+</div>
+</div>
+<div class="fragment">
+<p><strong>Función de cota ≥ 0</strong></p>
+<div class="pseudo">
+<p>i &lt;= n <span class="math inline">\({\wedge}\)</span> p ==
+2<sup>i</sup> <span class="math inline">\({\wedge}\)</span> i &lt;
+n   ==&gt;  n - i &gt;= 0    <span class="fragment">✅</span></p>
+</div>
+</div>
+</section>
+<section id="ejemplo-10" class="slide level2"
+data-transition="none-in slide-out">
+<h2 data-transition="none-in slide-out">Ejemplo</h2>
+<div class="columns">
+<div class="column">
+<div class="pseudo">
+<p><span class="pre">{ i == 0 <span
+class="math inline">\({\wedge}\)</span> p == 1 <span
+class="math inline">\({\wedge}\)</span> n &gt;= 0
+}</span><br><strong>while</strong> i &lt; n
+<strong>do</strong><br>  <strong>invariant</strong> i &lt;= n <span
+class="math inline">\({\wedge}\)</span> p ==
+2<sup>i</sup><br>  <strong>decreases</strong> n - i<br>{<br>  p := p *
+2;<br>  i := i + 1<br>}<br><span class="post">{ p == 2<sup>n</sup>
+}</span></p>
+</div>
+</div><div class="column" style="text-align:left">
+<p>✅ Invariante en entrada</p>
+<p>✅ Condición bien definida</p>
+<p>✅ Preservación de invariante</p>
+<p>✅ Condición de salida</p>
+<p>✅ Función de cota ≥ 0</p>
+<p>🟨 Función de cota decreciente</p>
+</div>
+</div>
+<div class="fragment">
+<p><strong>Función de cota decreciente</strong></p>
+<div class="pseudo">
+<p><span class="pre">{ i &lt;= n <span
+class="math inline">\({\wedge}\)</span> p == 2<sup>i</sup> <span
+class="math inline">\({\wedge}\)</span> i &lt; n <span
+class="math inline">\({\wedge}\)</span> n - i == t<sub>old</sub>
+}</span><br>p := p * 2; i := i + 1<br><span class="post">{ n - i &lt;
+t<sub>old</sub> }</span></p>
+</div>
+</div>
+</section>
+<section class="slide level2">
+
+<div class="pseudo">
+<p><span class="pre">{ i &lt;= n <span
+class="math inline">\({\wedge}\)</span> p == 2<sup>i</sup> <span
+class="math inline">\({\wedge}\)</span> i &lt; n <span
+class="math inline">\({\wedge}\)</span> n - i == t<sub>old</sub>
+}</span><br>p := p * 2; i := i + 1<br><span class="post">{ n - i &lt;
+t<sub>old</sub> }</span></p>
+</div>
+<div class="fragment">
+<div class="pseudo">
+<p>  i &lt;= n <span class="math inline">\({\wedge}\)</span> p ==
+2<sup>i</sup> <span class="math inline">\({\wedge}\)</span> i &lt; n
+<span class="math inline">\({\wedge}\)</span> n - i == t<sub>old</sub>
+==&gt; wp((p := p * 2; i := i + 1), n - i &lt; t<sub>old</sub>)<br><span
+class="fragment">===<br>  i &lt;= n <span
+class="math inline">\({\wedge}\)</span> p == 2<sup>i</sup> <span
+class="math inline">\({\wedge}\)</span> i &lt; n <span
+class="math inline">\({\wedge}\)</span> n - i == t<sub>old</sub> ==&gt;
+n - (i + 1) &lt; t<sub>old</sub></span><br><span
+class="fragment">===<br>  i &lt;= n <span
+class="math inline">\({\wedge}\)</span> p == 2<sup>i</sup> <span
+class="math inline">\({\wedge}\)</span> i &lt; n <span
+class="math inline">\({\wedge}\)</span> n - i == t<sub>old</sub> ==&gt;
+n - i - 1 &lt; t<sub>old</sub></span>     <span
+class="fragment">✅</span></p>
+</div>
+</div>
+</section>
+<section id="ejemplo-11" class="slide level2">
+<h2>Ejemplo</h2>
+<div class="columns">
+<div class="column">
+<div class="pseudo">
+<p><span class="pre">{ i == 0 <span
+class="math inline">\({\wedge}\)</span> p == 1 <span
+class="math inline">\({\wedge}\)</span> n &gt;= 0
+}</span><br><strong>while</strong> i &lt; n
+<strong>do</strong><br>  <strong>invariant</strong> i &lt;= n <span
+class="math inline">\({\wedge}\)</span> p ==
+2<sup>i</sup><br>  <strong>decreases</strong> n - i<br>{<br>  p := p *
+2;<br>  i := i + 1<br>}<br><span class="post">{ p == 2<sup>n</sup>
+}</span></p>
+</div>
+</div><div class="column" style="text-align:left">
+<p>✅ Invariante en entrada</p>
+<p>✅ Condición bien definida</p>
+<p>✅ Preservación de invariante</p>
+<p>✅ Condición de salida</p>
+<p>✅ Función de cota ≥ 0</p>
+<p>✅ Función de cota decreciente</p>
+</div>
+</div>
+</section></section>
+    </div>
+  </div>
+
+  <script src="dist/reveal.js"></script>
+
+  <!-- reveal.js plugins -->
+  <script src="plugin/notes/notes.js"></script>
+  <script src="plugin/search/search.js"></script>
+  <script src="plugin/zoom/zoom.js"></script>
+  <script src="plugin/highlight/highlight.js"></script>
+  <script src="plugin/math/math.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+        // Display controls in the bottom right corner
+        controls: false,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: true,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'bottom-right',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: false,
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: false,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: false,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'default',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Prints all fragments in their visible states on the same slide 
+        pdfSeparateFragments: false,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: true,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'slide',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'fade',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1600,
+
+        height: 900,
+
+        math: {
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom,
+          // RevealHighlight          
+        ]
+      });
+    </script>
+    </body>
+</html>

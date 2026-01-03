@@ -1,0 +1,4 @@
+*.md
+filters/*
+Makefile
+template/*

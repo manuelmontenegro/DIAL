@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Manuel Montenegro Montes Dpto. de Sistemas Informáticos y Computación Facultad de Informática Universidad Complutense de Madrid">
+  <title>Diseño de Algoritmos</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="dist/reset.css">
+  <link rel="stylesheet" href="dist/reveal.css">
+  <link rel="stylesheet" href="css/nnfx-light.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <style>
+    .reveal .sourceCode {  /* see #7635 */
+      overflow: visible;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        background-color: #ffffff;
+        color: #a0a0a0;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #a0a0a0;  padding-left: 4px; }
+    div.sourceCode
+      { color: #1f1c1b; background-color: #ffffff; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #1f1c1b; } /* Normal */
+    code span.al { color: #bf0303; background-color: #f7e6e6; font-weight: bold; } /* Alert */
+    code span.an { color: #ca60ca; } /* Annotation */
+    code span.at { color: #0057ae; } /* Attribute */
+    code span.bn { color: #b08000; } /* BaseN */
+    code span.bu { color: #644a9b; font-weight: bold; } /* BuiltIn */
+    code span.cf { color: #1f1c1b; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #924c9d; } /* Char */
+    code span.cn { color: #aa5500; } /* Constant */
+    code span.co { color: #898887; } /* Comment */
+    code span.cv { color: #0095ff; } /* CommentVar */
+    code span.do { color: #607880; } /* Documentation */
+    code span.dt { color: #0057ae; } /* DataType */
+    code span.dv { color: #b08000; } /* DecVal */
+    code span.er { color: #bf0303; text-decoration: underline; } /* Error */
+    code span.ex { color: #0095ff; font-weight: bold; } /* Extension */
+    code span.fl { color: #b08000; } /* Float */
+    code span.fu { color: #644a9b; } /* Function */
+    code span.im { color: #ff5500; } /* Import */
+    code span.in { color: #b08000; } /* Information */
+    code span.kw { color: #1f1c1b; font-weight: bold; } /* Keyword */
+    code span.op { color: #1f1c1b; } /* Operator */
+    code span.ot { color: #006e28; } /* Other */
+    code span.pp { color: #006e28; } /* Preprocessor */
+    code span.re { color: #0057ae; background-color: #e0e9f8; } /* RegionMarker */
+    code span.sc { color: #3daee9; } /* SpecialChar */
+    code span.ss { color: #ff5500; } /* SpecialString */
+    code span.st { color: #bf0303; } /* String */
+    code span.va { color: #0057ae; } /* Variable */
+    code span.vs { color: #bf0303; } /* VerbatimString */
+    code span.wa { color: #bf0303; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="css/dial.css" id="theme">
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide" data-background-image="img/RedBackground.jpg" class="center">
+  <h1 class="title">Diseño de Algoritmos</h1>
+<div id="author-container">
+<div class="author">
+<strong>Manuel Montenegro Montes</strong><br>Dpto. de Sistemas
+Informáticos y Computación<br>Facultad de Informática<br>Universidad
+Complutense de Madrid
+</div>
+</div>
+</section>
+
+<section>
+<section id="en-qué-consiste-la-asignatura"
+class="title-slide slide level1 center"
+data-background-image="img/RedBackground.jpg">
+<h1 class="center" data-background-image="img/RedBackground.jpg">¿En qué
+consiste la asignatura?</h1>
+
+</section>
+<section id="objetivos" class="slide level2">
+<h2>Objetivos</h2>
+<ol type="1">
+<li><p><strong>Demostrar</strong> formalmente que un algoritmo dado
+<strong>es correcto</strong>.</p></li>
+<li><p><strong>Diseñar algoritmos</strong> iterativos y recursivos
+<strong>correctos y eficientes</strong>.</p></li>
+<li><p><strong>Resolver problemas complejos</strong>, utilizando las
+técnicas algorítmicas que veremos durante el curso.</p></li>
+</ol>
+</section>
+<section id="demostrar-que-un-algoritmo-es-correcto"
+class="slide level2">
+<h2>1. Demostrar que un algoritmo es correcto</h2>
+<ul>
+<li>La siguiente función calcula la raíz cuadrada entera de un número
+<code>n</code>:</li>
+</ul>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> raiz(n):</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    a <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    b <span class="op">=</span> n <span class="op">+</span> <span class="dv">1</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> b <span class="op">!=</span> a <span class="op">+</span> <span class="dv">1</span>:</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>        m <span class="op">=</span> (a <span class="op">+</span> b) <span class="op">//</span> <span class="dv">2</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> m <span class="op">*</span> m <span class="op">&lt;=</span> n:</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>            a <span class="op">=</span> m</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>            b <span class="op">=</span> m</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> a</span></code></pre></div>
+<ul>
+<li class="fragment"><p>¿Por qué funciona? ¿Hay algún caso en el que no
+funcione?</p></li>
+<li class="fragment"><p>Al igual que, en matemáticas, es posible
+demostrar que un teorema es cierto, en programación es posible demostrar
+que un algoritmo calcula lo que se espera que calcule.</p></li>
+</ul>
+</section>
+<section id="diseñar-algoritmos-correctos-y-eficientes"
+class="slide level2">
+<h2>2. Diseñar algoritmos correctos y eficientes</h2>
+<h3 id="ejemplo-erasmús-acr-242">Ejemplo: <em>Erasmús</em> <span
+style="position:absolute;left:80%"><a
+href="https://aceptaelreto.com/problem/statement.php?id=242">🖥 [ACR
+242]</a></span></h3>
+<ul>
+<li><p>Supongamos que tenemos personas de <span
+class="math inline">\(n\)</span> nacionalidades distintas.</p></li>
+<li><p>Conocemos la cantidad <span class="math inline">\(p_i\)</span> de
+personas de la nacionalidad <span class="math inline">\(i\)</span>-ésima
+<span class="math inline">\((i \in \{1..n\})\)</span>.</p></li>
+<li><p>Queremos formar parejas formadas por integrantes de distinta
+nacionalidad. <strong>¿Cuántas parejas distintas podemos
+formar?</strong>.</p></li>
+</ul>
+<div class="columns">
+<div class="column fragment" style="width:50%;">
+<p>🤗 Solución «obvia»</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> parejas(p):</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    result <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>, <span class="bu">len</span>(p)):</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(i, <span class="bu">len</span>(p)):</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>            result <span class="op">=</span> p[i] <span class="op">*</span> p[j]</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> result</span></code></pre></div>
+</div><div class="column fragment">
+<p>🤔 ¿Existe una manera más eficiente?</p>
+<p>Por ejemplo, una que haga una única pasada por el vector…</p>
+</div>
+</div>
+</section>
+<section id="resolver-problemas-complejos" class="slide level2">
+<h2>3. Resolver problemas complejos</h2>
+<h3 id="ejemplo-adelantamientos-en-carretera">Ejemplo:
+<em>Adelantamientos en carretera</em></h3>
+<div class="columns">
+<div class="column">
+<ul>
+<li><p>Tenemos <span class="math inline">\(n\)</span> ciclistas en una
+prueba contrarreloj.</p></li>
+<li><p>Cada ciclista toma la salida <span
+class="math inline">\(k\)</span> segundos después del anterior.</p></li>
+<li><p>Sabemos el tiempo que tarda cada ciclista en completar el
+recorrido.</p></li>
+</ul>
+<p><span class="fragment"><strong>¿Cuántos adelantamientos se producen
+durante toda la prueba?</strong></span></p>
+</div><div class="column"
+style="text-align:center; font-size: 0.6em; width: 30%">
+<p><img data-src="Intro/Ciclista.jpg" /></p>
+<p>Imagen: <a href="www.freepik.es">www.freepik.es</a></p>
+</div>
+</div>
+<div class="fragment" style="text-align:right">
+<p>👉🏻 <em>Divide y vencerás</em></p>
+</div>
+</section>
+<section id="section" class="slide level2">
+<h2></h2>
+<h3 id="ejemplo-problema-de-la-mochila">Ejemplo: Problema de la
+mochila</h3>
+<div class="columns">
+<div class="column">
+<ul>
+<li><p>Tenemos <span class="math inline">\(n\)</span> objetos
+distintos.</p></li>
+<li><p>Cada objeto <span class="math inline">\(i\)</span> tiene un peso
+<span class="math inline">\(p_i\)</span> y un valor <span
+class="math inline">\(v_i\)</span>.</p></li>
+<li><p>Tenemos una mochila con una capacidad máxima <span
+class="math inline">\(M\)</span> (en peso), de modo que no todos los
+objetos caben en la mochila.</p></li>
+</ul>
+</div><div class="column"
+style="text-align:center; font-size: 0.6em; width: 30%">
+<p><img data-src="Intro/Mochila.jpg" /></p>
+</div>
+</div>
+<p><span class="fragment"><strong>¿Cuáles de esos objetos metemos en la
+mochila para maximizar el valor total de los objetos
+introducidos?</strong></span></p>
+<div class="columns fragment">
+<div class="column">
+<p><em>Objetos enteros</em></p>
+<p><em>Objetos fraccionables</em></p>
+<p><em>Objetos enteros y varias unidades de cada objeto</em></p>
+</div><div class="column" style="text-align:right">
+<p><span class="fragment">👉🏻 <em>Programación dinámica</em></span></p>
+<p><span class="fragment">👉🏻 <em>Método voraz</em></span></p>
+<p><span class="fragment">👉🏻 <em>Ramificación y poda</em></span></p>
+</div>
+</div>
+</section>
+<section id="section-1" class="slide level2">
+<h2></h2>
+<h3 id="ejemplo-caminos-mínimos">Ejemplo: Caminos mínimos</h3>
+<div class="columns">
+<div class="column" style="width:50%;">
+<ul>
+<li><p>Tenemos un grafo de estaciones interconectadas.</p></li>
+<li><p>Sabemos el tiempo que lleva desplazarse desde cada estación a sus
+estaciones adyacentes.</p></li>
+</ul>
+<p><span class="fragment"><strong>¿Cuál es el tiempo mínimo necesario
+para ir desde la estación X hasta la estación Y?</strong></span></p>
+</div><div class="column"
+style="text-align:center; font-size: 0.6em; width: 50%">
+<p><img data-src="Intro/GrafoViajante.svg" /></p>
+</div>
+</div>
+<div class="fragment" style="text-align:right">
+<p>👉🏻 <em>Método voraz</em> (Algoritmo de Dijkstra)</p>
+</div>
+</section>
+<section id="section-2" class="slide level2">
+<h2></h2>
+<h3 id="ejemplo-problema-de-las-n-reinas">Ejemplo: Problema de las
+<em>n</em> reinas</h3>
+<div class="columns">
+<div class="column" style="width:50%;">
+<ul>
+<li><p>Tenemos un tablero de ajedrez de <span class="math inline">\(n
+\times n\)</span> casillas.</p></li>
+<li><p>Queremos colocar <span class="math inline">\(n\)</span> reinas en
+ese tablero.</p></li>
+</ul>
+<p><span class="fragment"><strong>¿Cómo podemos colocar las reinas de
+manera que no se ataquen entre ellas?</strong></span></p>
+</div><div class="column"
+style="text-align:center; font-size: 0.6em; width: 20%">
+<p><img data-src="Intro/NReinas.png" /></p>
+</div>
+</div>
+<div class="fragment" style="text-align:right">
+<p>👉🏻 <em>Vuelta atrás</em></p>
+</div>
+</section></section>
+<section>
+<section id="temario" class="title-slide slide level1 center"
+data-background-image="img/RedBackground.jpg">
+<h1 class="center"
+data-background-image="img/RedBackground.jpg">Temario</h1>
+
+</section>
+<section id="section-3" class="slide level2">
+<h2></h2>
+<h3
+id="primera-parte-verificación-y-diseño-de-algoritmos-correctos">Primera
+parte: verificación y diseño de algoritmos correctos</h3>
+<ol type="1">
+<li><p>Especificación y verificación formal de algoritmos <span
+class="color_tema" style="position:absolute;left:80%"><em>(≈ 1.5
+semanas)</em></span></p></li>
+<li><p>Diseño de algoritmos iterativos <span class="color_tema"
+style="position:absolute;left:80%"><em>(≈ 1.5
+semanas)</em></span></p></li>
+<li><p>Diseño de algoritmos recursivos <span class="color_tema"
+style="position:absolute;left:80%"><em>(≈ 1.5
+semanas)</em></span></p></li>
+</ol>
+<div class="fragment">
+<h3 style="margin-top:1em"
+id="segunda-parte-métodos-algorítmicos">Segunda parte: métodos
+algorítmicos</h3>
+<ol start="4" type="1">
+<li><p>Divide y vencerás <span class="color_tema"
+style="position:absolute;left:80%"><em>(≈ 2
+semanas)</em></span></p></li>
+<li><p>Programación dinámica <span class="color_tema"
+style="position:absolute;left:80%"><em>(≈ 2
+semanas)</em></span></p></li>
+<li><p>Algoritmos voraces <span class="color_tema"
+style="position:absolute;left:80%"><em>(≈ 2
+semanas)</em></span></p></li>
+<li><p>Vuelta atrás <span class="color_tema"
+style="position:absolute;left:80%"><em>(≈ 1 semana)</em></span></p></li>
+<li><p>Ramificación y poda <span class="color_tema"
+style="position:absolute;left:80%"><em>(≈ 1 semana)</em></span></p></li>
+</ol>
+</div>
+</section></section>
+<section>
+<section id="evaluación" class="title-slide slide level1 center"
+data-background-image="img/RedBackground.jpg">
+<h1 class="center"
+data-background-image="img/RedBackground.jpg">Evaluación</h1>
+
+</section>
+<section id="evaluación-de-la-asignatura" class="slide level2"
+data-transition="slide-in none-out">
+<h2 data-transition="slide-in none-out">Evaluación de la asignatura</h2>
+<p> </p>
+<div
+style="display:flex;width:75%;margin-left:auto;margin-right: auto;">
+<div class="fragment fade-right"
+style="background-color: #38B7BC;width:25%;text-align:center;padding:0.5em 0em;font-weight: bold;color:white;border: 3px solid black; border-right: 1.5px solid black;"
+data-fragment-index="1">
+25%
+</div>
+<div class="fragment fade-left"
+style="background-color: #1E8F28;width:75%;text-align:center;padding:0.5em 0em;font-weight: bold;color:white;border: 3px solid black; border-left: 1.5px solid black;"
+data-fragment-index="1">
+75%
+</div>
+</div>
+<div
+style="display:flex;width:75%;margin-left:auto;margin-right: auto;">
+<div class="fragment fade-right"
+style="width:25%;text-align:center;padding:0.5em;"
+data-fragment-index="1">
+Ev. continua
+</div>
+<div class="fragment fade-left"
+style="width:75%;text-align:center;padding:0.5em;"
+data-fragment-index="1">
+Examen final
+</div>
+</div>
+</section>
+<section id="examen-final" class="slide level2" data-transition="fade">
+<h2 data-transition="fade">Examen final</h2>
+<p> </p>
+<div
+style="display:flex;width:75%;margin-left:auto;margin-right: auto;">
+<div
+style="background-color: white;width:25%;text-align:center;padding:0.5em 0em;font-weight: bold;color:#B0B0B0;border: 3px solid black; border-right: 1.5px solid black;">
+25%
+</div>
+<div
+style="background-color: #1E8F28;width:75%;text-align:center;padding:0.5em 0em;font-weight: bold;color:white;border: 3px solid black; border-left: 1.5px solid black;">
+75%
+</div>
+</div>
+<div
+style="display:flex;width:75%;margin-left:auto;margin-right: auto;">
+<div style="width:25%;text-align:center;padding:0.5em;color:#B0B0B0;">
+Ev. continua
+</div>
+<div style="width:75%;text-align:center;padding:0.5em;">
+Examen final
+</div>
+</div>
+<ul>
+<li class="fragment"><p>Duración: 3 horas.</p></li>
+<li class="fragment"><p>Tres problemas a realizar en papel.</p>
+<ul>
+<li class="fragment"><p>Cada problema consiste en el diseño de un
+algoritmo que resuelva un problema dado.</p></li>
+<li class="fragment"><p>Podéis utilizar C++, Python o
+pseudocódigo.</p></li>
+<li class="fragment"><p>No solo se requiere el código, sino explicar
+cómo se ha llegado a él.</p>
+<p>(Lo veremos en detalle a lo largo del curso)</p></li>
+</ul></li>
+</ul>
+</section>
+<section id="evaluación-continua" class="slide level2"
+data-transition="fade-in">
+<h2 data-transition="fade-in">Evaluación continua</h2>
+<p> </p>
+<div
+style="display:flex;width:75%;margin-left:auto;margin-right: auto;">
+<div
+style="background-color: #38B7BC;width:25%;text-align:center;padding:0.5em 0em;font-weight: bold;color:white;border: 3px solid black; border-right: 1.5px solid black;">
+25%
+</div>
+<div
+style="background-color: #FFFFF;width:75%;text-align:center;padding:0.5em 0em;font-weight: bold;color:#B0B0B0;border: 3px solid black; border-left: 1.5px solid black;">
+75%
+</div>
+</div>
+<div
+style="display:flex;width:75%;margin-left:auto;margin-right: auto;">
+<div style="width:25%;text-align:center;padding:0.5em;">
+Ev. continua
+</div>
+<div style="width:75%;text-align:center;padding:0.5em;">
+Examen final
+</div>
+</div>
+</section>
+<section id="evaluación-continua-1" class="slide level2"
+data-transition="fade-in">
+<h2 data-transition="fade-in">Evaluación continua</h2>
+<p> </p>
+<div
+style="display:flex;width:75%;margin-left:auto;margin-right: auto;">
+<div
+style="background-color: #2A8C90; width:10%;text-align:center;padding:0.5em 0em;font-weight: bold;color:white;border: 3px solid black; border-right: 1.5px solid black;">
+10%
+</div>
+<div
+style="background-color: #5CCACE; width:15%;text-align:center;padding:0.5em 0em;font-weight: bold;color:white;border: 3px solid black; border-left: 1.5px solid black; border-right: 1.5px solid black;">
+15%
+</div>
+<div
+style="background-color: #FFFFF;width:75%;text-align:center;padding:0.5em;font-weight: bold;color:#B0B0B0;border: 3px solid black; border-left: 1.5px solid black;">
+75%
+</div>
+</div>
+<div
+style="display:flex;width:75%;margin-left:auto;margin-right: auto;">
+<div style="width:25%;text-align:center;padding:0.5em;">
+Ev. continua
+</div>
+<div style="width:75%;text-align:center;padding:0.5em;">
+Examen final
+</div>
+</div>
+</section>
+<section id="evaluación-continua-2" class="slide level2"
+data-transition="fade-in">
+<h2 data-transition="fade-in">Evaluación continua</h2>
+<p> </p>
+<div
+style="display:flex;width:75%;margin-left:auto;margin-right: auto;">
+<div
+style="background-color: #FFFFFF; width:10%;text-align:center;padding:0.5em 0em;font-weight: bold;color:#B0B0B0;border: 3px solid black; border-right: 1.5px solid black;">
+10%
+</div>
+<div
+style="background-color: #5CCACE; width:15%;text-align:center;padding:0.5em 0em;font-weight: bold;color:white;border: 3px solid black; border-left: 1.5px solid black; border-right: 1.5px solid black;">
+15%
+</div>
+<div
+style="background-color: #FFFFFF;width:75%;text-align:center;padding:0.5em;font-weight: bold;color:#B0B0B0;border: 3px solid black; border-left: 1.5px solid black;">
+75%
+</div>
+</div>
+<div
+style="display:flex;width:75%;margin-left:auto;margin-right: auto;">
+<div style="width:25%;text-align:center;padding:0.5em;">
+Ev. continua
+</div>
+<div style="width:75%;text-align:center;padding:0.5em;">
+Examen final
+</div>
+</div>
+<p><span style="color:#5CCACE;"><strong>15 %</strong></span> - Tres
+ejercicios escritos a realizar durante la hora de clase.</p>
+<ul>
+<li class="fragment"><p>Fechas orientativas:</p>
+<ul>
+<li class="fragment"><p>Primer ejercicio: <strong>26 de febrero</strong>
+(Temas 1, 2 y 3)</p></li>
+<li class="fragment"><p>Segundo ejercicio: <strong>25 de marzo</strong>
+(Temas 4 y 5)</p></li>
+<li class="fragment"><p>Tercer ejercicio: <strong>30 de abril</strong>
+(Temas 6, 7 y 8)</p></li>
+</ul></li>
+<li class="fragment"><p>Puede consister en preguntas teóricas (test) y/o
+ejercicios prácticos cortos.</p></li>
+</ul>
+</section>
+<section id="evaluación-continua-3" class="slide level2"
+data-transition="fade-in">
+<h2 data-transition="fade-in">Evaluación continua</h2>
+<p> </p>
+<div
+style="display:flex;width:75%;margin-left:auto;margin-right: auto;">
+<div
+style="background-color: #2A8C90; width:10%;text-align:center;padding:0.5em 0em;font-weight: bold;color:white;border: 3px solid black; border-right: 1.5px solid black;">
+10%
+</div>
+<div
+style="background-color: #FFFFFF; width:15%;text-align:center;padding:0.5em 0em;font-weight: bold;color:#B0B0B0;border: 3px solid black; border-left: 1.5px solid black; border-right: 1.5px solid black;">
+15%
+</div>
+<div
+style="background-color: #FFFFFF;width:75%;text-align:center;padding:0.5em;font-weight: bold;color:#B0B0B0;border: 3px solid black; border-left: 1.5px solid black;">
+75%
+</div>
+</div>
+<div
+style="display:flex;width:75%;margin-left:auto;margin-right: auto;">
+<div style="width:25%;text-align:center;padding:0.5em;">
+Ev. continua
+</div>
+<div style="width:75%;text-align:center;padding:0.5em;">
+Examen final
+</div>
+</div>
+<p><span style="color:#2A8C90;"><strong>10 %</strong></span> - Dos
+prácticas entregables de laboratorio</p>
+<ul>
+<li class="fragment"><p>Pueden realizarse de manera individual, o por
+parejas</p></li>
+<li class="fragment"><p>Dificultad similar a los ejercicios de
+examen</p></li>
+<li class="fragment"><p>Plazo de entrega: ≈ 1 semana</p></li>
+</ul>
+</section>
+<section id="copias-plagios-y-otros-fraudes" class="slide level2">
+<h2>Copias, plagios y otros fraudes</h2>
+<div class="columns">
+<div class="column">
+<ul>
+<li><p>El profesor podrá solicitar a los estudiantes que expliquen las
+prácticas entregadas.</p></li>
+<li><p>Aquellos/as estudiantes que entreguen prácticas y ejercicios que
+no son de su autoría, tendrán la <strong>calificación de 0 en toda la
+evaluación continua</strong>.</p></li>
+<li><p>También se considera fraude la entrega de prácticas realizadas
+con herramientas de IA generativa.</p></li>
+</ul>
+</div><div class="column fragment"
+style="font-size:0.5em;width:40%;text-align:center">
+<p><img data-src="Intro/Zorritos.jpg" /></p>
+<p>Imagen:
+<a href="https://www.freepik.es/foto-gratis/disparo-vertical-zorros-deambulando-rocas-bosque_14260929.htm">Freepik</a></p>
+</div>
+</div>
+</section></section>
+<section>
+<section id="requisitos" class="title-slide slide level1 center"
+data-background-image="img/RedBackground.jpg">
+<h1 class="center"
+data-background-image="img/RedBackground.jpg">Requisitos</h1>
+
+</section>
+<section id="requisitos-1" class="slide level2" style="text-align:left">
+<h2 style="text-align:left">Requisitos</h2>
+<p><span class="color_tema"><strong>Informática</strong></span></p>
+<div class="fragment">
+<ul>
+<li>Bucles, arrays y recursión</li>
+</ul>
+</div>
+<p><span class="color_tema"><strong>Lógica
+Matemática</strong></span></p>
+<div class="fragment">
+<ul>
+<li>Lógica de primer orden   <span
+class="arrow_box_left fragment fade-left"
+style="position:absolute; left:40%">Repaso: esta semana</span></li>
+</ul>
+</div>
+<p><span class="color_tema"><strong>Estructuras de
+datos</strong></span></p>
+<div class="fragment">
+<ul>
+<li>Análisis de coste   <span class="arrow_box_left fragment fade-left"
+style="position:absolute; left:40%">Repaso: esta semana</span></li>
+<li>Programación en C++ <span class="arrow_box_left fragment fade-left"
+style="position:absolute; left:40%">Repaso: semana que viene</span></li>
+<li>Pilas   <span class="arrow_box_left fragment fade-left"
+style="position:absolute; left:40%">Material disponible en
+CV</span></li>
+<li>Colas de prioridad   <span class="arrow_box_left fragment fade-left"
+style="position:absolute; left:40%">Material disponible en
+CV</span></li>
+</ul>
+</div>
+</section></section>
+<section>
+<section id="recursos" class="title-slide slide level1 center"
+data-background-image="img/RedBackground.jpg">
+<h1 class="center"
+data-background-image="img/RedBackground.jpg">Recursos</h1>
+
+</section>
+<section id="software-recomendado-desarrollo-c" class="slide level2">
+<h2>Software recomendado: desarrollo C++</h2>
+<div class="columns">
+<div class="column"
+style="background-color:#ffffff;width:33%;padding:0.5em 0.5em;border:2px dotted #FFB666;">
+<h3 style="text-align:center" id="linux">Linux</h3>
+<p>Compilador <code>g++</code></p>
+<p style="text-align:center">
+<img data-src="Intro/GnuC.png" style="height:100px" />
+</p>
+<p>Editor de texto: VS Code, Emacs, etc.</p>
+<p style="text-align:center">
+<img data-src="Intro/VSCode.png" style="height:100px" />   <img
+data-src="Intro/Emacs.svg" style="height:100px" />
+</p>
+</div><div class="column"
+style="background-color:#ffffff;width:33%;padding:0.5em 0.5em;border:2px dotted #FFB666;">
+<h3 style="text-align:center" id="windows">Windows</h3>
+<p>Embarcadero Dev-C++</p>
+<p style="text-align:center">
+<img data-src="Intro/Embarcadero.png" style="height:100px" />
+</p>
+<p>o bien, otros entornos de desarrollo en C++</p>
+<p style="text-align:center">
+<img data-src="Intro/VisualStudio.png" style="height:100px" />   <img
+data-src="Intro/VSCode.png" style="height:100px" />
+</p>
+</div><div class="column"
+style="background-color:#ffffff;width:33%;padding:0.5em 0.5em;border:2px dotted #FFB666;">
+<h3 style="text-align:center" id="macos">MacOS</h3>
+<p>XCode</p>
+<p style="text-align:center">
+<img data-src="Intro/XCode.png" style="height:100px" />
+</p>
+<p>o bien, otros entornos de desarrollo en C++</p>
+<p style="text-align:center">
+<img data-src="Intro/VSCode.png" style="height:100px" />
+</p>
+</div>
+</div>
+</section>
+<section id="software-recomendado-verificación" class="slide level2">
+<h2>Software recomendado: verificación</h2>
+<p style="text-align:center">
+<strong>Dafny + Plugin Visual Studio Code</strong>
+</p>
+<p style="text-align:center">
+<img data-src="Intro/Dafny.png" style="height:300px" />     <img
+data-src="Intro/VSCode.png" style="height:300px" />
+</p>
+<p style="text-align:center">
+<p>ℹ️ <strong>No es obligatorio</strong> el uso de Dafny en esta
+asignatura.</p>
+</section>
+<section id="material" class="slide level2">
+<h2>Material</h2>
+<h3 id="campus-virtual">Campus Virtual</h3>
+<ul>
+<li><p>Diapositivas de cada tema</p></li>
+<li><p>Cuaderno de ejercicios por cada tema</p>
+<ul>
+<li><p>No haremos todos los ejercicios en clase.</p></li>
+<li><p>Podéis/debéis preguntar dudas al profesor, incluso aunque no los
+hagamos en clase.</p></li>
+</ul></li>
+<li><p>Cuestionarios y ejercicios adicionales (autoevaluación)</p></li>
+</ul>
+<h3 id="github">Github</h3>
+<ul>
+<li><p>🖥 <a
+href="https://github.com/manuelmontenegro/DIAL">https://github.com/manuelmontenegro/DIAL</a></p></li>
+<li><p>Código fuente de los ejemplos</p></li>
+</ul>
+</section>
+<section id="recursos-adicionales" class="slide level2">
+<h2>Recursos adicionales</h2>
+<p><strong>¡Acepta el reto!</strong>: <a
+href="https://aceptaelreto.com/">https://aceptaelreto.com/</a></p>
+<ul>
+<li><p>Juez en línea</p></li>
+<li><p>Problemas de autoevaluación</p></li>
+</ul>
+<p><strong>Compiler Explorer</strong>: <a
+href="https://godbolt.org/">https://godbolt.org/</a></p>
+<ul>
+<li><p>Compilador de C++ en línea</p></li>
+<li><p>Problemas de autoevaluación</p></li>
+</ul>
+</section>
+<section id="bibliografía" class="slide level2">
+<h2>Bibliografía</h2>
+<div class="columns">
+<div class="column" style="width:90%;">
+<p><strong>Temas 1, 2 y 3: Verificación y derivación de programas
+correctos</strong></p>
+<ul>
+<li><p>R. Peña<br/><span style="color:#007BCD"><em>Diseño de programas:
+formalismo y abstracción (3ª edición)</em></span><br/> Prentice Hall,
+2005</p></li>
+<li><p>N. Martí, C. Segura, A. Verdejo<br/><span
+style="color:#007BCD"><em>Algoritmos correctos y eficientes: diseño
+razonado ilustrado con ejercicios</em></span><br/>Garceta grupo
+editorial, 2012</p></li>
+<li><p>K. R. M. Leino<br/><span style="color:#007BCD"><em>Program
+Proofs</em></span><br/>The MIT Press, 2022</p></li>
+</ul>
+</div><div class="column" style="width:10%;">
+<p><img data-src="Intro/RPena.png"
+style="height:200px;box-shadow:5px 5px rgba(0,0,0,0.3)" /></p>
+<p><img data-src="Intro/Narciso1.gif"
+style="height:200px;box-shadow:5px 5px rgba(0,0,0,0.3)" /></p>
+<p><img data-src="Intro/Leino.png"
+style="height:200px;box-shadow:5px 5px rgba(0,0,0,0.3)" /></p>
+</div>
+</div>
+</section>
+<section id="bibliografía-1" class="slide level2">
+<h2>Bibliografía</h2>
+<div class="columns">
+<div class="column" style="width:80%;">
+<p><strong>Temas 4, 5, 6, 7 y 8: Métodos algorítmicos</strong></p>
+<div style="font-size:90%">
+<ul>
+<li><p>R. E. Neapolitan<br/><span style="color:#007BCD"><em>Foundations
+of Algorithms (5º edition)</em></span><br/> Jones and Bartlett
+Publishers, 2015</p></li>
+<li><p>N. Martí, Y. Ortega, A. Verdejo<br/><span
+style="color:#007BCD"><em>Estructuras de datos y métodos algorítmicos -
+213 problemas resueltos</em></span><br/>Garceta grupo editorial,
+2013</p></li>
+<li><p>T. H. Cormen, C. E. Leiserson, R. L. Rivest, C. Stein<br/><span
+style="color:#007BCD"><em>Introduction to Algorithms (4<sup>th</sup>
+edition)</em></span><br/>MIT Press, 2022</p></li>
+<li><p>R. Peña<br/><span style="color:#007BCD"><em>Algoritmos y
+estructuras de datos (con programas verificados en
+Dafny)</em></span><br/>Garceta grupo editorial, 2023</p></li>
+</ul>
+</div>
+</div><div class="column" style="width:24%;">
+<p><img data-src="Intro/Neapolitan.png"
+style="height:200px;box-shadow:5px 5px rgba(0,0,0,0.3)" />  <img
+data-src="Intro/Narciso2.png"
+style="height:200px;box-shadow:5px 5px rgba(0,0,0,0.3)" /></p>
+<p><img data-src="Intro/Cormen.png"
+style="height:200px;box-shadow:5px 5px rgba(0,0,0,0.3)" />  <img
+data-src="Intro/RPena2.png"
+style="height:200px;box-shadow:5px 5px rgba(0,0,0,0.3)" /></p>
+</div>
+</div>
+</section></section>
+<section>
+<section id="atención-al-estudiante"
+class="title-slide slide level1 center"
+data-background-image="img/RedBackground.jpg">
+<h1 class="center"
+data-background-image="img/RedBackground.jpg">Atención al
+estudiante</h1>
+
+</section>
+<section id="atención-al-estudiante-1" class="slide level2">
+<h2>Atención al estudiante</h2>
+<ul>
+<li><p><strong>Atención de dudas por correo:</strong> <a
+href="mailto:montenegro@fdi.ucm.es"
+style="font-family:monospace">montenegro@fdi.ucm.es</a></p></li>
+<li><p><strong>Tutorías:</strong></p>
+<ul>
+<li><p>Martes 10-13h. Despacho 467 (Facultad de Matemáticas)</p></li>
+<li><p>Cualquier otro horario: previa petición de hora.</p></li>
+</ul></li>
+</ul>
+<p>❌ <strong>NO</strong> preguntar dudas a través de mensajes privados
+en el CV.</p>
+</section></section>
+    </div>
+  </div>
+
+  <script src="dist/reveal.js"></script>
+
+  <!-- reveal.js plugins -->
+  <script src="plugin/notes/notes.js"></script>
+  <script src="plugin/search/search.js"></script>
+  <script src="plugin/zoom/zoom.js"></script>
+  <script src="plugin/highlight/highlight.js"></script>
+  <script src="plugin/math/math.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+        // Display controls in the bottom right corner
+        controls: false,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: true,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'bottom-right',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: false,
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: false,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: false,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'default',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Prints all fragments in their visible states on the same slide 
+        pdfSeparateFragments: false,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: true,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'slide',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'fade',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1600,
+
+        height: 900,
+
+        math: {
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom,
+          // RevealHighlight          
+        ]
+      });
+    </script>
+    </body>
+</html>
