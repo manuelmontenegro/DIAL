@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Manuel Montenegro Montes Dpto. de Sistemas Informáticos y Computación Facultad de Informática Universidad Complutense de Madrid">
+  <title>Lenguaje de fórmulas lógicas</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="dist/reset.css">
+  <link rel="stylesheet" href="dist/reveal.css">
+  <link rel="stylesheet" href="css/nnfx-light.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <style>
+    .reveal .sourceCode {  /* see #7635 */
+      overflow: visible;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <link rel="stylesheet" href="css/dial.css" id="theme">
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide" data-background-image="img/RedBackground.jpg" class="center">
+  <h1 class="title">Lenguaje de fórmulas lógicas</h1>
+<div id="author-container">
+<div class="author">
+<strong>Manuel Montenegro Montes</strong><br>Dpto. de Sistemas
+Informáticos y Computación<br>Facultad de Informática<br>Universidad
+Complutense de Madrid
+</div>
+</div>
+</section>
+
+<section>
+<section id="sintaxis-de-expresiones-y-fórmulas-lógicas"
+class="title-slide slide level1 center"
+data-background-image="img/RedBackground.jpg">
+<h1 class="center"
+data-background-image="img/RedBackground.jpg">Sintaxis de expresiones y
+fórmulas lógicas</h1>
+
+</section>
+<section id="ejemplos-de-fórmulas" class="slide level2">
+<h2>Ejemplos de fórmulas</h2>
+<ul style="width:100%">
+<li class="fragment">
+<p>Si <span class="pseudo inline">i</span>, <span
+class="pseudo inline">n</span>, <span class="pseudo inline">a</span>,
+<span class="pseudo inline">x</span> son variables de tipo entero:</p>
+<div class="pseudo center">
+<p>(i &lt; 0) <span class="math inline">\({\vee}\)</span> (i &gt; n -
+1)</p>
+</div>
+<div class="pseudo center" style="margin-top:1em">
+<p>(i &lt; 0 ==&gt; a &lt; x) <span
+class="math inline">\({\wedge}\)</span> (i == 0 ==&gt; a == x) <span
+class="math inline">\({\wedge}\)</span> (i &gt; 0 ==&gt; a &gt; x)</p>
+</div>
+</li>
+<li class="fragment">
+<p>Si <span class="pseudo inline">V</span> es un vector de tamaño <span
+class="pseudo inline">n</span>:</p>
+<div class="pseudo center">
+<p>(<span class="math inline">\(\forall\)</span>i <span
+class="colon">:</span> 0 &lt;= i <span
+class="math inline">\({\wedge}\)</span> i &lt; n <span
+class="colon">:</span> V[i] &gt;= 0)</p>
+</div>
+</li>
+</ul>
+<aside class="notes">
+<p>Antes de ello vamos a ver algunos ejemplos de fórmulas que vamos a
+tratar.</p>
+<p>Por ejemplo, si <code>i</code></p>
+<p>Por otro lado, si <code>V</code> denota un vector:</p>
+<p>Para todo <code>i</code>, la posición <code>i</code>-ésima del vector
+es mayor o igual que cero.</p>
+</aside>
+</section>
+<section id="sintaxis-de-fórmulas" class="slide level2">
+<h2>Sintaxis de fórmulas</h2>
+<div class="pseudo center" style="font-size:100%;margin-bottom:1em">
+<p>P ::= At                <span class="comment">// fórmula
+atómica</span><br>    | <span
+class="math inline">\(\neg\)</span>P                <span
+class="comment">// negación</span><br>    | P <span
+class="math inline">\({\wedge}\)</span> Q             <span
+class="comment">// conjunción</span><br>    | P <span
+class="math inline">\({\vee}\)</span> Q             <span
+class="comment">// disjunción</span><br>    | P ==&gt; Q           <span
+class="comment">// implicación</span><br>    | P &lt;=&gt;
+Q           <span class="comment">// equivalencia</span><br>    | (<span
+class="math inline">\(\forall\)</span>i <span class="colon">:</span> P
+<span class="colon">:</span> Q)      <span class="comment">//
+cuantificador universal</span><br>    | (<span
+class="math inline">\(\exists\)</span>i <span class="colon">:</span> P
+<span class="colon">:</span> Q)      <span class="comment">//
+cuantificador existencial</span><br></p>
+</div>
+<ul>
+<li class="fragment">La notación <span class="pseudo inline">(<span
+class="math inline">\(\forall\)</span>i <span class="colon">:</span> P
+<span class="colon">:</span> Q)</span> significa <span
+class="math inline">\(\forall i : P \Rightarrow Q\)</span></li>
+<li class="fragment">La notación <span class="pseudo inline">(<span
+class="math inline">\(\exists\)</span>i <span class="colon">:</span> P
+<span class="colon">:</span> Q)</span> significa <span
+class="math inline">\(\exists i : P \wedge Q\)</span></li>
+</ul>
+<aside class="notes">
+<ul>
+<li><p>Utilizamos P, Q, R para denotar fórmulas.</p></li>
+<li><p>Fórmula lógica puede ser, o bien una fórmula atómica (enseguida
+veremos qué significa eso)</p></li>
+<li><p>se cumple P y se cumple Q</p></li>
+<li><p>obien se cumple P o bien se cumple Q, o bien ambas</p></li>
+<li><p>El cuantificador universal, aunque el concepto es conocido, la
+forma de expresarlo va a ser como véis aquí.</p></li>
+<li><p>El predicado P se utiliza para el rango de la variable i</p></li>
+</ul>
+</aside>
+</section>
+<section id="sintaxis-de-fórmulas-atómicas" class="slide level2">
+<h2>Sintaxis de fórmulas atómicas</h2>
+<p>Contiene los siguientes elementos:</p>
+<ul>
+<li><p>Constantes booleanas: <span
+class="pseudo color_tema inline"><span class="type">true</span></span> y
+<span class="pseudo color_tema inline"><span
+class="type">false</span></span></p></li>
+<li><p>Variables booleanas</p></li>
+<li><p>Igualdad entre expresiones: <span
+class="pseudo color_tema inline">x == 3 + y</span></p></li>
+<li><p>Comparación entre expresiones: <span
+class="pseudo color_tema inline">y &gt; 5 - z</span></p>
+<ul>
+<li><span class="pseudo color_tema inline">x &lt;= y &lt;= z</span>
+significa <span class="pseudo color_tema inline">x &lt;= y <span
+class="math inline">\({\wedge}\)</span> y &lt;= z</span></li>
+</ul></li>
+<li><p>Predicados definidos previamente: <span
+class="pseudo color_tema inline">esPar(x)</span></p></li>
+</ul>
+<aside class="notes">
+<p>Con respecto a las fórmulas atómicas que he mencionado antes,
+tenemos:</p>
+<p>PRedicados que yo haya definido:</p>
+<p>esPar(x) &lt;==&gt; x % 2 == 0</p>
+</aside>
+</section>
+<section id="sintaxis-de-expresiones" class="slide level2">
+<h2>Sintaxis de expresiones</h2>
+<ul>
+<li>
+Expresiones aritméticas: <span class="pseudo color_tema inline">4 +
+x</span>,   <span class="pseudo color_tema inline">(z / y) * 3.0</span>,
+  <span class="pseudo color_tema inline">2<sup>x</sup></span>
+</li>
+<li>
+Accesos a vectores: <span class="pseudo color_tema inline">V[i]</span>,
+  <span class="pseudo color_tema inline">A[j - 1]</span>
+</li>
+<li class="fragment">
+<p>Expresiones cuantificadas:</p>
+<span class="pseudo color_tema inline">(Σi <span class="colon">:</span>
+P <span class="colon">:</span> e)</span><br> <span
+class="pseudo color_tema inline">(Πi <span class="colon">:</span> P
+<span class="colon">:</span> e)</span><br> <span
+class="pseudo color_tema inline">(#i <span class="colon">:</span> P
+<span class="colon">:</span> Q)</span><br> <span
+class="pseudo color_tema inline">(máx i <span class="colon">:</span> P
+<span class="colon">:</span> e)</span><br> <span
+class="pseudo color_tema inline">(mín i <span class="colon">:</span> P
+<span class="colon">:</span> e)</span>
+</li>
+</ul>
+<aside class="notes">
+<p>como esta sintaxis es relativamente poco frecuente, paso a comentar
+lo que significa.</p>
+</aside>
+</section>
+<section id="expresiones-cuantificadas" class="slide level2">
+<h2>Expresiones cuantificadas</h2>
+<dl>
+<dt class="fragment"><span class="pseudo color_tema inline">(Σi <span
+class="colon">:</span> P(i) <span class="colon">:</span>
+e(i))</span></dt>
+<dd class="fragment">
+<p>Suma de todos los <span class="pseudo inline">e(i)</span> que
+satisfacen <span class="pseudo inline">P(i)</span></p>
+<p><span class="pseudo inline">(Σi <span class="colon">:</span> 1 &lt;=
+i &lt;= 5 <span class="colon">:</span> i)</span></p>
+<p><span class="pseudo inline">(Σi <span class="colon">:</span> 0 &lt;=
+i &lt; 3 <span class="colon">:</span> i<sup>2</sup>)</span></p>
+</dd>
+<dt class="fragment"><span class="pseudo color_tema inline">(Πi <span
+class="colon">:</span> P(i) <span class="colon">:</span>
+e(i))</span></dt>
+<dd class="fragment">
+<p>Producto de todos los <span class="pseudo inline">e(i)</span> que
+satisfacen <span class="pseudo inline">P(i)</span></p>
+</dd>
+<dt class="fragment"><span class="pseudo color_tema inline">(#i <span
+class="colon">:</span> P(i) <span class="colon">:</span>
+Q(i))</span></dt>
+<dd class="fragment">
+<p>Número de valores de <span class="pseudo inline">i</span> para los
+que se cumple <span class="pseudo inline">P(i) <span
+class="math inline">\({\wedge}\)</span> Q(i)</span></p>
+<p><span class="pseudo inline">(#i <span class="colon">:</span> 0 &lt;=
+i &lt; n <span class="colon">:</span> V[i] == 0)</span></p>
+</dd>
+</dl>
+<aside class="notes">
+<pre><code>`(SUM i : 1 &lt;= i &lt;= 5 : i)`{.pseudo} equivale a `1 + 2 + 3 + 4 + 5 = 15`{.pseudo}
+
+`(SUM i : 0 &lt;= i &lt; 3 : i^2^)`{.pseudo} equivale a `0^2^ + 1^2^ + 2^2^ = 5`{.pseudo}
+
+`(#i : 0 &lt;= i &lt; n : V[i] == 0)`{.pseudo} indica el número de posiciones del vector `V`{.pseudo} que contienen el valor 0, suponiendo que la longitud del vector `V`{.pseudo} es `n`{.pseudo}.</code></pre>
+</aside>
+</section>
+<section class="slide level2">
+
+<dl>
+<dt class="fragment"><span class="pseudo color_tema inline">(máx i <span
+class="colon">:</span> P(i) <span class="colon">:</span>
+e(i))</span></dt>
+<dd class="fragment">
+<p>Máximo de todos los <span class="pseudo inline">e(i)</span> tales que
+se cumple <span class="pseudo inline">P(i)</span>.</p>
+<p><span class="pseudo inline">(máx i <span class="colon">:</span> -10
+&lt;= i &lt;= 10 <span class="math inline">\({\wedge}\)</span>
+i<sup>2</sup> == 9 <span class="colon">:</span> i)</span></p>
+<p><span class="pseudo inline">(máx i <span class="colon">:</span> 0
+&lt;= i &lt; n <span class="colon">:</span> V[i])</span></p>
+</dd>
+<dt class="fragment"><span class="pseudo color_tema inline">(mín i <span
+class="colon">:</span> P(i) <span class="colon">:</span>
+e(i))</span></dt>
+<dd class="fragment">
+<p>Mínimo de todos los <span class="pseudo inline">e(i)</span> tales que
+se cumple <span class="pseudo inline">P(i)</span>.</p>
+<p><span class="pseudo inline">(mín i <span class="colon">:</span> -10
+&lt;= i &lt;= 10 <span class="math inline">\({\wedge}\)</span>
+i<sup>2</sup> == 9 <span class="colon">:</span> i)</span></p>
+<p><span class="pseudo inline">(mín i <span class="colon">:</span> -5
+&lt;= i &lt;= 5 <span class="colon">:</span> i<sup>2</sup>)</span></p>
+</dd>
+</dl>
+<aside class="notes">
+<pre><code>`(máx i : -10 &lt;= i &lt;= 10 &amp;&amp; i^2^ == 9 : i)`{.pseudo} es igual a 3.
+
+`(máx i : 0 &lt;= i &lt; n : V[i])`{.pseudo} denota el valor máximo de un vector `V`{.pseudo}, suponiendo que tiene longitud `n`{.pseudo}.
+
+`(mín i : -10 &lt;= i &lt;= 10 &amp;&amp; i^2^ == 9 : i)`{.pseudo} es igual a -3.
+
+`(mín i : -5 &lt;= i &lt;= 5 : i^2^)`{.pseudo} es igual a 0.</code></pre>
+</aside>
+</section>
+<section class="slide level2">
+
+<ul>
+<li><p>Admitimos expresiones cuantificadas con varias variables:</p>
+<p><span class="pseudo inline">(máx i, j <span class="colon">:</span> -5
+&lt;= i &lt;= 0 <span class="math inline">\({\wedge}\)</span> -2 &lt;= j
+&lt;= 3 <span class="colon">:</span> i * j)</span></p>
+<p><span class="pseudo fragment inline">(Σi, j <span
+class="colon">:</span> 0 &lt;= i &lt; j &lt; n <span
+class="colon">:</span> V[i] * V[j])</span></p></li>
+</ul>
+<aside class="notes">
+<p>A veces va a ser más cómodo tener varias variables cuantificadas.
+Esto equivale a tener cuantificadores anidados.</p>
+<p>Máximo producto que se puede formar con un producto de i * j donde la
+i puede estar entre -5 y 0 y la j entre -2 y 3. El máximo es -5 * -2 =
+10</p>
+</aside>
+</section>
+<section id="sobre-los-tipos" class="slide level2">
+<h2>Sobre los tipos</h2>
+<ul>
+<li><p>Supondremos que cada variable tiene un <strong>tipo</strong>:
+entero, real, booleano o <em>array</em>.</p></li>
+<li><p>No admitimos fórmulas que contengan discrepancias entre los
+tipos.</p>
+<p>Por ejemplo, si <span class="pseudo inline">x</span> es de tipo
+entero y <span class="pseudo inline">V</span> es de tipo <em>array</em>,
+no permitimos expresiones como las siguientes:</p>
+<div class="pseudo center">
+<p>V + 3               x[1]            x + <span
+class="type">true</span></p>
+</div></li>
+</ul>
+<aside class="notes">
+<p>Un pequeño apunte. Aunque no hemos definido formalmente un sistema de
+tipos, vamos a suponer que cada variable lógica tiene un tipo.</p>
+<p>Y no vamos a permitir fórmulas que estén mal formadas con respecto a
+los tipos.</p>
+</aside>
+</section>
+<section id="variables-libres-y-ligadas"
+class="slide level2 subsection center">
+<h2 class="subsection center">Variables libres y ligadas</h2>
+</section>
+<section id="variables-ligadas" class="slide level2">
+<h2>Variables ligadas</h2>
+<ul>
+<li><p>En las expresiones y fórmulas cuantificadas:</p>
+<div class="pseudo center compact">
+<p>(<span class="math inline">\(\forall\)</span>i <span
+class="colon">:</span> P <span class="colon">:</span> Q)<br>(<span
+class="math inline">\(\exists\)</span>i <span class="colon">:</span> P
+<span class="colon">:</span> Q)<br>(Σi <span class="colon">:</span> P
+<span class="colon">:</span> e)<br>…</p>
+</div>
+<p>decimos que las apariciones de la variable <span
+class="pseudo inline">i</span> dentro de <span
+class="pseudo inline">P</span> y <span class="pseudo inline">Q</span>
+están <strong>ligadas</strong> por el cuantificador
+correspondiente.</p></li>
+</ul>
+<div class="fragment">
+<ul>
+<li>Por ejemplo: <span class="pseudo inline">(<span
+class="math inline">\(\forall\)</span><span class="hl">i</span> <span
+class="colon">:</span> 0 &lt;= <span class="hl">i</span> &lt; 10 <span
+class="colon">:</span> V[<span class="hl">i</span>] &lt;= n)</span></li>
+</ul>
+<aside class="notes">
+<p>La variable <span class="pseudo inline">i</span> está ligada por el
+cuantificador <span class="math inline">\(\forall\)</span>, pero las
+variables <span class="pseudo inline">V</span> y <span
+class="pseudo inline">n</span> no están ligadas por ningún
+cuantificador.</p>
+</aside>
+</div>
+</section>
+<section id="variables-libres" class="slide level2">
+<h2>Variables libres</h2>
+<ul>
+<li><p>Decimos que una aparición de una variable es
+<strong>libre</strong> si no está ligada por ningún cuantificador.</p>
+<p><span class="pseudo fragment inline">(<span
+class="math inline">\(\forall\)</span>i <span class="colon">:</span> 0
+&lt;= i &lt; 10 <span class="colon">:</span> V[i] &lt;= n)</span></p>
+<p><span class="pseudo fragment inline">(<span
+class="math inline">\(\exists\)</span>j <span class="colon">:</span> 0
+&lt;= j &lt; 10 <span class="colon">:</span> j * 2 == x)</span></p>
+<p><span class="pseudo fragment inline">(<span
+class="math inline">\(\forall\)</span>i <span class="colon">:</span> 0
+&lt;= i &lt; j <span class="colon">:</span> (<span
+class="math inline">\(\exists\)</span>j <span class="colon">:</span> 0
+&lt;= j &lt; i <span class="colon">:</span> j<sup>2</sup> ==
+i))</span></p></li>
+</ul>
+<aside class="notes">
+<p>Fijaos que j aparece ligada y libre en la misma fórmula. Como esto se
+presta mucho a confusión.</p>
+</aside>
+</section>
+<section id="renombramiento-de-variables-ligadas" class="slide level2">
+<h2>Renombramiento de variables ligadas</h2>
+<ul>
+<li class="fragment"><p>En una expresión o fórmula cuantificada <span
+class="pseudo inline">(<span class="math inline">\(\forall\)</span>i
+<span class="colon">:</span> P <span class="colon">:</span> Q)</span>
+siempre es posible renombrar la variable <span
+class="pseudo inline">i</span> por otra variable que no aparezca en
+<span class="pseudo inline">P</span> o <span
+class="pseudo inline">Q</span>, sin alterar la semántica de la expresión
+o fórmula.</p></li>
+<li class="fragment"><p><span class="pseudo inline">(Σi <span
+class="colon">:</span> 0 &lt;= i &lt; x <span class="colon">:</span>
+i)</span> equivale a <span class="pseudo inline">(Σj <span
+class="colon">:</span> 0 &lt;= j &lt; x <span class="colon">:</span>
+j)</span>.</p></li>
+<li class="fragment"><p><span class="pseudo inline">(<span
+class="math inline">\(\forall\)</span>i <span class="colon">:</span> 0
+&lt;= i &lt; j <span class="colon">:</span> (<span
+class="math inline">\(\exists\)</span>j <span class="colon">:</span> 0
+&lt;= j &lt; i <span class="colon">:</span> j<sup>2</sup> ==
+i))</span></p>
+<p>equivale a</p>
+<p><span class="pseudo inline">(<span
+class="math inline">\(\forall\)</span>i <span class="colon">:</span> 0
+&lt;= i &lt; j <span class="colon">:</span> (<span
+class="math inline">\(\exists\)</span>k <span class="colon">:</span> 0
+&lt;= k &lt; i <span class="colon">:</span> k<sup>2</sup> ==
+i))</span></p></li>
+</ul>
+</section>
+<section id="sustitución-de-variables"
+class="slide level2 subsection center">
+<h2 class="subsection center">Sustitución de variables</h2>
+</section>
+<section id="sustitución-de-variables-1" class="slide level2">
+<h2>Sustitución de variables</h2>
+<ul>
+<li class="fragment"><p>Sean <span class="pseudo inline">e</span>, <span
+class="pseudo inline">e’</span> dos expresiones y <span
+class="pseudo inline">x</span> una variable.</p></li>
+<li class="fragment"><p>Denotamos por <span class="pseudo inline">e<span
+style="color:green">[x / e’]</span></span> el resultado de reemplazar en
+<span class="pseudo inline">e</span> todas las apariciones
+<strong>libres</strong> de <span class="pseudo inline">x</span> por la
+expresión <span class="pseudo inline">e’</span>.</p></li>
+<li class="fragment"><p>Ejemplos:</p>
+<p><span class="pseudo fragment inline">(x + 2)<span
+style="color:green">[x / 3]</span> == <span class="fragment">3 +
+2</span></span></p>
+<p><span class="pseudo fragment inline">(V[i])<span
+style="color:green">[i / y * 3]</span> == <span class="fragment">V[y *
+3]</span></span></p>
+<p><span class="pseudo fragment inline">(Σi <span class="colon">:</span>
+0 &lt;= i &lt; n <span class="colon">:</span> V[i])<span
+style="color:green">[i / z]</span> == <span class="fragment">(Σi <span
+class="colon">:</span> 0 &lt;= i &lt; n <span class="colon">:</span>
+V[i])</span></span></p></li>
+</ul>
+<aside class="notes">
+<p>Cuidado: una sustitución no puede aplicarse a variables ligadas</p>
+</aside>
+</section>
+<section class="slide level2">
+
+<ul>
+<li><p>Supondremos que ninguna de las variables de <span
+class="pseudo inline">e’</span> aparece ligada en <span
+class="pseudo inline">e</span>.</p>
+<ul>
+<li>De lo contrario, renombramos previamente las variables ligadas en
+<span class="pseudo inline">e</span>.</li>
+</ul></li>
+<li><p>Ejemplo:</p>
+<div class="pseudo">
+<p>  (Σi <span class="colon">:</span> 0 &lt;= i &lt; n <span
+class="colon">:</span> V[i])<span style="color:green">[n / i +
+1]</span><br><span class="fragment">==<br>  (Σj <span
+class="colon">:</span> 0 &lt;= j &lt; n <span class="colon">:</span>
+V[j])<span style="color:green">[n / i + 1]</span></span><br><span
+class="fragment">==<br>  (Σj <span class="colon">:</span> 0 &lt;= j &lt;
+i + 1 <span class="colon">:</span> V[j])</span></p>
+</div></li>
+</ul>
+</section>
+<section id="sustitución-simultánea" class="slide level2">
+<h2>Sustitución simultánea</h2>
+<ul>
+<li class="fragment"><p>Denotamos por</p>
+<div class="pseudo center">
+<p>e<span style="color:green">[x<sub>1</sub> / e<sub>1</sub>, …,
+x<sub>n</sub> / e<sub>n</sub>]</span></p>
+</div>
+<p>el resultado de reemplazar en <span class="pseudo inline">e</span>
+todas las apariciones libres de cada <span
+class="pseudo inline">x<sub>i</sub></span> por su correspondiente <span
+class="pseudo inline">e<sub>i</sub></span>.</p></li>
+<li class="fragment"><p>La sustitución de todas las variables <span
+class="pseudo inline">x<sub>i</sub></span> se realiza de manera
+<strong>simultánea</strong>.</p></li>
+<li class="fragment"><p>Por ejemplo:</p>
+<div class="pseudo center">
+<p>(x + y)<span style="color:green">[x / 4, y / z * 2]</span> == 4 + z *
+2</p>
+</div></li>
+</ul>
+</section>
+<section class="slide level2">
+
+<p>No es lo mismo aplicar una sustitución simultánea de dos
+variables</p>
+<div class="pseudo center">
+<p>  (x + y)<span style="color:green">[x / y + 2, y / 3]</span><br><span
+class="fragment">==<br>  (y + 2 + 3)</span></p>
+</div>
+<p>que aplicar dos sustituciones en secuencia</p>
+<div class="pseudo center">
+<p>  (x + y)<span style="color:green">[x / y + 2]</span><span
+style="color:green">[y / 3]</span><br><span class="fragment">==<br>  (y
++ 2 + y)<span style="color:green">[y / 3]</span></span><br><span
+class="fragment">==<br>  (3 + 2 + 3)</span></p>
+</div>
+<aside class="notes">
+<p>Ojo, que en general no es lo mismo aplicar una sustitución simultánea
+por dos sustituciones seguidas.</p>
+</aside>
+</section>
+<section id="sustitución-en-fórmulas-lógicas" class="slide level2">
+<h2>Sustitución en fórmulas lógicas</h2>
+<ul>
+<li><p>Del mismo modo, definimos <span class="pseudo inline">P<span
+style="color:green">[x / e]</span></span> como el resultado de sustituir
+en <span class="pseudo inline">P</span> las apariciones libres de <span
+class="pseudo inline">x</span> por <span
+class="pseudo inline">e</span>.</p>
+<div class="pseudo center">
+<p>  (<span class="math inline">\(\forall\)</span>k <span
+class="colon">:</span> 0 &lt;= k &lt; i <span class="colon">:</span>
+V[k] &gt;= 0)<span style="color:green">[i / i + 1]</span><br><span
+class="fragment">==<br>  (<span class="math inline">\(\forall\)</span>k
+<span class="colon">:</span> 0 &lt;= k &lt; i + 1 <span
+class="colon">:</span> V[k] &gt;= 0)</span></p>
+</div></li>
+</ul>
+</section></section>
+<section>
+<section id="semántica-de-fórmulas-lógicas"
+class="title-slide slide level1 center"
+data-background-image="img/RedBackground.jpg">
+<h1 class="center"
+data-background-image="img/RedBackground.jpg">Semántica de fórmulas
+lógicas</h1>
+
+</section>
+<section id="concepto-de-estado" class="slide level2">
+<h2>Concepto de estado</h2>
+<ul>
+<li><p>Un <strong>estado</strong> <span
+class="math inline">\(\sigma\)</span> es una función que asocia cada
+variable con un valor de su tipo correspondiente.</p></li>
+<li><p>Representamos los estados mediante <span
+class="math inline">\(\sigma\)</span>, <span
+class="math inline">\(\sigma_1\)</span>, <span
+class="math inline">\(\sigma&#39;\)</span>, etc.</p></li>
+</ul>
+<div class="fragment">
+<ul>
+<li><em>Notación:</em> <span class="math inline">\([x_1 \mapsto v_1,
+\dots, x_n \mapsto v_n]\)</span> denota el estado <span
+class="math inline">\(\sigma\)</span> tal que:</li>
+</ul>
+<p><span class="math display">\[
+\text{Para todo }x: \qquad
+\sigma(x) = \begin{cases}
+v_1 &amp; \text{si }x = x_1\\
+\qquad \vdots \\
+v_n &amp; \text{si }x = x_n\\
+0 &amp; \text{e.o.c. }\\
+\end{cases}
+\]</span></p>
+</div>
+</section>
+<section id="semántica-de-fórmulas-lógicas-1" class="slide level2">
+<h2>Semántica de fórmulas lógicas</h2>
+<ul>
+<li>Decimos que un estado <span class="math inline">\(\sigma\)</span>
+<strong>satisface</strong> una fórmula lógica <span
+class="math inline">\(P\)</span>   ( <span class="math inline">\(\sigma
+\vDash P\)</span> ) si la fórmula es cierta al sustituir cada variable
+libre <span class="math inline">\(x\)</span> de <span
+class="math inline">\(P\)</span>  por su valor <span
+class="math inline">\(\sigma(x)\)</span>.</li>
+</ul>
+<div class="fragment">
+<ul>
+<li><p>Ejemplos:</p>
+<ul>
+<li class="fragment"><p>Sea <span class="math inline">\(\sigma =
+[\texttt{x} \mapsto 3, \texttt{y} \mapsto 5]\)</span></p>
+<p><span class="math inline">\(\sigma \vDash\)</span> <span
+class="pseudo inline">x &gt; 0 <span
+class="math inline">\({\wedge}\)</span> x &lt; 5</span></p>
+<p><span class="math inline">\(\sigma \vDash\)</span> <span
+class="pseudo inline">x &lt; y</span></p>
+<p><span class="math inline">\(\sigma \not\vDash\)</span> <span
+class="pseudo inline">y &lt; 0</span></p></li>
+<li class="fragment"><p>Sea <span class="math inline">\(\sigma =
+[\texttt{V} \mapsto [5, 3, 5, -3], \texttt{n} \mapsto 4]\)</span></p>
+<p><span class="math inline">\(\sigma \vDash\)</span> <span
+class="pseudo inline">(#i <span class="colon">:</span> 0 &lt;= i &lt; n
+<span class="colon">:</span> V[i] == 5) &gt; 1</span></p>
+<p><span class="math inline">\(\sigma \not\vDash\)</span> <span
+class="pseudo inline">(<span class="math inline">\(\forall\)</span>i
+<span class="colon">:</span> 0 &lt;= i &lt; n <span
+class="colon">:</span> V[i] &gt;= 0)</span></p></li>
+</ul></li>
+</ul>
+</div>
+</section>
+<section id="casos-extremos-rango-vacío-en-cuantificadores"
+class="slide level2">
+<h2>Casos extremos: rango vacío en cuantificadores</h2>
+<ul>
+<li class="fragment"><p><span class="pseudo color_tema inline">(<span
+class="math inline">\(\forall\)</span>i <span class="colon">:</span>
+P(i) <span class="colon">:</span> Q(i))</span></p>
+<p>Si <span class="pseudo inline">P(i)</span> no se satisface para
+ningún valor de <code>i</code>, la fórmula es cierta.</p></li>
+<li class="fragment"><p><span class="pseudo color_tema inline">(<span
+class="math inline">\(\exists\)</span>i <span class="colon">:</span>
+P(i) <span class="colon">:</span> Q(i))</span></p>
+<p>Si <span class="pseudo inline">P(i)</span> no se satisface para
+ningún valor de <code>i</code>, la fórmula es falsa.</p></li>
+<li class="fragment"><p><span class="pseudo color_tema inline">(Σi <span
+class="colon">:</span> P(i) <span class="colon">:</span>
+Q(i))</span></p>
+<p>Si <span class="pseudo inline">P(i)</span> no se satisface para
+ningún valor de <code>i</code>, el sumatorio es 0.</p></li>
+<li class="fragment"><p><span class="pseudo color_tema inline">(Πi <span
+class="colon">:</span> P(i) <span class="colon">:</span>
+Q(i))</span></p>
+<p>Si <span class="pseudo inline">P(i)</span> no se satisface para
+ningún valor de <code>i</code>, el producto es 1.</p></li>
+<li class="fragment"><p><span class="pseudo color_tema inline">(mín i
+<span class="colon">:</span> P(i) <span class="colon">:</span>
+Q(i))</span>, <span class="pseudo color_tema inline">(máx i <span
+class="colon">:</span> P(i) <span class="colon">:</span>
+Q(i))</span></p>
+<p>Exigimos que exista un valor de <span class="pseudo inline">i</span>
+satisfaga <span class="pseudo inline">P(i)</span>.</p></li>
+</ul>
+</section>
+<section id="validez-de-fórmulas-lógicas" class="slide level2">
+<h2>Validez de fórmulas lógicas</h2>
+<ul>
+<li><p>Decimos que una fórmula <span class="math inline">\(P\)</span> es
+<strong>válida</strong> si <span class="math inline">\(\sigma \vDash
+P\)</span> para cualquier estado <span
+class="math inline">\(\sigma\)</span>.</p></li>
+<li><p>Ejemplos:</p>
+<ul>
+<li><p>No es válida: <span class="pseudo inline">x &gt; 0 <span
+class="math inline">\({\wedge}\)</span> x &lt; 5</span></p></li>
+<li><p>Sí es válida: <span class="pseudo inline">x + z &gt;= y + z
+==&gt; x &gt;= y</span></p></li>
+</ul></li>
+</ul>
+</section>
+<section id="equivalencia-de-fórmulas-lógicas" class="slide level2">
+<h2>Equivalencia de fórmulas lógicas</h2>
+<ul>
+<li><p>Dos fórmulas <span class="math inline">\(P\)</span> y <span
+class="math inline">\(Q\)</span> son <strong>lógicamente
+equivalentes</strong> (<span class="math inline">\(P \equiv Q\)</span>)
+si se cumple</p>
+<p><span class="math display">\[
+\sigma \vDash P \Longleftrightarrow \sigma \vDash Q
+\]</span></p>
+<p>para todo estado <span
+class="math inline">\(\sigma\)</span>.</p></li>
+<li><p>Por ejemplo, <span class="pseudo color_tema inline">x &gt;
+0</span> y <span class="pseudo color_tema inline"><span
+class="math inline">\(\neg\)</span>(x &lt;= 0)</span> son lógicamente
+equivalentes.</p></li>
+</ul>
+</section>
+<section id="leyes-de-equivalencia-lógica" class="slide level2">
+<h2>Leyes de equivalencia lógica</h2>
+<h3 class="fragment"
+id="conmutatividad-asociatividad-e-idempotencia">Conmutatividad,
+asociatividad e idempotencia</h3>
+<div class="columns">
+<div class="column fragment">
+<div class="pseudo">
+<p>P <span class="math inline">\({\wedge}\)</span> Q === Q <span
+class="math inline">\({\wedge}\)</span> P<br>(P <span
+class="math inline">\({\wedge}\)</span> Q) <span
+class="math inline">\({\wedge}\)</span> R === P <span
+class="math inline">\({\wedge}\)</span> (Q <span
+class="math inline">\({\wedge}\)</span> R)<br>P <span
+class="math inline">\({\wedge}\)</span> P === P</p>
+</div>
+</div><div class="column fragment">
+<div class="pseudo">
+<p>P <span class="math inline">\({\vee}\)</span> Q === Q <span
+class="math inline">\({\vee}\)</span> P<br>(P <span
+class="math inline">\({\vee}\)</span> Q) <span
+class="math inline">\({\vee}\)</span> R === P <span
+class="math inline">\({\vee}\)</span> (Q <span
+class="math inline">\({\vee}\)</span> R)<br>P <span
+class="math inline">\({\vee}\)</span> P === P</p>
+</div>
+</div>
+</div>
+<h3 class="fragment" id="elemento-neutro">Elemento neutro</h3>
+<div class="columns">
+<div class="column fragment">
+<div class="pseudo">
+<p>P <span class="math inline">\({\wedge}\)</span> <span
+class="type">true</span> === P</p>
+</div>
+</div><div class="column fragment">
+<div class="pseudo">
+<p>P <span class="math inline">\({\vee}\)</span> <span
+class="type">false</span> === P</p>
+</div>
+</div>
+</div>
+<h3 class="fragment" id="distributividad">Distributividad</h3>
+<div class="columns">
+<div class="column fragment">
+<div class="pseudo">
+<p>P <span class="math inline">\({\wedge}\)</span> (Q <span
+class="math inline">\({\vee}\)</span> R) === (P <span
+class="math inline">\({\wedge}\)</span> Q) <span
+class="math inline">\({\vee}\)</span> (P <span
+class="math inline">\({\wedge}\)</span> R)</p>
+</div>
+</div><div class="column fragment">
+<div class="pseudo">
+<p>P <span class="math inline">\({\vee}\)</span> (Q <span
+class="math inline">\({\wedge}\)</span> R) === (P <span
+class="math inline">\({\vee}\)</span> Q) <span
+class="math inline">\({\wedge}\)</span> (P <span
+class="math inline">\({\vee}\)</span> R)</p>
+</div>
+</div>
+</div>
+</section>
+<section class="slide level2">
+
+<h3 class="fragment" id="negación-y-de-morgan">Negación y De Morgan</h3>
+<div class="columns">
+<div class="column fragment">
+<div class="pseudo">
+<p><span class="math inline">\(\neg\)</span><span
+class="math inline">\(\neg\)</span>P === P</p>
+</div>
+</div><div class="column fragment">
+<div class="pseudo">
+<p>P <span class="math inline">\({\wedge}\)</span> <span
+class="math inline">\(\neg\)</span>P === <span
+class="type">false</span><br>P <span
+class="math inline">\({\vee}\)</span> <span
+class="math inline">\(\neg\)</span>P === <span
+class="type">true</span></p>
+</div>
+</div><div class="column fragment">
+<div class="pseudo">
+<p><span class="math inline">\(\neg\)</span>(P <span
+class="math inline">\({\wedge}\)</span> Q) === <span
+class="math inline">\(\neg\)</span>P <span
+class="math inline">\({\vee}\)</span> <span
+class="math inline">\(\neg\)</span>Q<br><span
+class="math inline">\(\neg\)</span>(P <span
+class="math inline">\({\vee}\)</span> Q) === <span
+class="math inline">\(\neg\)</span>P <span
+class="math inline">\({\wedge}\)</span> <span
+class="math inline">\(\neg\)</span>Q</p>
+</div>
+</div>
+</div>
+<h3 class="fragment" id="implicación-simple-y-doble">Implicación simple
+y doble</h3>
+<div class="columns">
+<div class="column fragment">
+<div class="pseudo">
+<p>P ==&gt; Q === <span class="math inline">\(\neg\)</span>P <span
+class="math inline">\({\vee}\)</span> Q<br>P ==&gt; (Q ==&gt; R) === P
+<span class="math inline">\({\wedge}\)</span> Q ==&gt; R</p>
+</div>
+</div><div class="column fragment">
+<div class="pseudo">
+<p>P &lt;=&gt; Q === (P ==&gt; Q) <span
+class="math inline">\({\wedge}\)</span> (Q ==&gt; P)</p>
+</div>
+</div>
+</div>
+<h3 class="fragment" id="gran-de-morgan">Gran De Morgan</h3>
+<div class="columns">
+<div class="column fragment">
+<div class="pseudo">
+<p><span class="math inline">\(\neg\)</span>(<span
+class="math inline">\(\forall\)</span>i <span class="colon">:</span> P
+<span class="colon">:</span> Q) === (<span
+class="math inline">\(\exists\)</span>i <span class="colon">:</span> P
+<span class="colon">:</span> <span
+class="math inline">\(\neg\)</span>Q)</p>
+</div>
+</div><div class="column fragment">
+<div class="pseudo">
+<p><span class="math inline">\(\neg\)</span>(<span
+class="math inline">\(\exists\)</span>i <span class="colon">:</span> P
+<span class="colon">:</span> Q) === (<span
+class="math inline">\(\forall\)</span>i <span class="colon">:</span>
+<span class="type">true</span> <span class="colon">:</span> <span
+class="math inline">\(\neg\)</span>P <span
+class="math inline">\({\vee}\)</span> <span
+class="math inline">\(\neg\)</span>Q)</p>
+</div>
+</div>
+</div>
+<h3 class="fragment" id="renombramiento">Renombramiento</h3>
+<div class="columns fragment">
+<div class="column">
+<div class="pseudo">
+<p>(<span class="math inline">\(\forall\)</span>i <span
+class="colon">:</span> P <span class="colon">:</span> Q) === (<span
+class="math inline">\(\forall\)</span>j <span class="colon">:</span>
+P<span style="color:green">[i / j]</span> <span class="colon">:</span>
+Q<span style="color:green">[i / j]</span>)<br>(<span
+class="math inline">\(\exists\)</span>i <span class="colon">:</span> P
+<span class="colon">:</span> Q) === (<span
+class="math inline">\(\forall\)</span>j <span class="colon">:</span>
+P<span style="color:green">[i / j]</span> <span class="colon">:</span>
+Q<span style="color:green">[i / j]</span>)</p>
+</div>
+</div><div class="column">
+<p>si <span class="pseudo inline">j</span> no aparece ni en <span
+class="pseudo inline">P</span> ni en <span
+class="pseudo inline">Q</span></p>
+</div>
+</div>
+</section></section>
+    </div>
+  </div>
+
+  <script src="dist/reveal.js"></script>
+
+  <!-- reveal.js plugins -->
+  <script src="plugin/notes/notes.js"></script>
+  <script src="plugin/search/search.js"></script>
+  <script src="plugin/zoom/zoom.js"></script>
+  <script src="plugin/highlight/highlight.js"></script>
+  <script src="plugin/math/math.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+        // Display controls in the bottom right corner
+        controls: false,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: true,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'bottom-right',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: false,
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: false,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: false,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'default',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Prints all fragments in their visible states on the same slide 
+        pdfSeparateFragments: false,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: true,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'slide',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'fade',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1600,
+
+        height: 900,
+
+        math: {
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom,
+          // RevealHighlight          
+        ]
+      });
+    </script>
+    </body>
+</html>
