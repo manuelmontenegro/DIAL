@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Manuel Montenegro Montes Dpto. de Sistemas Informáticos y Computación Facultad de Informática Universidad Complutense de Madrid">
+  <title>C++ para programadores/as de Python</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="dist/reset.css">
+  <link rel="stylesheet" href="dist/reveal.css">
+  <link rel="stylesheet" href="css/nnfx-light.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <style>
+    .reveal .sourceCode {  /* see #7635 */
+      overflow: visible;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <link rel="stylesheet" href="css/dial.css" id="theme">
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide" data-background-image="img/RedBackground.jpg" class="center">
+  <h1 class="title">C++ para programadores/as<br/>de Python</h1>
+<div id="author-container">
+<div class="author">
+<strong>Manuel Montenegro Montes</strong><br>Dpto. de Sistemas
+Informáticos y Computación<br>Facultad de Informática<br>Universidad
+Complutense de Madrid
+</div>
+</div>
+</section>
+
+<section>
+<section id="introducción" class="title-slide slide level1 center"
+data-background-image="img/RedBackground.jpg">
+<h1 class="center"
+data-background-image="img/RedBackground.jpg">Introducción</h1>
+
+</section>
+<section id="principales-diferencias-entre-c-y-python"
+class="slide level2">
+<h2>Principales diferencias entre C++ y Python</h2>
+<ul>
+<li>C++ es un lenguaje <strong>estáticamente tipado</strong>.
+<ul>
+<li>Hay que declarar cada variable de antemano.</li>
+<li>Hay que indicar el tipo de cada variable (entero, real, booleano,
+etc.)</li>
+</ul></li>
+<li>Sintaxis distinta.
+<ul>
+<li>Uso de <code>;</code> al final de una sentencia.</li>
+<li>En lugar de utilizar indentación, se utilizan <code>{</code> y
+<code>}</code> para indicar bloques de código.</li>
+</ul></li>
+</ul>
+</section>
+<section id="primer-programa-en-c" class="slide level2">
+<h2>Primer programa en C++</h2>
+<div class="cpp cpp_block">
+<p><span class="preprocessor">#include
+&lt;iostream&gt;</span><br><br><span class="type">int</span> main()
+{<br>  <span class="type">int</span> x;<br>  std::cout &lt;&lt; <span
+class="string">"Introduce un número: "</span>;<br>  std::cin &gt;&gt;
+x;<br>  std::cout &lt;&lt; <span class="string">"Has introducido el
+número "</span> &lt;&lt; x &lt;&lt; <span
+class="string">"\n"</span>;<br>  <strong>return</strong> <span
+class="number">0</span>;<br>}</p>
+</div>
+</section>
+<section id="principales-elementos" class="slide level2">
+<h2>Principales elementos</h2>
+<ol style="width:100%">
+<li>
+<p>Función principal:</p>
+<div class="cpp cpp_block">
+<p><span class="type">int</span> main() {<br>  ...   <span
+class="comment">// El contenido de esta función se
+ejecutará</span><br>        <span class="comment">// al empezar el
+programa</span><br>}</p>
+</div>
+</li>
+<li>
+<p>Declaración de variables:</p>
+<div class="cpp cpp_block">
+<p><span class="type">int</span> x;   <span class="comment">// La
+variable <code>x</code> es de tipo entero</span></p>
+</div>
+</li>
+<li>
+<p>Escritura por pantalla:</p>
+<div class="cpp cpp_block">
+<p><span class="comment">// <span class="string">'\n'</span> indica
+salto de línea</span><br>std::cout &lt;&lt; <span
+class="string">"Hola\n"</span>;<br>std::cout &lt;&lt; <span
+class="string">"Has introducido "</span> &lt;&lt; x &lt;&lt; <span
+class="string">"\n"</span>;</p>
+</div>
+</li>
+</ol>
+</section>
+<section id="principales-elementos-1" class="slide level2">
+<h2>Principales elementos</h2>
+<ol style="width:100%" start="4">
+<li>
+<p>Lectura de teclado:</p>
+<div class="cpp cpp_block">
+<p><span class="comment">// Lee un número de la entrada y lo guarda en
+la variable <code>x</code></span><br>cin &gt;&gt; x;</p>
+</div>
+</li>
+</ol>
+</section>
+<section id="la-directiva-using-namespace" class="slide level2">
+<h2>La directiva <code>using namespace</code></h2>
+<ul>
+<li>Permite ahorrarnos el uso de <code>std::</code> antes de cada
+variable y tipo definido en la biblioteca estándar de C++.</li>
+</ul>
+<div class="cpp cpp_block">
+<p><span class="preprocessor">#include
+&lt;iostream&gt;</span><br><br><span class="hl"><strong>using</strong>
+<strong>namespace</strong> std;</span><br><br><span
+class="type">int</span> main() {<br>  <span class="type">int</span>
+x;<br>  cout &lt;&lt; <span class="string">"Introduce un número:
+"</span>;<br>  cin &gt;&gt; x;<br>  cout &lt;&lt; <span
+class="string">"Has introducido el número "</span> &lt;&lt; x &lt;&lt;
+<span class="string">"\n"</span>;<br>  <strong>return</strong> <span
+class="number">0</span>;<br>}</p>
+</div>
+</section></section>
+<section>
+<section id="tipos-disponibles" class="title-slide slide level1 center"
+data-background-image="img/RedBackground.jpg">
+<h1 class="center" data-background-image="img/RedBackground.jpg">Tipos
+disponibles</h1>
+
+</section>
+<section id="principales-tipos" class="slide level2">
+<h2>Principales tipos</h2>
+<ul>
+<li><code>int</code>: números enteros</li>
+<li><code>bool</code>: valores booleanos</li>
+<li><code>float</code>, <code>double</code>: valores en coma
+flotante</li>
+<li><code>char</code>: caracteres</li>
+<li><code>string</code>: cadenas de caracteres
+<ul>
+<li>Requiere incluirlas mediante
+<code>#include &lt;string&gt;</code></li>
+</ul></li>
+<li><code>vector&lt;T&gt;</code>: listas de elementos de tipo
+<code>T</code>
+<ul>
+<li>Requiere incluirlas mediante
+<code>#include &lt;vector&gt;</code></li>
+</ul></li>
+</ul>
+</section>
+<section id="ejemplos" class="slide level2">
+<h2>Ejemplos</h2>
+<div class="cpp cpp_block">
+<p><span class="type">int</span> x = <span
+class="number">3</span>;<br><br><span class="type">bool</span> b = <span
+class="type">true</span>;     <span class="comment">// valores
+booleanos: <span class="type">true</span> o <span
+class="type">false</span></span><br><br><span class="type">float</span>
+f = <span class="number">2</span>.<span
+class="number">45</span>;<br><br>char c = <span class="string">'<span
+class="number">3</span>'</span>;      <span class="comment">// literales
+char: entre comillas simples (')</span><br><br><span
+class="type">string</span> s = <span class="string">"Hola"</span>; <span
+class="comment">// literales cadena: entre comillas dobles
+(")</span><br><br><span class="type">vector</span>&lt;<span
+class="type">int</span>&gt; v = {<span class="number">1</span>, <span
+class="number">4</span>, <span class="number">10</span>, <span
+class="number">2</span>, -<span class="number">3</span>};</p>
+</div>
+</section></section>
+<section>
+<section id="sentencias-en-c" class="title-slide slide level1 center"
+data-background-image="img/RedBackground.jpg">
+<h1 class="center"
+data-background-image="img/RedBackground.jpg">Sentencias en C++</h1>
+
+</section>
+<section id="sentencias-en-c-1" class="slide level2">
+<h2>Sentencias en C++</h2>
+<ul style="width:100%">
+<li>
+<p>Asignación e inicialización:</p>
+<div class="cpp cpp_block">
+<p><span class="type">int</span> x = <span
+class="number">10</span>;<br><span class="type">int</span> y = <span
+class="number">2</span>;<br><br>x = x + <span
+class="number">1</span>;<br>y = <span class="number">4</span> * y +
+x;</p>
+</div>
+</li>
+<li>
+<p>Incremento de variables:</p>
+<div class="cpp cpp_block">
+<p>x++;    <span class="comment">// equivale a x = x + <span
+class="number">1</span>;</span><br>x--;    <span class="comment">//
+equivale a x = x - <span class="number">1</span>;</span></p>
+</div>
+</li>
+</ul>
+</section>
+<section id="sentencias-en-c-2" class="slide level2">
+<h2>Sentencias en C++</h2>
+<ul style="width:100%">
+<li>
+<p>Condicionales:</p>
+<div class="columns">
+<div class="column">
+<div class="cpp cpp_block">
+<p><strong>if</strong> (x == <span class="number">0</span>) {<br>  z =
+<span class="number">3</span> + <span class="number">3</span>;<br>}</p>
+</div>
+</div><div class="column">
+<div class="cpp cpp_block">
+<p><strong>if</strong> (x &gt; <span class="number">10</span>)
+{<br>  x--;<br>} else {<br>  x++<br>}</p>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>Bucles <code>while</code>:</p>
+<div class="cpp cpp_block">
+<p><span class="type">int</span> n = <span
+class="number">1</span>;<br><strong>while</strong> (x &gt;= <span
+class="number">0</span>) {<br>  n = n * <span
+class="number">2</span>;<br>  x--;<br>}</p>
+</div>
+</li>
+</ul>
+</section>
+<section id="sentencias-en-c-3" class="slide level2">
+<h2>Sentencias en C++</h2>
+<ul>
+<li>
+<p>Bucles <code>for</code>:</p>
+<div class="cpp cpp_block">
+<p><span class="type">int</span> suma = <span
+class="number">0</span>;  <br><strong>for</strong> (<span
+class="type">int</span> i = <span class="number">0</span>; i &lt; <span
+class="number">10</span>; i++) {  <span class="comment">// La variable i
+recorre los valores desde <span class="number">0</span> hasta <span
+class="number">9</span></span><br>  suma += i;<br>}</p>
+</div>
+<div class="cpp cpp_block">
+<p><span class="type">int</span> suma = <span
+class="number">0</span>;  <br><strong>for</strong> (<span
+class="type">int</span> i = <span class="number">10</span>; i &gt; <span
+class="number">0</span>; i--) {  <span class="comment">// La variable i
+recorre los valores desde <span class="number">10</span> hasta <span
+class="number">1</span></span><br>  suma += i;<br>}</p>
+</div>
+</li>
+</ul>
+</section></section>
+<section>
+<section id="vectores" class="title-slide slide level1 center"
+data-background-image="img/RedBackground.jpg">
+<h1 class="center"
+data-background-image="img/RedBackground.jpg">Vectores</h1>
+
+</section>
+<section id="inicialización-de-vectores" class="slide level2">
+<h2>Inicialización de vectores</h2>
+<ul style="width:100%">
+<li>
+<p>Indicando sus elementos en la inicialización:</p>
+<div class="cpp cpp_block">
+<p><span class="type">vector</span>&lt;char&gt; vocales = {<span
+class="string">'a'</span>, <span class="string">'e'</span>, <span
+class="string">'i'</span>, <span class="string">'o'</span>, <span
+class="string">'u'</span>};<br>cout &lt;&lt; vocales.size() &lt;&lt;
+<span class="string">'\n'</span>;   <span class="comment">// Imprime
+5</span><br>cout &lt;&lt; vocales[<span class="number">2</span>]
+&lt;&lt; <span class="string">'\n'</span>;       <span
+class="comment">// Imprime i</span></p>
+</div>
+</li>
+<li>
+<p>Creando un vector vacío y usando <code>push_back</code>:</p>
+<div class="cpp cpp_block">
+<p><span class="type">vector</span>&lt;char&gt;
+vocales;<br>vocales.push_back(<span class="string">'a'</span>);
+vocales.push_back(<span class="string">'e'</span>); <span
+class="comment">// ...</span></p>
+</div>
+</li>
+<li>
+<p>Creando un vector con tamaño y usando asignaciones:</p>
+<div class="cpp cpp_block">
+<p><span class="type">vector</span>&lt;char&gt; vocales(<span
+class="number">5</span>);    <span class="comment">// Vector de cinco
+elementos</span><br>vocales[<span class="number">0</span>] = <span
+class="string">'a'</span>;<br>...<br>vocales[<span
+class="number">4</span>] = <span class="string">'u'</span>;</p>
+</div>
+</li>
+</ul>
+</section>
+<section id="recorrido-de-un-vector" class="slide level2">
+<h2>Recorrido de un <code>vector</code></h2>
+<ul style="width:100%">
+<li>
+<p>Mediante bucles <code>for</code> con índice:</p>
+<div class="cpp cpp_block">
+<p><strong>for</strong> (<span class="type">int</span> i = <span
+class="number">0</span>; i &lt; vocales.size(); i++) {<br>  cout
+&lt;&lt; vocales[i] &lt;&lt; <span class="string">'\n'</span>;<br>}</p>
+</div>
+</li>
+<li>
+<p>Mediante bucles <code>for</code> sin índice:</p>
+<div class="cpp cpp_block">
+<p><strong>for</strong> (char c : vocales) {<br>  cout &lt;&lt; c
+&lt;&lt; <span class="string">'\n'</span>;<br>}</p>
+</div>
+</li>
+</ul>
+</section>
+<section id="ojo-con-las-asignaciones-a-vectores" class="slide level2">
+<h2>¡Ojo con las asignaciones a vectores!</h2>
+<ul>
+<li><p>Cuando se asigna un vector a otro, se crea una
+<strong>copia</strong> del vector origen al vector destino.</p>
+<div class="cpp cpp_block">
+<p><span class="type">vector</span>&lt;<span class="type">int</span>&gt;
+a = {<span class="number">1</span>, <span class="number">5</span>, <span
+class="number">3</span>, <span class="number">2</span>};<br><br><span
+class="type">vector</span>&lt;<span class="type">int</span>&gt; b =
+a;<br><br>b[<span class="number">0</span>] = <span
+class="number">3</span>;<br><br>cout &lt;&lt; b[<span
+class="number">0</span>] &lt;&lt; <span class="string">'\n'</span>;
+<span class="comment">// Imprime 3</span><br>cout &lt;&lt; a[<span
+class="number">0</span>] &lt;&lt; <span class="string">'\n'</span>;
+<span class="comment">// Imprime 1</span></p>
+</div></li>
+</ul>
+</section></section>
+<section>
+<section id="funciones" class="title-slide slide level1 center"
+data-background-image="img/RedBackground.jpg">
+<h1 class="center"
+data-background-image="img/RedBackground.jpg">Funciones</h1>
+
+</section>
+<section id="definición-de-una-función" class="slide level2">
+<h2>Definición de una función</h2>
+<ul style="width:100%">
+<li>
+<p>Es necesario indicar el tipo de los parámetros y el tipo del
+resultado:</p>
+<div class="cpp cpp_block">
+<p><span class="type">int</span> suma(<span class="type">int</span> x,
+<span class="type">int</span> y) {<br>  <strong>return</strong> x +
+<span class="number">2</span> * y;<br>}</p>
+</div>
+</li>
+<li>
+<p>Si la función no devuelve ningún valor, el tipo del resultado es
+<code>void</code>:</p>
+<div class="cpp cpp_block">
+<p><span class="type">void</span> saludar(<span class="type">int</span>
+num_veces) {<br>  <strong>for</strong> (<span class="type">int</span> i
+= <span class="number">0</span>; i &lt; num_veces; i++) {<br>    cout
+&lt;&lt; <span class="string">"Hola\n"</span>;<br>  }<br>}</p>
+</div>
+</li>
+<li>
+<p>Llamadas a función:</p>
+<div class="cpp cpp_block">
+<p>  <span class="type">int</span> m = suma(<span
+class="number">3</span>, <span
+class="number">4</span>);<br>  saludar(m);</p>
+</div>
+</li>
+</ul>
+</section></section>
+<section>
+<section id="parámetros-por-valor-y-por-referencia"
+class="title-slide slide level1 center"
+data-background-image="img/RedBackground.jpg">
+<h1 class="center"
+data-background-image="img/RedBackground.jpg">Parámetros por valor y por
+referencia</h1>
+
+</section>
+<section id="parámetros-por-valor" class="slide level2">
+<h2>Parámetros por valor</h2>
+<ul>
+<li><p>Por defecto, cuando llamamos a una función con unos argumentos,
+los parámetros de la función contendrán una <strong>copia</strong> de
+esos argumentos:</p>
+<div class="cpp cpp_block">
+<p><span class="type">void</span> incrementar(<span
+class="type">int</span> x) {<br>  x++;<br>}<br><br><br><span
+class="type">int</span> main() {<br>  <span class="type">int</span> v =
+<span class="number">3</span>;<br><br>  <span class="comment">// La
+función <code>incrementar</code> modificará una <em>copia</em> de la
+variable <code>v</code>.</span><br>  <span class="comment">// La
+variable <code>v</code> original no se verá
+afectada.</span><br>  incrementar(v);<br><br>  cout &lt;&lt; v &lt;&lt;
+<span class="string">'\n'</span>;    <span class="comment">// Imprime:
+<span class="number">3</span></span><br>}</p>
+</div></li>
+</ul>
+</section>
+<section id="parámetros-por-referencia" class="slide level2">
+<h2>Parámetros por referencia</h2>
+<ul>
+<li><p>Si queremos que los cambios que se hagan en los parámetros se
+reflejen en los argumentos, hemos de pasarlos <strong>por
+referencia</strong>.</p>
+<ul>
+<li>Para ello, se utiliza el símbolo <code>&amp;</code> antes del nombre
+del parámetro:</li>
+</ul>
+<div class="cpp cpp_block">
+<p><span class="type">void</span> incrementar(<span
+class="type">int</span> &amp;x) {<br>  x++;<br>}<br><br><br><span
+class="type">int</span> main() {<br>  <span class="type">int</span> v =
+<span class="number">3</span>;<br><br>  <span class="comment">// La
+función <code>incrementar</code> modificará la variable <code>x</code>
+original!</span><br>  incrementar(v);<br><br>  cout &lt;&lt; v &lt;&lt;
+<span class="string">'\n'</span>;    <span class="comment">// Imprime:
+<span class="number">4</span></span><br>}</p>
+</div></li>
+</ul>
+</section>
+<section id="paso-de-vectores-como-parámetro" class="slide level2">
+<h2>Paso de vectores como parámetro</h2>
+<ul>
+<li><p>Cuando pasamos tipos complejos como parámetro (como por ejemplo,
+vectores), conviene pasarlos por referencia para evitar que se cree una
+copia en cada llamada:</p>
+<div class="cpp cpp_block">
+<p><span class="type">void</span> imprimir_elementos(<span
+class="type">vector</span>&lt;<span class="type">int</span>&gt; <span
+class="hl">&amp;</span>v) {<br>  <strong>for</strong> (<span
+class="type">int</span> i = <span class="number">0</span>; i &lt;
+v.size(); i++) {<br>    cout &lt;&lt; v[i] &lt;&lt; <span
+class="string">' '</span>;<br>  }<br>  cout &lt;&lt; <span
+class="string">'\n'</span>;<br>}</p>
+</div></li>
+</ul>
+</section>
+<section id="paso-de-vectores-como-parámetros-constantes"
+class="slide level2">
+<h2>Paso de vectores como parámetros constantes</h2>
+<ul>
+<li><p>Si la función no va a modificar el <code>vector</code>, conviene
+pasarlo como <strong>referencia constante</strong>.</p>
+<ul>
+<li>De este modo, el compilador no nos dejará modificarlos desde dentro
+de la función.</li>
+</ul>
+<div class="cpp cpp_block">
+<p><span class="type">void</span> imprimir_elementos(<span
+class="hl"><span class="type">const</span></span> <span
+class="type">vector</span>&lt;<span class="type">int</span>&gt; &amp;v)
+{<br>  <strong>for</strong> (<span class="type">int</span> i = <span
+class="number">0</span>; i &lt; v.size(); i++) {<br>    cout &lt;&lt;
+v[i] &lt;&lt; <span class="string">' '</span>;<br>  }<br>  cout &lt;&lt;
+<span class="string">'\n'</span>;<br>}</p>
+</div></li>
+</ul>
+</section></section>
+<section>
+<section id="registros-structs" class="title-slide slide level1 center"
+data-background-image="img/RedBackground.jpg">
+<h1 class="center"
+data-background-image="img/RedBackground.jpg">Registros
+(<code>structs</code>)</h1>
+
+</section>
+<section id="definición-de-un-struct" class="slide level2">
+<h2>Definición de un <code>struct</code></h2>
+<ul>
+<li><p>Un <code>struct</code> en C++ es un tipo de dato definido por el
+usuario que agrupa varias variables (llamadas <em>atributos</em>) bajo
+un mismo nombre.</p>
+<div class="cpp cpp_block">
+<p><strong>struct</strong> Punto {<br>  <span class="type">int</span>
+x;<br>  <span class="type">int</span> y;<br>};    <span
+class="comment">// &lt;-- ojo con el punto y coma al final de la
+declaración;</span><br><br><strong>struct</strong> Persona {<br>  <span
+class="type">string</span> nombre;<br>  <span class="type">string</span>
+dni;<br>  <span class="type">int</span> edad;<br>};</p>
+</div></li>
+</ul>
+</section>
+<section id="uso-de-structs" class="slide level2">
+<h2>Uso de <code>structs</code></h2>
+<div class="cpp cpp_block">
+<p>Punto p1;<br>p1.x = <span class="number">10</span>;<br>p1.y = <span
+class="number">20</span>;<br><br><span class="comment">// Inicialización
+alternativa</span><br>Punto p1 = {<span class="number">10</span>, <span
+class="number">20</span>};</p>
+</div>
+</section>
+<section id="asignación-de-un-struct-y-paso-por-parámetro"
+class="slide level2">
+<h2>Asignación de un <code>struct</code> y paso por parámetro</h2>
+<ul>
+<li><p>Al igual que con los vectores, asignar una variable de tipo
+struct a otra provoca una <strong>copia</strong> de la variable
+origen:</p>
+<div class="cpp cpp_block">
+<p>Punto p1;<br>p1.x = <span class="number">10</span>; p1.y = <span
+class="number">20</span>;<br><br>Punto p2 = p1;<br>p2.x = <span
+class="number">20</span>;<br><br>cout &lt;&lt; p1.x &lt;&lt; <span
+class="string">'\n'</span>;  <span class="comment">// Imprime <span
+class="string">'<span class="number">10</span>'</span></span></p>
+</div></li>
+</ul>
+</section>
+<section id="asignación-de-un-struct-y-paso-por-parámetro-1"
+class="slide level2">
+<h2>Asignación de un <code>struct</code> y paso por parámetro</h2>
+<ul>
+<li><p>Lo mismo ocurre cuando pasamos <code>struct</code> como
+parámetros. Por defecto, se pasan por valor:</p>
+<div class="cpp cpp_block">
+<p><span class="type">void</span> desplazar_derecha(Punto p) {  p.x++;
+}<br><br><span class="type">int</span> main() {<br>  Punto p1 = {<span
+class="number">1</span>, <span
+class="number">4</span>};<br>  desplazar_derecha(p1);<br>  cout &lt;&lt;
+p1.x &lt;&lt; <span class="string">'\n'</span>;   <span
+class="comment">// Imprime <span class="string">'<span
+class="number">1</span>'</span></span><br>}</p>
+</div></li>
+</ul>
+</section>
+<section id="paso-por-referencia" class="slide level2">
+<h2>Paso por referencia</h2>
+<ul>
+<li><p>Si queremos que la función modifique realmente el argumento,
+debemos pasar el parámetro por <strong>referencia</strong>:</p>
+<div class="cpp cpp_block">
+<p><span class="type">void</span> desplazar_derecha(Punto <span
+class="hl">&amp;</span>p) {<br>  p.x++;<br>}<br><br><span
+class="type">int</span> main() {<br>  Punto p1 = {<span
+class="number">1</span>, <span
+class="number">4</span>};<br>  desplazar_derecha(p1);<br>  cout &lt;&lt;
+p1.x &lt;&lt; <span class="string">'\n'</span>;   <span
+class="comment">// Imprime <span class="string">'<span
+class="number">2</span>'</span></span><br>}</p>
+</div></li>
+</ul>
+</section></section>
+    </div>
+  </div>
+
+  <script src="dist/reveal.js"></script>
+
+  <!-- reveal.js plugins -->
+  <script src="plugin/notes/notes.js"></script>
+  <script src="plugin/search/search.js"></script>
+  <script src="plugin/zoom/zoom.js"></script>
+  <script src="plugin/highlight/highlight.js"></script>
+  <script src="plugin/math/math.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+        // Display controls in the bottom right corner
+        controls: false,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: true,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'bottom-right',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: false,
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: false,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: false,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'default',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Prints all fragments in their visible states on the same slide 
+        pdfSeparateFragments: false,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: true,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'slide',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'fade',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1600,
+
+        height: 900,
+
+        math: {
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom,
+          // RevealHighlight          
+        ]
+      });
+    </script>
+    </body>
+</html>
