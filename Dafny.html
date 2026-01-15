@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Manuel Montenegro Montes Dpto. de Sistemas Informáticos y Computación Facultad de Informática Universidad Complutense de Madrid">
+  <title>Verificación de programas en Dafny</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="dist/reset.css">
+  <link rel="stylesheet" href="dist/reveal.css">
+  <link rel="stylesheet" href="css/nnfx-light.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <style>
+    .reveal .sourceCode {  /* see #7635 */
+      overflow: visible;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        background-color: #ffffff;
+        color: #a0a0a0;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #a0a0a0;  padding-left: 4px; }
+    div.sourceCode
+      { color: #1f1c1b; background-color: #ffffff; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #1f1c1b; } /* Normal */
+    code span.al { color: #bf0303; background-color: #f7e6e6; font-weight: bold; } /* Alert */
+    code span.an { color: #ca60ca; } /* Annotation */
+    code span.at { color: #0057ae; } /* Attribute */
+    code span.bn { color: #b08000; } /* BaseN */
+    code span.bu { color: #644a9b; font-weight: bold; } /* BuiltIn */
+    code span.cf { color: #1f1c1b; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #924c9d; } /* Char */
+    code span.cn { color: #aa5500; } /* Constant */
+    code span.co { color: #898887; } /* Comment */
+    code span.cv { color: #0095ff; } /* CommentVar */
+    code span.do { color: #607880; } /* Documentation */
+    code span.dt { color: #0057ae; } /* DataType */
+    code span.dv { color: #b08000; } /* DecVal */
+    code span.er { color: #bf0303; text-decoration: underline; } /* Error */
+    code span.ex { color: #0095ff; font-weight: bold; } /* Extension */
+    code span.fl { color: #b08000; } /* Float */
+    code span.fu { color: #644a9b; } /* Function */
+    code span.im { color: #ff5500; } /* Import */
+    code span.in { color: #b08000; } /* Information */
+    code span.kw { color: #1f1c1b; font-weight: bold; } /* Keyword */
+    code span.op { color: #1f1c1b; } /* Operator */
+    code span.ot { color: #006e28; } /* Other */
+    code span.pp { color: #006e28; } /* Preprocessor */
+    code span.re { color: #0057ae; background-color: #e0e9f8; } /* RegionMarker */
+    code span.sc { color: #3daee9; } /* SpecialChar */
+    code span.ss { color: #ff5500; } /* SpecialString */
+    code span.st { color: #bf0303; } /* String */
+    code span.va { color: #0057ae; } /* Variable */
+    code span.vs { color: #bf0303; } /* VerbatimString */
+    code span.wa { color: #bf0303; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="css/dial.css" id="theme">
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide" data-background-image="img/RedBackground.jpg" class="center">
+  <h1 class="title">Verificación de programas en Dafny</h1>
+<div id="author-container">
+<div class="author">
+<strong>Manuel Montenegro Montes</strong><br>Dpto. de Sistemas
+Informáticos y Computación<br>Facultad de Informática<br>Universidad
+Complutense de Madrid
+</div>
+</div>
+</section>
+
+<section id="la-plataforma-dafny" class="slide level2">
+<h2>La plataforma Dafny</h2>
+<div class="columns">
+<div class="column">
+<ul>
+<li class="fragment"><p>Dafny es:</p>
+<ul>
+<li class="fragment">Un lenguaje de programación,</li>
+<li class="fragment">Una herramienta para comprobar la corrección de los
+programas escritos en el lenguaje de programación.</li>
+</ul></li>
+<li class="fragment"><p>El código Dafny verificado puede traducirse a
+múltiples lenguajes:</p>
+<ul>
+<li class="fragment">C#</li>
+<li class="fragment">Java</li>
+<li class="fragment">JavaScript</li>
+<li class="fragment">Go</li>
+<li class="fragment">Python</li>
+</ul></li>
+</ul>
+</div><div class="column">
+<p><img data-src="Dafny/Dafny.png" /></p>
+<p><a href="https://dafny.org/">https://dafny.org/</a></p>
+</div>
+</div>
+</section>
+<section id="visual-studio-code" class="slide level2">
+<h2>Visual Studio Code</h2>
+<div class="columns">
+<div class="column">
+<ul>
+<li class="fragment"><p>Visual Studio Code es un editor de código fuente
+multiplataforma desarrollado por Microsoft.</p></li>
+<li class="fragment"><p>Admite múltiples lenguajes de programación
+mediante extensiones.</p></li>
+<li class="fragment"><p>Existe una extensión para Dafny.</p>
+<ul>
+<li class="fragment"><p>La extensión instala las herramientas de Dafny
+necesarias.</p></li>
+<li class="fragment"><p>Si se utiliza Mac o Linux, es necesario instalar
+la plataforma .NET</p>
+<p><a
+href="https://dotnet.microsoft.com/">https://dotnet.microsoft.com/</a></p></li>
+</ul></li>
+<li class="fragment"><p>Los ficheros Dafny tienen extensión <code
+class="color_tema">.dfy</code></p></li>
+</ul>
+</div><div class="column" style="width:35%;">
+<p><img data-src="Dafny/VSCode.svg" style="width:100.0%" /></p>
+<p><a href="https://code.visualstudio.com/"
+style="font-size:60%">https://code.visualstudio.com/</a></p>
+</div>
+</div>
+<p> </p>
+<p><span style="font-size:80%">URL extensión: <a
+href="https://marketplace.visualstudio.com/items?itemName=dafny-lang.ide-vscode">https://marketplace.visualstudio.com/items?itemName=dafny-lang.ide-vscode</a></span></p>
+<aside class="notes">
+<p>Cuando se abre un fichero con extensión <code>.dfy</code>, la
+extensión de Dafny de Visual Studio Code se activa.</p>
+</aside>
+</section>
+<section>
+<section id="ejemplo-1-división-entera"
+class="title-slide slide level1 center"
+data-background-image="img/RedBackground.jpg">
+<h1 class="center" data-background-image="img/RedBackground.jpg">Ejemplo
+1:<br/>División entera</h1>
+
+</section>
+<section id="especificación-en-dafny" class="slide level2">
+<h2>Especificación en Dafny</h2>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode dafny"><code class="sourceCode dafny"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">method</span> divide<span class="op">(</span>a<span class="op">:</span> <span class="dt">int</span><span class="op">,</span> b<span class="op">:</span> <span class="dt">int</span><span class="op">)</span> <span class="kw">returns</span> <span class="op">(</span>q<span class="op">:</span> <span class="dt">int</span><span class="op">,</span> r<span class="op">:</span> <span class="dt">int</span><span class="op">)</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">requires</span> a <span class="op">&gt;=</span> <span class="dv">0</span> <span class="op">&amp;&amp;</span> b <span class="op">&gt;</span> <span class="dv">0</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">ensures</span> a <span class="op">==</span> b <span class="op">*</span> q <span class="op">+</span> r <span class="op">&amp;&amp;</span> <span class="dv">0</span> <span class="op">&lt;=</span> r <span class="op">&lt;</span> b</span></code></pre></div>
+<div class="fragment">
+<ul>
+<li>Dafny proporciona un tipo <code>nat</code> para los números
+naturales:</li>
+</ul>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode dafny"><code class="sourceCode dafny"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">method</span> divide<span class="op">(</span>a<span class="op">:</span> <span class="dt">nat</span><span class="op">,</span> b<span class="op">:</span> <span class="dt">nat</span><span class="op">)</span> <span class="kw">returns</span> <span class="op">(</span>q<span class="op">:</span> <span class="dt">nat</span><span class="op">,</span> r<span class="op">:</span> <span class="dt">nat</span><span class="op">)</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">requires</span> b <span class="op">&gt;</span> <span class="dv">0</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">ensures</span> a <span class="op">==</span> b <span class="op">*</span> q <span class="op">+</span> r <span class="op">&amp;&amp;</span> r <span class="op">&lt;</span> b</span></code></pre></div>
+</div>
+</section>
+<section id="implementación-en-dafny" class="slide level2">
+<h2>Implementación en Dafny</h2>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode dafny"><code class="sourceCode dafny"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">method</span> divide<span class="op">(</span>a<span class="op">:</span> <span class="dt">nat</span><span class="op">,</span> b<span class="op">:</span> <span class="dt">nat</span><span class="op">)</span> <span class="kw">returns</span> <span class="op">(</span>q<span class="op">:</span> <span class="dt">nat</span><span class="op">,</span> r<span class="op">:</span> <span class="dt">nat</span><span class="op">)</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">requires</span> b <span class="op">&gt;</span> <span class="dv">0</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">ensures</span> a <span class="op">==</span> b <span class="op">*</span> q <span class="op">+</span> r <span class="op">&amp;&amp;</span> r <span class="op">&lt;</span> b</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  q <span class="op">:=</span> <span class="dv">0</span><span class="op">;</span> r <span class="op">:=</span> a<span class="op">;</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">while</span> r <span class="op">&gt;=</span> b</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">invariant</span> a <span class="op">==</span> b <span class="op">*</span> q <span class="op">+</span> r</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="op">{</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    q <span class="op">:=</span> q <span class="op">+</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    r <span class="op">:=</span> r <span class="op">-</span> b<span class="op">;</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<aside class="notes">
+<ul>
+<li>Ver qué pasa si se cambian algunas asignaciones</li>
+<li>Decir que se puede añadir un decreases</li>
+</ul>
+</aside>
+</section></section>
+<section>
+<section id="ejemplo-2-multiplicar-por-dos-un-vector"
+class="title-slide slide level1 center"
+data-background-image="img/RedBackground.jpg">
+<h1 class="center" data-background-image="img/RedBackground.jpg">Ejemplo
+2:<br/>Multiplicar por dos un vector</h1>
+
+</section>
+<section id="multiplicar-por-dos-un-vector" class="slide level2">
+<h2>Multiplicar por dos un vector</h2>
+<ul>
+<li><p>Queremos hacer un método que reciba un vector (como parámetro de
+E/S) de números enteros y lo transforme multiplicando cada uno de sus
+elementos por 2.</p></li>
+<li><p>En el lenguaje pseudocódigo utilizado por nosotros:</p></li>
+</ul>
+<div class="pseudo">
+<p><strong>method</strong> multPorDos(<strong>inout</strong>
+V[0..n)<span class="colon">:</span> <span class="type">array&lt;<span
+class="type">int</span>&gt;</span>)<br>  <strong>requires</strong> n
+&gt;= 0 <span class="math inline">\({\wedge}\)</span> V ==
+V<sub>old</sub><br>  <strong>ensures</strong> (<span
+class="math inline">\(\forall\)</span>j <span class="colon">:</span> 0
+&lt;= j &lt; n <span class="colon">:</span> V[j] == V<sub>old</sub>[j] *
+2)</p>
+</div>
+</section>
+<section id="diferencias-en-dafny" class="slide level2">
+<h2>Diferencias en Dafny</h2>
+<ul>
+<li class="fragment"><p>No se pueden especificar parámetros de E/S.</p>
+<ul>
+<li class="fragment">Los parámetros de tipos básicos: (<code>int</code>,
+<code>bool</code>, etc.) son inmutables.</li>
+<li class="fragment">Los parámetros de tipos no básicos:
+(<code>array</code>, objetos) pueden ser modificados.</li>
+</ul></li>
+<li class="fragment"><p>La longitud de un vector <code>V</code> se
+indica mediante <code>V.Length</code>, en lugar de utilizar una variable
+aparte.</p></li>
+<li class="fragment"><p>Sintaxis de los cuantificadores:</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode dafny"><code class="sourceCode dafny"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="cf">forall</span> i <span class="op">|</span> P <span class="op">::</span> Q   <span class="co">// en lugar de (∀i : P : Q)</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="cf">exists</span> i <span class="op">|</span> P <span class="op">::</span> Q   <span class="co">// en lugar de (∃i : P : Q)</span></span></code></pre></div></li>
+<li class="fragment"><p>En la postcondición podemos utilizar
+<code>old(expr)</code> para hacer referencia a los valores de
+<code>expr</code> antes de ejecutar el método.</p>
+<ul>
+<li class="fragment">Sirve como alternativa a las igualdades <span
+class="pseudo inline">V == V<sub>old</sub></span> de la
+precondición.</li>
+</ul></li>
+</ul>
+</section>
+<section id="especificación-en-dafny-1" class="slide level2">
+<h2>Especificación en Dafny</h2>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode dafny"><code class="sourceCode dafny"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">method</span> multDos<span class="op">(</span>V<span class="op">:</span> <span class="dt">array</span><span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;)</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">requires</span> V<span class="op">.</span>Length <span class="op">&gt;=</span> <span class="dv">0</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">ensures</span> <span class="cf">forall</span> j <span class="op">|</span> <span class="dv">0</span> <span class="op">&lt;=</span> j <span class="op">&lt;</span> V<span class="op">.</span>Length <span class="op">::</span> V<span class="op">[</span>j<span class="op">]</span> <span class="op">==</span> <span class="dv">2</span> <span class="op">*</span> old<span class="op">(</span>V<span class="op">[</span>j<span class="op">])</span></span></code></pre></div>
+<div class="fragment">
+<p>Como <code>V.Length</code> es de tipo <code>nat</code> podemos omitir
+la precondición:</p>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode dafny"><code class="sourceCode dafny"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">method</span> multDos<span class="op">(</span>V<span class="op">:</span> <span class="dt">array</span><span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;)</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">ensures</span> <span class="cf">forall</span> j <span class="op">|</span> <span class="dv">0</span> <span class="op">&lt;=</span> j <span class="op">&lt;</span> V<span class="op">.</span>Length <span class="op">::</span> V<span class="op">[</span>j<span class="op">]</span> <span class="op">==</span> <span class="dv">2</span> <span class="op">*</span> old<span class="op">(</span>V<span class="op">[</span>j<span class="op">])</span></span></code></pre></div>
+</div>
+<div class="fragment">
+<p>Además, si el método va a modificar el array pasado como parámetro,
+es necesario indicarlo en la especificación:</p>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode dafny"><code class="sourceCode dafny"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">method</span> multDos<span class="op">(</span>V<span class="op">:</span> <span class="dt">array</span><span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;)</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">ensures</span> <span class="cf">forall</span> j <span class="op">|</span> <span class="dv">0</span> <span class="op">&lt;=</span> j <span class="op">&lt;</span> V<span class="op">.</span>Length <span class="op">::</span> V<span class="op">[</span>j<span class="op">]</span> <span class="op">==</span> <span class="dv">2</span> <span class="op">*</span> old<span class="op">(</span>V<span class="op">[</span>j<span class="op">])</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">modifies</span> V</span></code></pre></div>
+</div>
+</section>
+<section id="implementación-en-dafny-1" class="slide level2">
+<h2>Implementación en Dafny</h2>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode dafny"><code class="sourceCode dafny"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">method</span> multDos<span class="op">(</span>V<span class="op">:</span> <span class="dt">array</span><span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;)</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">ensures</span> <span class="cf">forall</span> j <span class="op">|</span> <span class="dv">0</span> <span class="op">&lt;=</span> j <span class="op">&lt;</span> V<span class="op">.</span>Length <span class="op">::</span> V<span class="op">[</span>j<span class="op">]</span> <span class="op">==</span> <span class="dv">2</span> <span class="op">*</span> old<span class="op">(</span>V<span class="op">[</span>j<span class="op">])</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">modifies</span> V</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="kw">var</span> i <span class="op">:=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">while</span> i <span class="op">!=</span> V<span class="op">.</span>Length</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">invariant</span> <span class="dv">0</span> <span class="op">&lt;=</span> i <span class="op">&lt;=</span> V<span class="op">.</span>Length </span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>              <span class="op">&amp;&amp;</span> <span class="op">(</span><span class="cf">forall</span> j <span class="op">|</span> <span class="dv">0</span> <span class="op">&lt;=</span> j <span class="op">&lt;</span> i <span class="op">::</span> V<span class="op">[</span>j<span class="op">]</span> <span class="op">==</span> old<span class="op">(</span>V<span class="op">[</span>j<span class="op">])</span> <span class="op">*</span> <span class="dv">2</span><span class="op">)</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>              <span class="op">&amp;&amp;</span> <span class="op">(</span><span class="cf">forall</span> j <span class="op">|</span> i <span class="op">&lt;=</span> j <span class="op">&lt;</span> V<span class="op">.</span>Length <span class="op">::</span> V<span class="op">[</span>j<span class="op">]</span> <span class="op">==</span> old<span class="op">(</span>V<span class="op">[</span>j<span class="op">]))</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>  <span class="op">{</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    V<span class="op">[</span>i<span class="op">]</span> <span class="op">:=</span> V<span class="op">[</span>i<span class="op">]</span> <span class="op">*</span> <span class="dv">2</span><span class="op">;</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>    i <span class="op">:=</span> i <span class="op">+</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+</section></section>
+<section>
+<section id="ejemplo-3-sumar-los-elementos-de-un-vector"
+class="title-slide slide level1 center"
+data-background-image="img/RedBackground.jpg">
+<h1 class="center" data-background-image="img/RedBackground.jpg">Ejemplo
+3:<br/>Sumar los elementos de un vector</h1>
+
+</section>
+<section id="sumar-los-elementos-de-un-vector" class="slide level2">
+<h2>Sumar los elementos de un vector</h2>
+<p>En nuestro lenguaje pseudocódigo:</p>
+<div class="pseudo">
+<p><strong>method</strong> sumaVector(V[0..n)<span
+class="colon">:</span> <span class="type">array&lt;<span
+class="type">int</span>&gt;</span>) <strong>returns</strong> (s<span
+class="colon">:</span> <span
+class="type">int</span>)<br><strong>requires</strong> n &gt;=
+0<br><strong>ensures</strong> s == (Σj <span class="colon">:</span> 0
+&lt;= j &lt; n <span class="colon">:</span> V[j])</p>
+</div>
+<div class="fragment">
+<ul>
+<li><p>En Dafny no existen los cuantificadores <span
+class="pseudo inline">Σ</span>, ∏, <span class="pseudo inline">#</span>,
+<span class="pseudo inline">máx</span>, etc.</p></li>
+<li><p>No obstante, podemos definir funciones propias para incorporar a
+las fórmulas lógicas.</p></li>
+</ul>
+</div>
+</section>
+<section id="funciones-fantasma-ghost-functions" class="slide level2">
+<h2>Funciones fantasma (<em>ghost functions</em>)</h2>
+<ul>
+<li class="fragment"><p>Una <strong>función fantasma</strong> es una
+definición de función que solamente sirve a efectos de
+especificación.</p>
+<ul>
+<li class="fragment">Es decir no se genera código ejecutable para
+funciones fantasma.</li>
+</ul></li>
+<li class="fragment"><p>Para definir funciones, Dafny utiliza una
+sintaxis funcional que utiliza recursión en lugar de bucles.</p></li>
+<li class="fragment"><p>Por ejemplo, definimos recursivamente
+<code>suma(V, i, j)</code> como la suma de los elementos del segmento
+<span class="pseudo inline">V[i..j)</span> del vector
+<code>V</code>.</p>
+<p><span class="math display">\[
+\mathit{suma}(V, i, j) = \begin{cases}
+0 &amp; \text{si }i = j \\
+V[i] + \mathit{suma}(V, i + 1, j) &amp; \text{si }i &lt; j
+\end{cases}
+\]</span></p></li>
+</ul>
+</section>
+<section id="funciones-fantasma" class="slide level2">
+<h2>Funciones fantasma</h2>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode dafny"><code class="sourceCode dafny"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">ghost</span> <span class="kw">function</span> suma<span class="op">(</span>V<span class="op">:</span> <span class="dt">array</span><span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;,</span> i<span class="op">:</span> <span class="dt">int</span><span class="op">,</span> j<span class="op">:</span> <span class="dt">int</span><span class="op">):</span> <span class="dt">int</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">requires</span> <span class="dv">0</span> <span class="op">&lt;=</span> i <span class="op">&lt;=</span> j <span class="op">&lt;=</span> V<span class="op">.</span>Length</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">decreases</span> j <span class="op">-</span> i</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">reads</span> V</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> i <span class="op">==</span> j then <span class="dv">0</span> <span class="cf">else</span> V<span class="op">[</span>i<span class="op">]</span> <span class="op">+</span> suma<span class="op">(</span>V<span class="op">,</span> i <span class="op">+</span> <span class="dv">1</span><span class="op">,</span> j<span class="op">)</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="fragment">
+<p>Por tanto, la especificación de nuestro método en Dafny queda del
+siguiente modo:</p>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode dafny"><code class="sourceCode dafny"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">method</span> sumaVector<span class="op">(</span>V<span class="op">:</span> <span class="dt">array</span><span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;)</span> <span class="kw">returns</span> <span class="op">(</span>s<span class="op">:</span> <span class="dt">int</span><span class="op">)</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">ensures</span> s <span class="op">==</span> suma<span class="op">(</span>V<span class="op">,</span> <span class="dv">0</span><span class="op">,</span> V<span class="op">.</span>Length<span class="op">)</span></span></code></pre></div>
+</div>
+</section>
+<section id="posibles-implementaciones" class="slide level2">
+<h2>Posibles implementaciones</h2>
+<p>Recorriendo el vector de derecha a izquierda: 👍🏻</p>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode dafny"><code class="sourceCode dafny"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">method</span> sumaVector<span class="op">(</span>V<span class="op">:</span> <span class="dt">array</span><span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;)</span> <span class="kw">returns</span> <span class="op">(</span>s<span class="op">:</span> <span class="dt">int</span><span class="op">)</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">ensures</span> s <span class="op">==</span> suma<span class="op">(</span>V<span class="op">,</span> <span class="dv">0</span><span class="op">,</span> V<span class="op">.</span>Length<span class="op">)</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  s <span class="op">:=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="kw">var</span> i <span class="op">:=</span> V<span class="op">.</span>Length<span class="op">;</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">while</span> i <span class="op">&gt;</span> <span class="dv">0</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">invariant</span> <span class="dv">0</span> <span class="op">&lt;=</span> i <span class="op">&lt;=</span> V<span class="op">.</span>Length <span class="op">&amp;&amp;</span> s <span class="op">==</span> suma<span class="op">(</span>V<span class="op">,</span> i<span class="op">,</span> V<span class="op">.</span>Length<span class="op">)</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>  <span class="op">{</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>    s <span class="op">:=</span> s <span class="op">+</span> V<span class="op">[</span>i <span class="op">-</span> <span class="dv">1</span><span class="op">];</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>    i <span class="op">:=</span> i <span class="op">-</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+</section>
+<section class="slide level2">
+
+<p>Recorriendo el vector de izquierda a derecha: 👎🏻</p>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode dafny"><code class="sourceCode dafny"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">method</span> sumaVector<span class="op">(</span>V<span class="op">:</span> <span class="dt">array</span><span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;)</span> <span class="kw">returns</span> <span class="op">(</span>s<span class="op">:</span> <span class="dt">int</span><span class="op">)</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">ensures</span> s <span class="op">==</span> suma<span class="op">(</span>V<span class="op">,</span> <span class="dv">0</span><span class="op">,</span> V<span class="op">.</span>Length<span class="op">)</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  s <span class="op">:=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="kw">var</span> i <span class="op">:=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">while</span> i <span class="op">&lt;</span> V<span class="op">.</span>Length</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">invariant</span> <span class="dv">0</span> <span class="op">&lt;=</span> i <span class="op">&lt;=</span> V<span class="op">.</span>Length <span class="op">&amp;&amp;</span> s <span class="op">==</span> suma<span class="op">(</span>V<span class="op">,</span> <span class="dv">0</span><span class="op">,</span> i<span class="op">)</span>   ❌</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>  <span class="op">{</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    s <span class="op">:=</span> s <span class="op">+</span> V<span class="op">[</span>i<span class="op">];</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>    i <span class="op">:=</span> i <span class="op">+</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="fragment">
+<pre><code>invariant 0 &lt;= i &lt;= V.Length &amp;&amp; s == suma(V, 0, i)
+                                ^^^^^^^^^^^^^^^^^^
+this invariant could not be proved to be maintained by the loop</code></pre>
+</div>
+</section>
+<section id="sentencias-assert" class="slide level2">
+<h2>Sentencias <code>assert</code></h2>
+<ul>
+<li><p>Nos permiten determinar si una determinada fórmula se cumple o no
+en un momento determinado.</p></li>
+<li><p>Además de servir para depurar, permiten guiar a Dafny en el
+proceso de verificación.</p></li>
+</ul>
+<div class="sourceCode" id="cb14"><pre
+class="sourceCode dafny"><code class="sourceCode dafny"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> i <span class="op">&gt;</span> <span class="dv">0</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">invariant</span> <span class="dv">0</span> <span class="op">&lt;=</span> i <span class="op">&lt;=</span> V<span class="op">.</span>Length <span class="op">&amp;&amp;</span> s <span class="op">==</span> suma<span class="op">(</span>V<span class="op">,</span> <span class="dv">0</span><span class="op">,</span> i<span class="op">)</span>   </span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  s <span class="op">:=</span> s <span class="op">+</span> V<span class="op">[</span>i<span class="op">];</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  <span class="kw">assert</span> s <span class="op">==</span> suma<span class="op">(</span>V<span class="op">,</span> <span class="dv">0</span><span class="op">,</span> i <span class="op">+</span> <span class="dv">1</span><span class="op">);</span> ❌</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  i <span class="op">:=</span> i <span class="op">+</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="fragment">
+<p>Dafny no puede demostrar que <span class="pseudo inline">suma(V, 0,
+i) + V[i] == suma(V, 0, i + 1)</span></p>
+<p><span class="math display">\[
+  \mathit{suma}(V, i, j) = \begin{cases}
+  0 &amp; \text{si }i = j \\
+  V[i] + \mathit{suma}(V, i + 1, j) &amp; \text{si }i &lt; j
+  \end{cases}
+  \]</span></p>
+</div>
+</section>
+<section id="lema-auxiliar" class="slide level2">
+<h2>Lema auxiliar</h2>
+<div
+style="background-color:#FFFFD0; padding-top: 0.5em;padding-bottom: 0.5em">
+<dl>
+<dt>Lema</dt>
+<dd>
+<p>Para todo <span class="math inline">\(V~[0..n)\)</span>, <span
+class="math inline">\(i\)</span>, <span class="math inline">\(j\)</span>
+tal que <span class="math inline">\(0 \leq i \leq j &lt; n\)</span> se
+cumple:</p>
+</dd>
+</dl>
+<p><span class="math display">\[
+  \mathit{suma}(V, i, j) + V[j] = \mathit{suma}(V, i, j + 1)
+  \]</span></p>
+</div>
+<p>En Dafny:</p>
+<div class="sourceCode" id="cb15"><pre
+class="sourceCode dafny"><code class="sourceCode dafny"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">lemma</span> sumaPorLaDerecha<span class="op">(</span>V<span class="op">:</span> <span class="dt">array</span><span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;,</span> i<span class="op">:</span> <span class="dt">int</span><span class="op">,</span> j<span class="op">:</span> <span class="dt">int</span><span class="op">)</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">requires</span> <span class="dv">0</span> <span class="op">&lt;=</span> i <span class="op">&lt;=</span> j <span class="op">&lt;</span> V<span class="op">.</span>Length</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">ensures</span> suma<span class="op">(</span>V<span class="op">,</span> i<span class="op">,</span> j<span class="op">)</span> <span class="op">+</span> V<span class="op">[</span>j<span class="op">]</span> <span class="op">==</span> suma<span class="op">(</span>V<span class="op">,</span> i<span class="op">,</span> j <span class="op">+</span> <span class="dv">1</span><span class="op">)</span></span></code></pre></div>
+</section>
+<section id="demostración" class="slide level2">
+<h2>Demostración</h2>
+<p>Por inducción sobre <span class="math inline">\(j - i\)</span>:</p>
+<p><strong>Base</strong> (<span class="math inline">\(i =
+j\)</span>):</p>
+<p><span class="math display">\[
+\mathit{suma}(V, j, j) + V[j] = V[j] = \mathit{suma}(V, j, j + 1)
+\]</span></p>
+<p><strong>Paso inductivo</strong>: (<span class="math inline">\(i &lt;
+j\)</span>)</p>
+<p><span class="math display">\[
+\begin{array}{ll}
+&amp; \mathit{suma}(V, i, j) + V[j] \\
+= &amp; \qquad \{\text{definición de $\mathit{suma}$}\}\\
+&amp; V[i] + \mathit{suma}(V, i + 1, j) + V[j] \\
+= &amp; \qquad \{\text{hipótesis de inducción}\}\\
+&amp; V[i] + \mathit{suma}(V, i + 1, j + 1) \\
+= &amp; \qquad \{\text{definición de $\mathit{suma}$}\}\\
+&amp; \mathit{suma}(V, i, j + 1) \\
+\end{array}
+\]</span></p>
+</section>
+<section id="demostración-en-dafny" class="slide level2">
+<h2>Demostración en Dafny</h2>
+<div class="sourceCode" id="cb16"
+style="background:transparent !important"><pre
+class="sourceCode dafny"><code class="sourceCode dafny"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="kw">lemma</span> sumaPorLaDerecha<span class="op">(</span>V<span class="op">:</span> <span class="dt">array</span><span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;,</span> i<span class="op">:</span> <span class="dt">int</span><span class="op">,</span> j<span class="op">:</span> <span class="dt">int</span><span class="op">)</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">requires</span> <span class="dv">0</span> <span class="op">&lt;=</span> i <span class="op">&lt;=</span> j <span class="op">&lt;</span> V<span class="op">.</span>Length</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">ensures</span> suma<span class="op">(</span>V<span class="op">,</span> i<span class="op">,</span> j <span class="op">+</span> <span class="dv">1</span><span class="op">)</span> <span class="op">==</span> suma<span class="op">(</span>V<span class="op">,</span> i<span class="op">,</span> j<span class="op">)</span> <span class="op">+</span> V<span class="op">[</span>j<span class="op">]</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">decreases</span> j <span class="op">-</span> i</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> i <span class="op">==</span> j <span class="op">{</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">assert</span> suma<span class="op">(</span>V<span class="op">,</span> i<span class="op">,</span> j <span class="op">+</span> <span class="dv">1</span><span class="op">)</span> <span class="op">==</span> V<span class="op">[</span>j<span class="op">]</span> <span class="op">==</span> suma<span class="op">(</span>V<span class="op">,</span> i<span class="op">,</span> j<span class="op">)</span> <span class="op">+</span> V<span class="op">[</span>j<span class="op">];</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">calc</span> <span class="op">{</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>        suma<span class="op">(</span>V<span class="op">,</span> i<span class="op">,</span> j <span class="op">+</span> <span class="dv">1</span><span class="op">);</span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">==</span></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>        V<span class="op">[</span>i<span class="op">]</span> <span class="op">+</span> suma<span class="op">(</span>V<span class="op">,</span> i <span class="op">+</span> <span class="dv">1</span><span class="op">,</span> j <span class="op">+</span> <span class="dv">1</span><span class="op">);</span></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>    <span class="op">==</span> <span class="op">{</span> sumaPorLaDerecha<span class="op">(</span>V<span class="op">,</span> i <span class="op">+</span> <span class="dv">1</span><span class="op">,</span> j<span class="op">);</span> <span class="op">}</span></span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>        V<span class="op">[</span>i<span class="op">]</span> <span class="op">+</span> suma<span class="op">(</span>V<span class="op">,</span> i <span class="op">+</span> <span class="dv">1</span><span class="op">,</span> j<span class="op">)</span> <span class="op">+</span> V<span class="op">[</span>j<span class="op">];</span></span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>    <span class="op">==</span></span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>        suma<span class="op">(</span>V<span class="op">,</span> i<span class="op">,</span> j<span class="op">)</span> <span class="op">+</span> V<span class="op">[</span>j<span class="op">];</span></span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+</section>
+<section id="uso-del-lema" class="slide level2">
+<h2>Uso del lema</h2>
+<div class="sourceCode" id="cb17"><pre
+class="sourceCode dafny"><code class="sourceCode dafny"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> i <span class="op">&gt;</span> <span class="dv">0</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">invariant</span> <span class="dv">0</span> <span class="op">&lt;=</span> i <span class="op">&lt;=</span> V<span class="op">.</span>Length <span class="op">&amp;&amp;</span> s <span class="op">==</span> suma<span class="op">(</span>V<span class="op">,</span> <span class="dv">0</span><span class="op">,</span> i<span class="op">)</span>   </span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  s <span class="op">:=</span> s <span class="op">+</span> V<span class="op">[</span>i<span class="op">];</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  <span class="kw">assert</span> s <span class="op">==</span> suma<span class="op">(</span>V<span class="op">,</span> <span class="dv">0</span><span class="op">,</span> i <span class="op">+</span> <span class="dv">1</span><span class="op">)</span> <span class="kw">by</span> <span class="op">{</span> sumaPorLaDerecha<span class="op">(</span>V<span class="op">,</span> <span class="dv">0</span><span class="op">,</span> i<span class="op">);</span> <span class="op">}</span>  ✅</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>  i <span class="op">:=</span> i <span class="op">+</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+</section></section>
+    </div>
+  </div>
+
+  <script src="dist/reveal.js"></script>
+
+  <!-- reveal.js plugins -->
+  <script src="plugin/notes/notes.js"></script>
+  <script src="plugin/search/search.js"></script>
+  <script src="plugin/zoom/zoom.js"></script>
+  <script src="plugin/highlight/highlight.js"></script>
+  <script src="plugin/math/math.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+        // Display controls in the bottom right corner
+        controls: false,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: true,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'bottom-right',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: false,
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: false,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: false,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'default',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Prints all fragments in their visible states on the same slide 
+        pdfSeparateFragments: false,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: true,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'slide',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'fade',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1600,
+
+        height: 900,
+
+        math: {
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom,
+          // RevealHighlight          
+        ]
+      });
+    </script>
+    </body>
+</html>
