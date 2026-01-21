@@ -685,12 +685,12 @@ disponibles.</p>
 <div class="column" style="width:40%;">
 <div class="pseudo">
 <p>b ::= <span class="type">true</span>        <br>    | <span
-class="type">false</span>  <br>    | x <span class="comment">// variable
-booleana</span><br>    | e<sub>1</sub> == e<sub>2</sub><br>    |
-e<sub>1</sub> &lt;= e<sub>2</sub><br>    | …<br>    | b<sub>1</sub>
-<span class="math inline">\({\wedge}\)</span> b<sub>2</sub> <br>    |
-b<sub>1</sub> <span class="math inline">\({\vee}\)</span> b<sub>2</sub>
-<br>    | <span class="math inline">\(\neg\)</span>b</p>
+class="type">false</span>  <br>    | x<br>    | e<sub>1</sub> ==
+e<sub>2</sub><br>    | e<sub>1</sub> &lt;= e<sub>2</sub><br>    |
+…<br>    | b<sub>1</sub> <span class="math inline">\({\wedge}\)</span>
+b<sub>2</sub> <br>    | b<sub>1</sub> <span
+class="math inline">\({\vee}\)</span> b<sub>2</sub> <br>    | <span
+class="math inline">\(\neg\)</span>b</p>
 </div>
 </div><div class="column">
 <ul>
@@ -1359,7 +1359,7 @@ class="math inline">\(\neg\)</span>b ==&gt; wp(S<sub>2</sub>, Q))</p>
 <p>wp(<strong>if</strong> y &lt;= x { y := x; } <strong>else</strong> {
 <strong>skip</strong>; }, y &gt;= x)<br>  <span class="fragment">===
 def(y &lt;= x) <span class="math inline">\({\wedge}\)</span> (y &lt;= x
-==&gt; wp(y := x, y &gt;= x)) <span
+==&gt; wp(y := x, y &gt;= x)) <br>            <span
 class="math inline">\({\wedge}\)</span> (y &gt; x ==&gt;
 wp(<strong>skip</strong>, y &gt;= x))</span><br>  <span
 class="fragment">=== <span class="type">true</span> <span
@@ -1570,7 +1570,7 @@ determinar los invariantes adecuados.</p>
 <th style="text-align: center;"></th>
 <th style="text-align: right;"><code>i</code></th>
 <th style="text-align: right;"><code>n</code></th>
-<th style="text-align: right;"><code>s</code></th>
+<th style="text-align: left;"><code>s</code></th>
 </tr>
 </thead>
 <tbody>
@@ -1578,32 +1578,32 @@ determinar los invariantes adecuados.</p>
 <td style="text-align: center;">Antes del bucle</td>
 <td style="text-align: right;"><code>0</code></td>
 <td style="text-align: right;"><code>4</code></td>
-<td style="text-align: right;"><code>0</code></td>
+<td style="text-align: left;"><code>0</code></td>
 </tr>
 <tr>
 <td style="text-align: center;">Tras 1ª iteracion</td>
 <td style="text-align: right;"><code>1</code></td>
 <td style="text-align: right;"><code>4</code></td>
-<td style="text-align: right;"><code>v[0]</code></td>
+<td style="text-align: left;"><code>v[0]</code></td>
 </tr>
 <tr>
 <td style="text-align: center;">Tras 2ª iteracion</td>
 <td style="text-align: right;"><code>2</code></td>
 <td style="text-align: right;"><code>4</code></td>
-<td style="text-align: right;"><code>v[0] + v[1]</code></td>
+<td style="text-align: left;"><code>v[0] + v[1]</code></td>
 </tr>
 <tr>
 <td style="text-align: center;">Tras 3ª iteracion</td>
 <td style="text-align: right;"><code>3</code></td>
 <td style="text-align: right;"><code>4</code></td>
-<td style="text-align: right;"><code>v[0] + v[1] + v[2]</code></td>
+<td style="text-align: left;"><code>v[0] + v[1] + v[2]</code></td>
 </tr>
 <tr>
 <td style="text-align: center;">Tras 4ª iteracion</td>
 <td style="text-align: right;"><code>4</code></td>
 <td style="text-align: right;"><code>4</code></td>
 <td
-style="text-align: right;"><code>v[0] + v[1] + v[2] + v[3]</code></td>
+style="text-align: left;"><code>v[0] + v[1] + v[2] + v[3]</code></td>
 </tr>
 </tbody>
 </table>
@@ -1857,7 +1857,7 @@ data-transition="slide-in none-out">
 <h2 data-transition="slide-in none-out">Ejemplo 2</h2>
 <div class="columns">
 <div class="column">
-<div class="pseudo">
+<div class="pseudo" style="font-size:70%">
 <p><span class="pre">{ i == 0 <span
 class="math inline">\({\wedge}\)</span> s == 0 <span
 class="math inline">\({\wedge}\)</span> n &gt;= 0
@@ -1892,7 +1892,7 @@ data-transition="none-in slide-out">
 <h2 data-transition="none-in slide-out">Ejemplo 2</h2>
 <div class="columns">
 <div class="column">
-<div class="pseudo">
+<div class="pseudo" style="font-size:70%">
 <p><span class="pre">{ i == 0 <span
 class="math inline">\({\wedge}\)</span> s == 0 <span
 class="math inline">\({\wedge}\)</span> n &gt;= 0
@@ -1971,12 +1971,12 @@ data-transition="slide-in none-out">
 <h2 data-transition="slide-in none-out">Ejemplo 2</h2>
 <div class="columns">
 <div class="column">
-<div class="pseudo">
+<div class="pseudo" style="font-size:70%">
 <p><span class="pre">{ i == 0 <span
 class="math inline">\({\wedge}\)</span> s == 0 <span
 class="math inline">\({\wedge}\)</span> n &gt;= 0
 }</span><br><strong>while</strong> i &lt;
-n<br>  <strong>invariant</strong> i &lt;= n <span
+n<br>  <strong>invariant</strong> 0 &lt;= i &lt;= n <span
 class="math inline">\({\wedge}\)</span> s == (Σj <span
 class="colon">:</span> 0 &lt;= j &lt; i <span class="colon">:</span>
 V[j])<br>{<br>  s := s + V[i];<br>  i := i + 1;<br>}<br><span
@@ -1993,11 +1993,11 @@ class="post">{ s == (Σj <span class="colon">:</span> 0 &lt;= j &lt; n
 <div class="fragment">
 <p>Condición de salida:</p>
 <div class="pseudo">
-<p>i &lt;= n <span class="math inline">\({\wedge}\)</span> s == (Σj
-<span class="colon">:</span> 0 &lt;= j &lt; i <span
+<p>0 &lt;= i &lt;= n <span class="math inline">\({\wedge}\)</span> s ==
+(Σj <span class="colon">:</span> 0 &lt;= j &lt; i <span
 class="colon">:</span> V[j]) <span
-class="math inline">\({\wedge}\)</span> i &gt;= n  ==&gt;  s == (Σj
-<span class="colon">:</span> 0 &lt;= j &lt; n <span
+class="math inline">\({\wedge}\)</span> i &gt;= n  <br>    ==&gt;  s ==
+(Σj <span class="colon">:</span> 0 &lt;= j &lt; n <span
 class="colon">:</span> V[j])    <span class="fragment">✅</span></p>
 </div>
 </div>
@@ -2007,12 +2007,12 @@ data-transition="none-in slide-out">
 <h2 data-transition="none-in slide-out">Ejemplo 2</h2>
 <div class="columns">
 <div class="column">
-<div class="pseudo">
+<div class="pseudo" style="font-size:70%">
 <p><span class="pre">{ i == 0 <span
 class="math inline">\({\wedge}\)</span> s == 0 <span
 class="math inline">\({\wedge}\)</span> n &gt;= 0
 }</span><br><strong>while</strong> i &lt;
-n<br>  <strong>invariant</strong> i &lt;= n <span
+n<br>  <strong>invariant</strong> 0 &lt;= i &lt;= n <span
 class="math inline">\({\wedge}\)</span> s == (Σj <span
 class="colon">:</span> 0 &lt;= j &lt; i <span class="colon">:</span>
 V[j])<br>{<br>  s := s + V[i];<br>  i := i + 1;<br>}<br><span
@@ -2389,8 +2389,8 @@ t<sub>old</sub> }</span></p>
 <p>  i &lt;= n <span class="math inline">\({\wedge}\)</span> p ==
 2<sup>i</sup> <span class="math inline">\({\wedge}\)</span> i &lt; n
 <span class="math inline">\({\wedge}\)</span> n - i == t<sub>old</sub>
-==&gt; wp((p := p * 2; i := i + 1), n - i &lt; t<sub>old</sub>)<br><span
-class="fragment">===<br>  i &lt;= n <span
+<br>    ==&gt; wp((p := p * 2; i := i + 1), n - i &lt;
+t<sub>old</sub>)<br><span class="fragment">===<br>  i &lt;= n <span
 class="math inline">\({\wedge}\)</span> p == 2<sup>i</sup> <span
 class="math inline">\({\wedge}\)</span> i &lt; n <span
 class="math inline">\({\wedge}\)</span> n - i == t<sub>old</sub> ==&gt;
