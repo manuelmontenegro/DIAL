@@ -587,7 +587,7 @@ class="pseudo inline">b<sub>1</sub></span>, etc.</p></li>
 <h2>Sobre la asignación simultánea</h2>
 <div class="pseudo center">
 <p>x<sub>1</sub>, …, x<sub>n</sub> := e<sub>1</sub>, …,
-e<sub>n</sub></p>
+e<sub>n</sub>;</p>
 </div>
 <p> </p>
 <p>Evalúa los valores de las expresiones <span
@@ -599,7 +599,7 @@ class="pseudo inline">x<sub>n</sub></span> correspondientes.</p>
 <div class="fragment">
 <p>Por ejemplo:</p>
 <div class="pseudo">
-<p>x, y := y, x    <span
+<p>x, y := y, x;    <span
 class="arrow_box_left fragment fade-left">Intercambia los valores de
 <code>x</code> e <code>y</code></span></p>
 </div>
@@ -643,7 +643,7 @@ class="meta">Q</span><br>{<br>  <strong>var</strong> <span
 class="meta">z<sub>1</sub></span><span class="colon">:</span> <span
 class="meta">tipo’<sub>1</sub></span>, …, <span
 class="meta">z<sub>k</sub></span><span class="colon">:</span> <span
-class="meta">tipo’<sub>k</sub></span>  <span
+class="meta">tipo’<sub>k</sub></span>;  <span
 class="arrow_box_left fragment fade-left">Variables
 locales</span><br>  <span class="meta">S</span>   <span
 class="arrow_box_left fragment fade-left">Cuerpo del
@@ -655,7 +655,7 @@ método</span><br>}</p>
 <p>A veces inicializaremos una variable en su declaración:</p>
 <div class="pseudo">
 <p><strong>var</strong> x<span class="colon">:</span> <span
-class="type">int</span> := 5</p>
+class="type">int</span> := 5;</p>
 </div>
 <div class="fragment">
 <p>Equivale a:</p>
@@ -739,7 +739,7 @@ class="colon">:</span> <span
 class="type">int</span>)<br>  <strong>requires</strong> a &gt;= 0 <span
 class="math inline">\({\wedge}\)</span> b &gt;
 0<br>  <strong>ensures</strong> a == b * q + r <span
-class="math inline">\({\wedge}\)</span> 0 &lt;= b &lt; r<br>{<br>    q
+class="math inline">\({\wedge}\)</span> 0 &lt;= r &lt; b<br>{<br>    q
 := 0;<br>    r := a;<br>    <strong>while</strong> r &gt;= b
 {<br>        q := q + 1; r := r - b;<br>    }<br>}</p>
 </div>
@@ -900,9 +900,10 @@ class="arrow_box_left">Suponemos que <code>S</code> no tiene bucles ni
 llamadas a <code>f</code></span><br>}</p>
 </div>
 <ul>
-<li class="fragment"><p>La función es <strong>correcta</strong> si al
-ejecutarla en cualquier estado que satisfaga la precondición, se obtiene
-un estado que satisface la postcondición.</p></li>
+<li class="fragment"><p>La función es <strong>parcialmente
+correcta</strong> si al ejecutarla en cualquier estado que satisfaga la
+precondición, se obtiene un estado que satisface la
+postcondición.</p></li>
 <li class="fragment"><p>Es decir, para todo estado inicial <span
 class="math inline">\(\sigma\)</span> y estado final <span
 class="math inline">\(\sigma&#39;\)</span> se cumple que:</p>
