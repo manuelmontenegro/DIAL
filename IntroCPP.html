@@ -186,15 +186,16 @@ class="type">true</span>;     <span class="comment">// valores
 booleanos: <span class="type">true</span> o <span
 class="type">false</span></span><br><br><span class="type">float</span>
 f = <span class="number">2</span>.<span
-class="number">45</span>;<br><br>char c = <span class="string">'<span
-class="number">3</span>'</span>;      <span class="comment">// literales
-char: entre comillas simples (')</span><br><br><span
-class="type">string</span> s = <span class="string">"Hola"</span>; <span
-class="comment">// literales cadena: entre comillas dobles
-(")</span><br><br><span class="type">vector</span>&lt;<span
-class="type">int</span>&gt; v = {<span class="number">1</span>, <span
-class="number">4</span>, <span class="number">10</span>, <span
-class="number">2</span>, -<span class="number">3</span>};</p>
+class="number">45</span>;<br><br><span class="type">char</span> c =
+<span class="string">'<span class="number">3</span>'</span>;      <span
+class="comment">// literales <span class="type">char</span>: entre
+comillas simples (')</span><br><br><span class="type">string</span> s =
+<span class="string">"Hola"</span>; <span class="comment">// literales
+cadena: entre comillas dobles (")</span><br><br><span
+class="type">vector</span>&lt;<span class="type">int</span>&gt; v =
+{<span class="number">1</span>, <span class="number">4</span>, <span
+class="number">10</span>, <span class="number">2</span>, -<span
+class="number">3</span>};</p>
 </div>
 </section></section>
 <section>
@@ -241,7 +242,7 @@ equivale a x = x - <span class="number">1</span>;</span></p>
 </div><div class="column">
 <div class="cpp cpp_block">
 <p><strong>if</strong> (x &gt; <span class="number">10</span>)
-{<br>  x--;<br>} else {<br>  x++<br>}</p>
+{<br>  x--;<br>} <strong>else</strong> {<br>  x++<br>}</p>
 </div>
 </div>
 </div>
@@ -294,11 +295,12 @@ data-background-image="img/RedBackground.jpg">Vectores</h1>
 <li>
 <p>Indicando sus elementos en la inicialización:</p>
 <div class="cpp cpp_block">
-<p><span class="type">vector</span>&lt;char&gt; vocales = {<span
-class="string">'a'</span>, <span class="string">'e'</span>, <span
-class="string">'i'</span>, <span class="string">'o'</span>, <span
-class="string">'u'</span>};<br>cout &lt;&lt; vocales.size() &lt;&lt;
-<span class="string">'\n'</span>;   <span class="comment">// Imprime
+<p><span class="type">vector</span>&lt;<span
+class="type">char</span>&gt; vocales = {<span class="string">'a'</span>,
+<span class="string">'e'</span>, <span class="string">'i'</span>, <span
+class="string">'o'</span>, <span class="string">'u'</span>};<br>cout
+&lt;&lt; vocales.size() &lt;&lt; <span
+class="string">'\n'</span>;   <span class="comment">// Imprime
 5</span><br>cout &lt;&lt; vocales[<span class="number">2</span>]
 &lt;&lt; <span class="string">'\n'</span>;       <span
 class="comment">// Imprime i</span></p>
@@ -307,16 +309,17 @@ class="comment">// Imprime i</span></p>
 <li>
 <p>Creando un vector vacío y usando <code>push_back</code>:</p>
 <div class="cpp cpp_block">
-<p><span class="type">vector</span>&lt;char&gt;
-vocales;<br>vocales.push_back(<span class="string">'a'</span>);
-vocales.push_back(<span class="string">'e'</span>); <span
-class="comment">// ...</span></p>
+<p><span class="type">vector</span>&lt;<span
+class="type">char</span>&gt; vocales;<br>vocales.push_back(<span
+class="string">'a'</span>); vocales.push_back(<span
+class="string">'e'</span>); <span class="comment">// ...</span></p>
 </div>
 </li>
 <li>
 <p>Creando un vector con tamaño y usando asignaciones:</p>
 <div class="cpp cpp_block">
-<p><span class="type">vector</span>&lt;char&gt; vocales(<span
+<p><span class="type">vector</span>&lt;<span
+class="type">char</span>&gt; vocales(<span
 class="number">5</span>);    <span class="comment">// Vector de cinco
 elementos</span><br>vocales[<span class="number">0</span>] = <span
 class="string">'a'</span>;<br>...<br>vocales[<span
@@ -339,8 +342,9 @@ class="number">0</span>; i &lt; vocales.size(); i++) {<br>  cout
 <li>
 <p>Mediante bucles <code>for</code> sin índice:</p>
 <div class="cpp cpp_block">
-<p><strong>for</strong> (char c : vocales) {<br>  cout &lt;&lt; c
-&lt;&lt; <span class="string">'\n'</span>;<br>}</p>
+<p><strong>for</strong> (<span class="type">char</span> c : vocales)
+{<br>  cout &lt;&lt; c &lt;&lt; <span
+class="string">'\n'</span>;<br>}</p>
 </div>
 </li>
 </ul>
