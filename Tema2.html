@@ -1,0 +1,4010 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Manuel Montenegro Montes Dpto. de Sistemas Informáticos y Computación Facultad de Informática Universidad Complutense de Madrid">
+  <title>Diseño de algoritmos iterativos</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="dist/reset.css">
+  <link rel="stylesheet" href="dist/reveal.css">
+  <link rel="stylesheet" href="css/nnfx-light.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <style>
+    .reveal .sourceCode {  /* see #7635 */
+      overflow: visible;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <link rel="stylesheet" href="css/dial.css" id="theme">
+    <style>
+  :root {
+    --color-tema: #9c561d;
+  }
+    </style>
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide" data-background-image="img/BrownBackground.png" class="center">
+  <p class="subtitle">Tema 2</p>
+  <h1 class="title">Diseño de algoritmos iterativos</h1>
+<div id="author-container">
+<div class="author">
+<strong>Manuel Montenegro Montes</strong><br>Dpto. de Sistemas
+Informáticos y Computación<br>Facultad de Informática<br>Universidad
+Complutense de Madrid
+</div>
+</div>
+</section>
+
+<section id="en-qué-consiste-derivar-un-algoritmo" class="slide level2">
+<h2>¿En qué consiste <em>derivar</em> un algoritmo?</h2>
+<ul>
+<li><p>Consiste en construir el algoritmo <strong>a partir de su
+especificación</strong>, verificándolo a medida que se
+construye.</p></li>
+<li><p>El proceso suele estar dirigido por la postcondición. A partir de
+ella puede determinarse:</p>
+<ul>
+<li><p>Si es necesario un bucle para el algoritmo.</p></li>
+<li><p>En caso de ser necesario, cuál es su invariante y condición de
+salida.</p></li>
+</ul></li>
+</ul>
+<aside class="notes">
+<ul>
+<li>Proceso más o menos sistemático, pero no es mecánico.</li>
+<li>Muchas decisiones: algunas llevan a un algoritmo, otras llevan a
+otro, otras no llevan a nada.
+<ul>
+<li>Es la experiencia la que nos hace intuir</li>
+</ul></li>
+<li>No se trata de idea feliz.</li>
+</ul>
+</aside>
+</section>
+<section>
+<section id="derivación-de-algoritmos-sin-bucles"
+class="title-slide slide level1 center"
+data-background-image="img/BrownBackground.png">
+<h1 class="center" data-background-image="img/BrownBackground.png"><span
+class="sc_number">2.1</span>Derivación de algoritmos sin bucles</h1>
+
+</section>
+<section id="instrucciones-sencillas" class="slide level2">
+<h2>Instrucciones sencillas</h2>
+<ul>
+<li>Si la postcondición contiene igualdades de la forma <span
+class="pseudo inline">x == e</span>, podemos intentar asignaciones de la
+forma <code>x := e</code>.</li>
+</ul>
+<p>Ejemplo:</p>
+<div class="pseudo">
+<p><span class="pre">{ <span class="type">true</span>
+}</span><br>???<br><span class="pre">{ x == 7 }</span></p>
+</div>
+<div class="fragment">
+<p>Si ponemos la expresión <span class="pseudo inline">x := 7;</span>
+obtenemos un resultado correcto:</p>
+<div class="columns">
+<div class="column">
+<div class="pseudo">
+<p><span class="pre">{ <span class="type">true</span> }</span><br>x :=
+7;<br><span class="pre">{ x == 7 }</span></p>
+</div>
+</div><div class="column fragment">
+<div class="pseudo">
+<p>wp(x := 7, x == 7)<br>  === 7 == 7<br>  === <span
+class="type">true</span></p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="instrucciones-basadas-en-la-precondición"
+class="slide level2">
+<h2>Instrucciones basadas en la precondición</h2>
+<ul>
+<li>Si la postcondición contiene igualdades de la forma <span
+class="pseudo inline">x == e</span>, pero <code>e</code> no es
+directamente expresable en el lenguaje de programación, podemos
+apoyarnos en la <strong>precondición</strong>.</li>
+</ul>
+<div class="fragment">
+<ul>
+<li>Si la precondición contiene una igualdad de la forma
+<code>x == e'</code> la asignación debe buscar una forma de transformar
+<code>e'</code> en <code>e</code>.</li>
+</ul>
+</div>
+<div class="fragment">
+<div class="pseudo">
+<p><span class="pre">{ y &gt;= 0 <span
+class="math inline">\({\wedge}\)</span> x == 2<sup>y-1</sup>
+}</span><br>???<br><span class="pre">{ x == 2<sup>y</sup> }</span></p>
+</div>
+</div>
+<div class="fragment">
+<p>En este caso, sabemos que <span class="pseudo inline">2<sup>y</sup>
+== 2 * 2<sup>y-1</sup></span>, por lo que podemos probar la asignación
+<code>x := x * 2;</code>.</p>
+</div>
+</section>
+<section id="section" class="slide level2" data-visibility="hidden">
+<h2 data-visibility="hidden"></h2>
+<div class="pseudo">
+<p><span class="pre">{ y &gt;= 0 <span
+class="math inline">\({\wedge}\)</span> x == 2<sup>y-1</sup>
+}</span><br>x := x * 2;<br><span class="pre">{ x == 2<sup>y</sup>
+}</span></p>
+</div>
+<div class="pseudo">
+<p>wp(x := x * 2, x == 2<sup>y</sup>) === 2 * x == 2<sup>y</sup></p>
+</div>
+<p>Comprobamos:</p>
+<div class="pseudo">
+<p>y &gt;= 0 <span class="math inline">\({\wedge}\)</span> x ==
+2<sup>y-1</sup>  ==&gt;  2 * x == 2<sup>y</sup>   <span
+class="fragment">✅</span></p>
+</div>
+</section>
+<section id="instrucciones-con-distinción-de-casos"
+class="slide level2">
+<h2>Instrucciones con distinción de casos</h2>
+<div class="pseudo">
+<p><span class="pre">{ P }</span><br>x := e;<br><span class="pre">{ Q
+}</span></p>
+</div>
+<ul>
+<li><p>En los casos en los que <span class="pseudo inline">P</span> no
+implique <span class="pseudo inline">wp(x := e, Q)</span>, debemos
+determinar en qué casos no se cumple esa implicación.</p></li>
+<li><p>En muchas ocasiones, esto conllevará una distinción de casos
+(mediante <span
+class="pseudo inline"><strong>if</strong></span>).</p></li>
+</ul>
+</section>
+<section id="ejemplo" class="slide level2" data-visibility="hidden">
+<h2 data-visibility="hidden">Ejemplo</h2>
+<div class="pseudo">
+<p><span class="pre">{ x &gt;= a }</span><br>???<br><span class="pre">{
+x &gt; a <span class="math inline">\({\wedge}\)</span> x &gt; b
+}</span></p>
+</div>
+<div class="fragment">
+<p>Si intentamos <span class="pseudo inline">x := b + 1;</span>
+tendríamos:</p>
+<div class="pseudo">
+<p>wp(x := b + 1, x &gt; a <span class="math inline">\({\wedge}\)</span>
+x &gt; b) === b + 1 &gt; a <span class="math inline">\({\wedge}\)</span>
+b + 1 &gt; b</p>
+</div>
+</div>
+<div class="fragment">
+<p>La condición <code>b + 1 &gt; a</code> no se deduce a partir de la
+precondición.</p>
+</div>
+</section>
+<section id="section-1" class="slide level2" data-visibility="hidden">
+<h2 data-visibility="hidden"></h2>
+<div class="pseudo">
+<p><span class="pre">{ x &gt;= a }</span><br><strong>if</strong> b + 1
+&gt; a { x := b + 1; } <strong>else</strong> { <strong>skip</strong>
+}<br><span class="pre">{ x &gt; a <span
+class="math inline">\({\wedge}\)</span> x &gt; b }</span></p>
+</div>
+<div class="fragment">
+<div class="pseudo">
+<p>wp((<strong>if</strong> …), x &gt; a <span
+class="math inline">\({\wedge}\)</span> x &gt; b) <br>  ===   (b + 1
+&gt; a  ==&gt; b + 1 &gt; a <span
+class="math inline">\({\wedge}\)</span> b + 1 &gt; b)<br>      <span
+class="math inline">\({\wedge}\)</span> (b + 1 &lt;= a ==&gt; x &gt; a
+<span class="math inline">\({\wedge}\)</span> x &gt; b)</p>
+</div>
+</div>
+<div class="fragment">
+<p>¿Se deduce a partir de la precondición?</p>
+<div class="pseudo">
+<p>x &gt;= a ==&gt; (<br>    (b + 1 &gt; a   ==&gt; b + 1 &gt; a <span
+class="math inline">\({\wedge}\)</span> b + 1 &gt; b)   <span
+class="fragment">✅</span><br>    <span
+class="math inline">\({\wedge}\)</span> (b + 1 &lt;= a ==&gt; x &gt; a
+<span class="math inline">\({\wedge}\)</span> x &gt; b)          <span
+class="fragment">❌</span><br>  )</p>
+</div>
+</div>
+</section>
+<section id="section-2" class="slide level2" data-visibility="hidden">
+<h2 data-visibility="hidden"></h2>
+<div class="pseudo">
+<p><span class="pre">{ x &gt;= a }</span><br><strong>if</strong> a &lt;
+b + 1 <strong>then</strong> { x := b + 1; } <strong>else</strong> {
+<span class="hl">x := x + 1;</span> }<br><span class="pre">{ x &gt; a
+<span class="math inline">\({\wedge}\)</span> x &gt; b }</span></p>
+</div>
+<p>Comprobamos:</p>
+<div class="pseudo">
+<p>x &gt;= a ==&gt; (<br>    (a &lt; b + 1   ==&gt; b + 1 &gt; a <span
+class="math inline">\({\wedge}\)</span> b + 1 &gt; b)   <span
+class="fragment">✅</span><br>    <span
+class="math inline">\({\wedge}\)</span> (a &gt;= b + 1 ==&gt; x + 1 &gt;
+a <span class="math inline">\({\wedge}\)</span> x + 1 &gt; b)  <span
+class="fragment">✅</span><br>  )</p>
+</div>
+</section>
+<section id="y-si-la-precondición-no-nos-ayuda" class="slide level2">
+<h2>¿Y si la precondición no nos ayuda?</h2>
+<div class="pseudo">
+<p><span class="pre">{ y &gt;= 0 }</span><br>???<br><span class="pre">{
+x == 2<sup>y</sup> }</span></p>
+</div>
+<div class="fragment">
+<p style="text-align:center">
+Necesitaremos un <strong>bucle</strong>.
+</p>
+</div>
+</section></section>
+<section>
+<section id="derivación-de-algoritmos-con-bucles"
+class="title-slide slide level1 center"
+data-background-image="img/BrownBackground.png">
+<h1 class="center" data-background-image="img/BrownBackground.png"><span
+class="sc_number">2.2</span>Derivación de algoritmos con bucles</h1>
+
+</section>
+<section id="pasos-para-derivar-un-algoritmo-iterativo"
+class="slide level2">
+<h2>Pasos para derivar un algoritmo iterativo</h2>
+<table class="pasos">
+<tr>
+<td class="current">
+1️⃣
+</td>
+<td>
+2️⃣
+</td>
+<td>
+3️⃣
+</td>
+<td>
+4️⃣
+</td>
+<td>
+5️⃣
+</td>
+<td>
+6️⃣
+</td>
+</tr>
+<tr>
+<td class="current">
+Inv. y condición
+</td>
+<td>
+Inicialización
+</td>
+<td>
+Cota
+</td>
+<td>
+Avanzar
+</td>
+<td>
+Restablecer
+</td>
+<td>
+Cota decrece
+</td>
+</tr>
+</table>
+<dl>
+<dt>Paso 1</dt>
+<dd>
+<p>A partir de la postcondición, obtener el invariante y la condición
+del bucle:</p>
+<div class="pseudo">
+<p><span class="pre">{ P }</span><br><strong>while</strong> <span
+class="meta">b</span><br>  <strong>invariant</strong> <span
+class="meta">I</span><br>{<br><br>}<br><span class="post">{ Q
+}</span></p>
+</div>
+</dd>
+</dl>
+</section>
+<section class="slide level2">
+
+<table class="pasos">
+<tr>
+<td>
+1️⃣
+</td>
+<td class="current">
+2️⃣
+</td>
+<td>
+3️⃣
+</td>
+<td>
+4️⃣
+</td>
+<td>
+5️⃣
+</td>
+<td>
+6️⃣
+</td>
+</tr>
+<tr>
+<td>
+Inv. y condición
+</td>
+<td class="current">
+Inicialización
+</td>
+<td>
+Cota
+</td>
+<td>
+Avanzar
+</td>
+<td>
+Restablecer
+</td>
+<td>
+Cota decrece
+</td>
+</tr>
+</table>
+<dl>
+<dt>Paso 2</dt>
+<dd>
+<p>Buscar un programa <span class="pseudo inline">S<sub>ini</sub></span>
+que haga que el invariante se cumpla al inicio del bucle.</p>
+<div class="pseudo">
+<p><span class="pre">{ P }</span><br><span
+class="meta">S<sub>ini</sub></span>  <span class="comment">//
+Inicialización</span><br><strong>while</strong> <span
+class="meta">b</span><br>  <strong>invariant</strong> <span
+class="meta">I</span><br>{<br><br>}<br><span class="post">{ Q
+}</span></p>
+</div>
+<p>Es decir, derivar <span class="pseudo inline">S<sub>ini</sub></span>
+tal que <span class="pseudo"><span class="pre">{ P }</span>
+S<sub>ini</sub> <span class="pre">{ I }</span></span></p>
+</dd>
+</dl>
+</section>
+<section class="slide level2">
+
+<table class="pasos">
+<tr>
+<td>
+1️⃣
+</td>
+<td>
+2️⃣
+</td>
+<td class="current">
+3️⃣
+</td>
+<td>
+4️⃣
+</td>
+<td>
+5️⃣
+</td>
+<td>
+6️⃣
+</td>
+</tr>
+<tr>
+<td>
+Inv. y condición
+</td>
+<td>
+Inicialización
+</td>
+<td class="current">
+Cota
+</td>
+<td>
+Avanzar
+</td>
+<td>
+Restablecer
+</td>
+<td>
+Cota decrece
+</td>
+</tr>
+</table>
+<dl>
+<dt>Paso 3</dt>
+<dd>
+<p>Diseñar una función de cota <span class="pseudo inline">t</span> tal
+que <span class="pseudo inline">I <span
+class="math inline">\({\wedge}\)</span> b ==&gt; t &gt;= 0</span></p>
+<div class="pseudo">
+<p><span class="pre">{ P }</span><br><span
+class="meta">S<sub>ini</sub></span>  <span class="comment">//
+Inicialización</span><br><strong>while</strong> <span
+class="meta">b</span><br>  <strong>invariant</strong> <span
+class="meta">I</span><br>  <strong>decreases</strong> <span
+class="meta">t</span><br>{<br><br>}<br><span class="post">{ Q
+}</span></p>
+</div>
+<p>Puede deducirse fácilmente a partir de los valores iniciales de las
+variables y de la condición de salida del bucle.</p>
+</dd>
+</dl>
+</section>
+<section class="slide level2">
+
+<table class="pasos">
+<tr>
+<td>
+1️⃣
+</td>
+<td>
+2️⃣
+</td>
+<td>
+3️⃣
+</td>
+<td class="current">
+4️⃣
+</td>
+<td>
+5️⃣
+</td>
+<td>
+6️⃣
+</td>
+</tr>
+<tr>
+<td>
+Inv. y condición
+</td>
+<td>
+Inicialización
+</td>
+<td>
+Cota
+</td>
+<td class="current">
+Avanzar
+</td>
+<td>
+Restablecer
+</td>
+<td>
+Cota decrece
+</td>
+</tr>
+</table>
+<dl>
+<dt>Paso 4</dt>
+<dd>
+<p>Incorporar instrucción(es) <span
+class="pseudo inline">S<sub>next</sub></span> para que el bucle progrese
+hacia su terminación. Es decir, para decrecer la función de cota.</p>
+<div class="pseudo">
+<p><span class="pre">{ P }</span><br><span
+class="meta">S<sub>ini</sub></span>  <span class="comment">//
+Inicialización</span><br><strong>while</strong> <span
+class="meta">b</span><br>  <strong>invariant</strong> <span
+class="meta">I</span><br>  <strong>decreases</strong> <span
+class="meta">t</span><br>{<br>  <span
+class="meta">S<sub>next</sub></span> <span class="comment">//
+Avanzar</span><br>}<br><span class="post">{ Q }</span></p>
+</div>
+</dd>
+</dl>
+</section>
+<section class="slide level2">
+
+<table class="pasos">
+<tr>
+<td>
+1️⃣
+</td>
+<td>
+2️⃣
+</td>
+<td>
+3️⃣
+</td>
+<td>
+4️⃣
+</td>
+<td class="current">
+5️⃣
+</td>
+<td>
+6️⃣
+</td>
+</tr>
+<tr>
+<td>
+Inv. y condición
+</td>
+<td>
+Inicialización
+</td>
+<td>
+Cota
+</td>
+<td>
+Avanzar
+</td>
+<td class="current">
+Restablecer
+</td>
+<td>
+Cota decrece
+</td>
+</tr>
+</table>
+<dl>
+<dt>Paso 5</dt>
+<dd>
+<p>Si la incorporación de <span
+class="pseudo inline">S<sub>next</sub></span> hace que el invariante no
+se preserve con cada iteración, incorporar sentencias <span
+class="pseudo inline">S<sub>restore</sub></span> que restablezcan el
+invariante.</p>
+<div class="pseudo">
+<p><span class="pre">{ P }</span><br><span
+class="meta">S<sub>ini</sub></span>  <span class="comment">//
+Inicialización</span><br><strong>while</strong> <span
+class="meta">b</span><br>  <strong>invariant</strong> <span
+class="meta">I</span><br>  <strong>decreases</strong> <span
+class="meta">t</span><br>{<br>  <span
+class="meta">S<sub>restore</sub></span> <span class="comment">//
+Restablecer invariante</span><br>  <span
+class="meta">S<sub>next</sub></span>     <span class="comment">//
+Avanzar</span><br>}<br><span class="post">{ Q }</span></p>
+</div>
+<p>Se debe cumplir <span class="pseudo"><span class="pre">{ I <span
+class="math inline">\(\wedge\)</span> b }</span> S<sub>restore</sub>
+<span class="pre">{ pmd(S<sub>next</sub>, I) }</span></span></p>
+</dd>
+</dl>
+</section>
+<section class="slide level2">
+
+<table class="pasos">
+<tr>
+<td>
+1️⃣
+</td>
+<td>
+2️⃣
+</td>
+<td>
+3️⃣
+</td>
+<td>
+4️⃣
+</td>
+<td>
+5️⃣
+</td>
+<td class="current">
+6️⃣
+</td>
+</tr>
+<tr>
+<td>
+Inv. y condición
+</td>
+<td>
+Inicialización
+</td>
+<td>
+Cota
+</td>
+<td>
+Avanzar
+</td>
+<td>
+Restablecer
+</td>
+<td class="current">
+Cota decrece
+</td>
+</tr>
+</table>
+<dl>
+<dt>Paso 6</dt>
+<dd>
+<p>Comprobar que el bucle termina. Es decir, que la función de cota
+decrece en cada iteración.</p>
+<div class="pseudo">
+<p><span class="pre">{ P }</span><br><span
+class="meta">S<sub>ini</sub></span>  <span class="comment">//
+Inicialización</span><br><strong>while</strong> <span
+class="meta">b</span><br>  <strong>invariant</strong> <span
+class="meta">I</span><br>  <strong>decreases</strong> <span
+class="meta">t</span><br>{<br>  <span
+class="meta">S<sub>restore</sub></span> <span class="comment">//
+Restablecer invariante</span><br>  <span
+class="meta">S<sub>next</sub></span>    <span class="comment">//
+Avanzar</span><br>}<br><span class="post">{ Q }</span></p>
+</div>
+</dd>
+</dl>
+</section></section>
+<section>
+<section id="estrategia-1-invariante-a-partir-de-postcondición"
+class="title-slide slide level1 center"
+data-background-image="img/BrownBackground.png">
+<h1 class="center" data-background-image="img/BrownBackground.png"><span
+class="sc_number">2.3</span>Estrategia 1:<br/>invariante a partir de
+postcondición</h1>
+
+</section>
+<section id="raíz-cuadrada-entera-especificación" class="slide level2">
+<h2>Raíz cuadrada entera: especificación</h2>
+<div class="pseudo">
+<p><strong>method</strong> raizEntera(a<span class="colon">:</span>
+<span class="type">int</span>) <strong>returns</strong> (r<span
+class="colon">:</span> <span
+class="type">int</span>)<br>  <strong>requires</strong> a &gt;=
+0<br>  <strong>ensures</strong> r &gt;= 0 <span
+class="math inline">\({\wedge}\)</span> r<sup>2</sup> &lt;= a &lt; (r +
+1)<sup>2</sup><br>{ <br>  <span class="meta">???</span><br>}</p>
+</div>
+<div class="fragment">
+<table class="pasos">
+<tr>
+<td>
+1️⃣
+</td>
+<td>
+2️⃣
+</td>
+<td>
+3️⃣
+</td>
+<td>
+4️⃣
+</td>
+<td>
+5️⃣
+</td>
+<td>
+6️⃣
+</td>
+</tr>
+<tr>
+<td>
+Inv. y condición
+</td>
+<td>
+Inicialización
+</td>
+<td>
+Cota
+</td>
+<td>
+Avanzar
+</td>
+<td>
+Restablecer
+</td>
+<td>
+Cota decrece
+</td>
+</tr>
+</table>
+</div>
+</section>
+<section class="slide level2">
+
+<table class="pasos">
+<tr>
+<td class="current">
+1️⃣
+</td>
+<td>
+2️⃣
+</td>
+<td>
+3️⃣
+</td>
+<td>
+4️⃣
+</td>
+<td>
+5️⃣
+</td>
+<td>
+6️⃣
+</td>
+</tr>
+<tr>
+<td class="current">
+Inv. y condición
+</td>
+<td>
+Inicialización
+</td>
+<td>
+Cota
+</td>
+<td>
+Avanzar
+</td>
+<td>
+Restablecer
+</td>
+<td>
+Cota decrece
+</td>
+</tr>
+</table>
+<p><strong>Estrategia 1</strong></p>
+<div class="info_box">
+<p>Si la postcondición es una <em>conjunción</em> (<span
+class="pseudo inline"><span
+class="math inline">\({\wedge}\)</span></span>) de fórmulas, escoger la
+negación de una de ellas como condición del bucle, y el resto como
+invariante.</p>
+</div>
+<div class="fragment">
+<p>Supongamos que la postcondición <span
+class="math inline">\(Q\)</span> tiene la forma <span
+class="math inline">\(Q_1 \wedge \dots \wedge Q_{n-1} \wedge
+Q_n\)</span>.</p>
+<p>Tomamos como invariante <span class="math inline">\(I \equiv Q_1
+\wedge \ldots \wedge Q_{n-1}\)</span> y como condición <span
+class="math inline">\(b \equiv \neg Q_n\)</span>.</p>
+<p>Entonces se cumple la condición de salida del bucle: <span
+class="color_tema"><span class="math inline">\(I \wedge \neg b
+\Rightarrow Q\)</span></span>.</p>
+</div>
+</section>
+<section class="slide level2">
+
+<table class="pasos">
+<tr>
+<td class="current">
+1️⃣
+</td>
+<td>
+2️⃣
+</td>
+<td>
+3️⃣
+</td>
+<td>
+4️⃣
+</td>
+<td>
+5️⃣
+</td>
+<td>
+6️⃣
+</td>
+</tr>
+<tr>
+<td class="current">
+Inv. y condición
+</td>
+<td>
+Inicialización
+</td>
+<td>
+Cota
+</td>
+<td>
+Avanzar
+</td>
+<td>
+Restablecer
+</td>
+<td>
+Cota decrece
+</td>
+</tr>
+</table>
+<div class="pseudo">
+<p><strong>ensures</strong> r &gt;= 0 <span
+class="math inline">\({\wedge}\)</span> r<sup>2</sup> &lt;= a <span
+class="math inline">\({\wedge}\)</span> a &lt; (r + 1)<sup>2</sup></p>
+</div>
+<div class="columns fragment" data-fragment-index="1">
+<div class="column fragment" data-fragment-index="2" style="width:30%;">
+<p><strong>Posibilidad 1</strong></p>
+<p>Condición bucle: <br/> <span class="pseudo color_tema inline">r &lt;
+0</span></p>
+<p>Invariante:<br/> <span class="pseudo color_tema inline">r<sup>2</sup>
+&lt;= a &lt; (r + 1)<sup>2</sup></span></p>
+<div class="info_box fragment" style="background-color:#A00000"
+data-fragment-index="5">
+<p>Descartada</p>
+</div>
+</div><div class="column fragment" data-fragment-index="3"
+style="width:30%;">
+<p><strong>Posibilidad 2</strong></p>
+<p>Condición bucle: <br/> <span
+class="pseudo color_tema inline">r<sup>2</sup> &gt; a</span></p>
+<p>Invariante:<br/> <span class="pseudo color_tema inline">r &gt;= 0
+<span class="math inline">\({\wedge}\)</span> a &lt; (r +
+1)<sup>2</sup></span></p>
+<div class="info_box fragment" style="background-color:#0000A0"
+data-fragment-index="6">
+<p>Ejercicio</p>
+</div>
+</div><div class="column fragment" data-fragment-index="4"
+style="width:30%;">
+<p><strong>Posibilidad 3</strong></p>
+<p>Condición bucle: <br/> <span class="pseudo color_tema inline">a &gt;=
+(r + 1)<sup>2</sup></span></p>
+<p>Invariante:<br/> <span class="pseudo color_tema inline">0 &gt;= r
+<span class="math inline">\({\wedge}\)</span> r<sup>2</sup> &lt;=
+a</span></p>
+<div class="info_box fragment" style="background-color:#00A000"
+data-fragment-index="7">
+<p>Este tema</p>
+</div>
+</div>
+</div>
+</section>
+<section id="posibilidad-2" class="slide level2 subsection center"
+data-visibility="hidden">
+<h2 class="subsection center" data-visibility="hidden">Posibilidad
+2</h2>
+</section>
+<section id="posibilidad-2-1" class="slide level2"
+data-visibility="hidden">
+<h2 data-visibility="hidden">Posibilidad 2</h2>
+<p>Condición bucle: <span class="pseudo color_tema inline">r<sup>2</sup>
+&gt; a</span></p>
+<p>Invariante: <span class="pseudo color_tema inline">r &gt;= 0 <span
+class="math inline">\({\wedge}\)</span> a &lt; (r +
+1)<sup>2</sup></span></p>
+<div class="pseudo">
+<p><strong>method</strong> raizEntera(a<span class="colon">:</span>
+<span class="type">int</span>) <strong>returns</strong> (r<span
+class="colon">:</span> <span
+class="type">int</span>)<br>  <strong>requires</strong> a &gt;=
+0<br>  <strong>ensures</strong> r &gt;= 0 <span
+class="math inline">\({\wedge}\)</span> r<sup>2</sup> &lt;= a &lt; (r +
+1)<sup>2</sup><br>{ <br>  …<br>  <strong>while</strong> r<sup>2</sup>
+&gt; a<br>    <strong>invariant</strong> r &gt;= 0 <span
+class="math inline">\({\wedge}\)</span> a &lt; (r +
+1)<sup>2</sup><br>  {<br><br>  }<br>}</p>
+</div>
+</section>
+<section id="section-3" class="slide level2" data-visibility="hidden">
+<h2 data-visibility="hidden"></h2>
+<table class="pasos">
+<tr>
+<td>
+1️⃣
+</td>
+<td class="current">
+2️⃣
+</td>
+<td>
+3️⃣
+</td>
+<td>
+4️⃣
+</td>
+<td>
+5️⃣
+</td>
+<td>
+6️⃣
+</td>
+</tr>
+<tr>
+<td>
+Inv. y condición
+</td>
+<td class="current">
+Inicialización
+</td>
+<td>
+Cota
+</td>
+<td>
+Avanzar
+</td>
+<td>
+Restablecer
+</td>
+<td>
+Cota decrece
+</td>
+</tr>
+</table>
+<div class="pseudo" style="font-size:60%">
+<p><strong>method</strong> raizEntera(a<span class="colon">:</span>
+<span class="type">int</span>) <strong>returns</strong> (r<span
+class="colon">:</span> <span
+class="type">int</span>)<br>  <strong>requires</strong> a &gt;=
+0<br>  <strong>ensures</strong> r &gt;= 0 <span
+class="math inline">\({\wedge}\)</span> r<sup>2</sup> &lt;= a &lt; (r +
+1)<sup>2</sup><br>{ <br>  …<br>  <strong>while</strong> r<sup>2</sup>
+&gt; a<br>    <strong>invariant</strong> r &gt;= 0 <span
+class="math inline">\({\wedge}\)</span> a &lt; (r +
+1)<sup>2</sup><br>  { … }<br>}</p>
+</div>
+<ul style="width:100%">
+<li class="fragment">
+¿Cómo inicializamos <code>r</code> para que se cumpla el invariante?
+</li>
+<li class="fragment">
+<p>Posible candidato: <code>r := a</code>.</p>
+<div class="pseudo">
+<p>wp(r := a, r &gt;= 0 <span class="math inline">\({\wedge}\)</span> a
+&lt; (r + 1)<sup>2</sup>) ===  a &gt;= 0 <span
+class="math inline">\({\wedge}\)</span> a &lt; (a + 1)<sup>2</sup></p>
+</div>
+que se deduce de la precondición <span class="pseudo inline">a &gt;=
+0</span>.
+</li>
+</ul>
+</section>
+<section id="section-4" class="slide level2" data-visibility="hidden">
+<h2 data-visibility="hidden"></h2>
+<table class="pasos">
+<tr>
+<td>
+1️⃣
+</td>
+<td>
+2️⃣
+</td>
+<td class="current">
+3️⃣
+</td>
+<td>
+4️⃣
+</td>
+<td>
+5️⃣
+</td>
+<td>
+6️⃣
+</td>
+</tr>
+<tr>
+<td>
+Inv. y condición
+</td>
+<td>
+Inicialización
+</td>
+<td class="current">
+Cota
+</td>
+<td>
+Avanzar
+</td>
+<td>
+Restablecer
+</td>
+<td>
+Cota decrece
+</td>
+</tr>
+</table>
+<div class="pseudo" style="font-size:60%">
+<p><strong>method</strong> raizEntera(a<span class="colon">:</span>
+<span class="type">int</span>) <strong>returns</strong> (r<span
+class="colon">:</span> <span
+class="type">int</span>)<br>  <strong>requires</strong> a &gt;=
+0<br>  <strong>ensures</strong> r &gt;= 0 <span
+class="math inline">\({\wedge}\)</span> r<sup>2</sup> &lt;= a &lt; (r +
+1)<sup>2</sup><br>{ <br>  r := a;<br>  <strong>while</strong>
+r<sup>2</sup> &gt; a<br>    <strong>invariant</strong> r &gt;= 0 <span
+class="math inline">\({\wedge}\)</span> a &lt; (r +
+1)<sup>2</sup><br>  { … }<br>}</p>
+</div>
+<ul>
+<li class="fragment"><p><code>r</code> empieza tomando el valor
+<code>a</code> y el bucle termina cuando <code>r</code> toma un valor
+por debajo de <code>√a</code>. Por tanto, <code>r</code> debe
+<strong>decrecer</strong>.</p></li>
+<li class="fragment"><p>Función de cota: <span
+class="pseudo color_tema inline">r</span>.</p>
+<div class="pseudo">
+<p>r &gt;= 0 <span class="math inline">\({\wedge}\)</span> a &lt; (r +
+1)<sup>2</sup> <span class="math inline">\({\wedge}\)</span> r^2 &gt;
+a  ==&gt;  r &gt;= 0</p>
+</div></li>
+</ul>
+</section>
+<section id="section-5" class="slide level2" data-visibility="hidden">
+<h2 data-visibility="hidden"></h2>
+<table class="pasos">
+<tr>
+<td>
+1️⃣
+</td>
+<td>
+2️⃣
+</td>
+<td>
+3️⃣
+</td>
+<td class="current">
+4️⃣
+</td>
+<td>
+5️⃣
+</td>
+<td>
+6️⃣
+</td>
+</tr>
+<tr>
+<td>
+Inv. y condición
+</td>
+<td>
+Inicialización
+</td>
+<td>
+Cota
+</td>
+<td class="current">
+Avanzar
+</td>
+<td>
+Restablecer
+</td>
+<td>
+Cota decrece
+</td>
+</tr>
+</table>
+<div class="pseudo" style="font-size:60%">
+<p><strong>method</strong> raizEntera(a<span class="colon">:</span>
+<span class="type">int</span>) <strong>returns</strong> (r<span
+class="colon">:</span> <span
+class="type">int</span>)<br>  <strong>requires</strong> a &gt;=
+0<br>  <strong>ensures</strong> r &gt;= 0 <span
+class="math inline">\({\wedge}\)</span> r<sup>2</sup> &lt;= a &lt; (r +
+1)<sup>2</sup><br>{ <br>  r := a;<br>  <strong>while</strong>
+r<sup>2</sup> &gt; a<br>    <strong>invariant</strong> r &gt;= 0 <span
+class="math inline">\({\wedge}\)</span> a &lt; (r +
+1)<sup>2</sup><br>    <strong>decreases</strong> r<br>  { … }<br>}</p>
+</div>
+<div class="fragment">
+<ul>
+<li>Como <code>r</code> es una función de cota que debe decrecer en cada
+iteración, podemos colocar la asignación <code>r := r - 1</code> para
+que el bucle avance hacia su terminación.</li>
+</ul>
+</div>
+</section>
+<section id="section-6" class="slide level2" data-visibility="hidden">
+<h2 data-visibility="hidden"></h2>
+<table class="pasos">
+<tr>
+<td>
+1️⃣
+</td>
+<td>
+2️⃣
+</td>
+<td>
+3️⃣
+</td>
+<td>
+4️⃣
+</td>
+<td class="current">
+5️⃣
+</td>
+<td>
+6️⃣
+</td>
+</tr>
+<tr>
+<td>
+Inv. y condición
+</td>
+<td>
+Inicialización
+</td>
+<td>
+Cota
+</td>
+<td>
+Avanzar
+</td>
+<td class="current">
+Restablecer
+</td>
+<td>
+Cota decrece
+</td>
+</tr>
+</table>
+<div class="pseudo" style="font-size:60%">
+<p><strong>while</strong> r<sup>2</sup> &gt;
+a<br>  <strong>invariant</strong> r &gt;= 0 <span
+class="math inline">\({\wedge}\)</span> a &lt; (r + 1)<sup>2</sup><br>{
+r := r - 1; }</p>
+</div>
+<p>Hemos de demostrar:</p>
+<div class="pseudo">
+<p><span class="pre">{ r &gt;= 0 <span
+class="math inline">\({\wedge}\)</span> a &lt; (r + 1)<sup>2</sup> <span
+class="math inline">\({\wedge}\)</span> r<sup>2</sup> &gt; a
+}</span><br>r := r - 1<br><span class="post">{ r &gt;= 0 <span
+class="math inline">\({\wedge}\)</span> a &lt; (r + 1)<sup>2</sup>
+}</span></p>
+</div>
+<div class="fragment">
+<div class="pseudo">
+<p>wp(r := r - 1, r &gt;= 0 <span
+class="math inline">\({\wedge}\)</span> a &lt; (r + 1)<sup>2</sup>) ===
+r - 1 &gt;= 0 <span class="math inline">\({\wedge}\)</span> a &lt;
+r<sup>2</sup></p>
+</div>
+<p><span class="pseudo inline">r - 1 &gt;= 0</span> no se deduce de la
+precondición, pero sabemos que <code>a &gt;= 0</code>.</p>
+</div>
+</section>
+<section id="section-7" class="slide level2" data-visibility="hidden">
+<h2 data-visibility="hidden"></h2>
+<table class="pasos">
+<tr>
+<td>
+1️⃣
+</td>
+<td>
+2️⃣
+</td>
+<td>
+3️⃣
+</td>
+<td>
+4️⃣
+</td>
+<td class="current">
+5️⃣
+</td>
+<td>
+6️⃣
+</td>
+</tr>
+<tr>
+<td>
+Inv. y condición
+</td>
+<td>
+Inicialización
+</td>
+<td>
+Cota
+</td>
+<td>
+Avanzar
+</td>
+<td class="current">
+Restablecer
+</td>
+<td>
+Cota decrece
+</td>
+</tr>
+</table>
+<div class="pseudo" style="font-size:60%">
+<p><strong>while</strong> r<sup>2</sup> &gt; a
+<strong>do</strong><br>  <strong>invariant</strong> r &gt;= 0 <span
+class="math inline">\({\wedge}\)</span> <span class="hl">0 &lt;=
+a</span> &lt; (r + 1)<sup>2</sup><br>{ r := r - 1 }</p>
+</div>
+<ul class="no_bolos">
+<li class="warning">
+¡Hay que comprobar que el nuevo invariante se cumple al inicio del
+bucle!
+</li>
+</ul>
+</section>
+<section id="section-8" class="slide level2" data-visibility="hidden">
+<h2 data-visibility="hidden"></h2>
+<table class="pasos">
+<tr>
+<td>
+1️⃣
+</td>
+<td class="current">
+2️⃣
+</td>
+<td>
+3️⃣
+</td>
+<td>
+4️⃣
+</td>
+<td>
+5️⃣
+</td>
+<td>
+6️⃣
+</td>
+</tr>
+<tr>
+<td>
+Inv. y condición
+</td>
+<td class="current">
+Inicialización
+</td>
+<td>
+Cota
+</td>
+<td>
+Avanzar
+</td>
+<td>
+Restablecer
+</td>
+<td>
+Cota decrece
+</td>
+</tr>
+</table>
+<div class="pseudo" style="font-size:60%">
+<p><strong>method</strong> raizEntera(a<span class="colon">:</span>
+<span class="type">int</span>) <strong>returns</strong> (r<span
+class="colon">:</span> <span
+class="type">int</span>)<br>  <strong>requires</strong> a &gt;=
+0<br>  <strong>ensures</strong> r &gt;= 0 <span
+class="math inline">\({\wedge}\)</span> r<sup>2</sup> &lt;= a &lt; (r +
+1)<sup>2</sup><br>{ <br>  r := a;<br>  <strong>while</strong>
+r<sup>2</sup> &gt; a
+<strong>do</strong><br>    <strong>invariant</strong> r &gt;= 0 <span
+class="math inline">\({\wedge}\)</span> 0 &lt;= a &lt; (r +
+1)<sup>2</sup><br>  …<br>}</p>
+</div>
+<div class="pseudo">
+<p>wp(r := a, r &gt;= 0 <span class="math inline">\({\wedge}\)</span> 0
+&lt;= a &lt; (r + 1)<sup>2</sup>)  ===  a &gt;= 0 <span
+class="math inline">\({\wedge}\)</span> 0 &lt;= a &lt; (a +
+1)<sup>2</sup>  <span class="fragment">✅</span></p>
+</div>
+</section>
+<section id="section-9" class="slide level2" data-visibility="hidden">
+<h2 data-visibility="hidden"></h2>
+<table class="pasos">
+<tr>
+<td>
+1️⃣
+</td>
+<td>
+2️⃣
+</td>
+<td>
+3️⃣
+</td>
+<td>
+4️⃣
+</td>
+<td>
+5️⃣
+</td>
+<td class="current">
+6️⃣
+</td>
+</tr>
+<tr>
+<td>
+Inv. y condición
+</td>
+<td>
+Inicialización
+</td>
+<td>
+Cota
+</td>
+<td>
+Avanzar
+</td>
+<td>
+Restablecer
+</td>
+<td class="current">
+Cota decrece
+</td>
+</tr>
+</table>
+<div class="pseudo" style="font-size:60%">
+<p><strong>method</strong> raizEntera(a<span class="colon">:</span>
+<span class="type">int</span>) <strong>returns</strong> (r<span
+class="colon">:</span> <span
+class="type">int</span>)<br>  <strong>requires</strong> a &gt;=
+0<br>  <strong>ensures</strong> r &gt;= 0 <span
+class="math inline">\({\wedge}\)</span> r<sup>2</sup> &lt;= a &lt; (r +
+1)<sup>2</sup><br>{ <br>  r := a;<br>  <strong>while</strong>
+r<sup>2</sup> &gt; a
+<strong>do</strong><br>    <strong>invariant</strong> r &gt;= 0 <span
+class="math inline">\({\wedge}\)</span> 0 &lt;= a &lt; (r +
+1)<sup>2</sup><br>    <strong>decreases</strong> r<br>  { r := r - 1
+}<br>}</p>
+</div>
+<div class="pseudo">
+<p><span class="pre">{ r &gt;= 0 <span
+class="math inline">\({\wedge}\)</span> 0 &lt;= a &lt; (r +
+1)<sup>2</sup> <span class="math inline">\({\wedge}\)</span>
+r<sup>2</sup> &gt; a <span class="math inline">\({\wedge}\)</span> r ==
+r<sub>old</sub> }</span><br>r := r - 1<br><span class="pre">{ r &lt;
+r<sub>old</sub> }</span></p>
+</div>
+<p>Se cumple obviamente, porque <span class="pseudo inline">pmd(r := r -
+1, r &lt; r<sub>old</sub>) === r - 1 &lt; r<sub>old</sub></span> que se
+deduce de <span class="pseudo inline">r == r<sub>old</sub></span>.</p>
+</section>
+<section id="posiblidad-2-resultado-final" class="slide level2"
+data-visibility="hidden">
+<h2 data-visibility="hidden">Posiblidad 2: Resultado final</h2>
+<div class="pseudo" style="font-size:60%">
+<p><strong>method</strong> raizEntera(a<span class="colon">:</span>
+<span class="type">int</span>) <strong>returns</strong> (r<span
+class="colon">:</span> <span
+class="type">int</span>)<br>  <strong>requires</strong> a &gt;=
+0<br>  <strong>ensures</strong> r &gt;= 0 <span
+class="math inline">\({\wedge}\)</span> r<sup>2</sup> &lt;= a &lt; (r +
+1)<sup>2</sup><br>{ <br>  r := a;<br>  <strong>while</strong>
+r<sup>2</sup> &gt; a
+<strong>do</strong><br>    <strong>invariant</strong> r &gt;= 0 <span
+class="math inline">\({\wedge}\)</span> 0 &lt;= a &lt; (r +
+1)<sup>2</sup><br>    <strong>decreases</strong> r<br>  { r := r - 1
+}<br>}</p>
+</div>
+<p><strong>Coste en tiempo:</strong> <code>Θ(a - √a) == Θ(a)</code></p>
+<p><strong>Coste en espacio:</strong> <code>Θ(1)</code></p>
+<aside class="notes">
+<p>Comentar la posibilidad de inicializar
+<code>r := (a + 1) / 2</code></p>
+</aside>
+</section>
+<section id="posibilidad-3" class="slide level2 subsection center"
+data-visibility="hidden">
+<h2 class="subsection center" data-visibility="hidden">Posibilidad
+3</h2>
+</section>
+<section id="posibilidad-3-1" class="slide level2">
+<h2>Posibilidad 3</h2>
+<p>Condición bucle: <span class="pseudo color_tema inline">a &gt;= (r +
+1)<sup>2</sup></span></p>
+<p>Invariante: <span class="pseudo color_tema inline">r &gt;= 0 <span
+class="math inline">\({\wedge}\)</span> r<sup>2</sup> &lt;= a</span></p>
+<div class="pseudo">
+<p><strong>method</strong> raizEntera(a<span class="colon">:</span>
+<span class="type">int</span>) <strong>returns</strong> (r<span
+class="colon">:</span> <span
+class="type">int</span>)<br>  <strong>requires</strong> a &gt;=
+0<br>  <strong>ensures</strong> r &gt;= 0 <span
+class="math inline">\({\wedge}\)</span> r<sup>2</sup> &lt;= a &lt; (r +
+1)<sup>2</sup><br>{ <br>  …<br>  <strong>while</strong> a &gt;= (r +
+1)<sup>2</sup><br>    <strong>invariant</strong> r &gt;= 0 <span
+class="math inline">\({\wedge}\)</span> r<sup>2</sup> &lt;=
+a<br>  {<br><br>  }<br>}</p>
+</div>
+</section>
+<section class="slide level2">
+
+<table class="pasos">
+<tr>
+<td>
+1️⃣
+</td>
+<td class="current">
+2️⃣
+</td>
+<td>
+3️⃣
+</td>
+<td>
+4️⃣
+</td>
+<td>
+5️⃣
+</td>
+<td>
+6️⃣
+</td>
+</tr>
+<tr>
+<td>
+Inv. y condición
+</td>
+<td class="current">
+Inicialización
+</td>
+<td>
+Cota
+</td>
+<td>
+Avanzar
+</td>
+<td>
+Restablecer
+</td>
+<td>
+Cota decrece
+</td>
+</tr>
+</table>
+<div class="pseudo">
+<p><strong>method</strong> raizEntera(a<span class="colon">:</span>
+<span class="type">int</span>) <strong>returns</strong> (r<span
+class="colon">:</span> <span
+class="type">int</span>)<br>  <strong>requires</strong> a &gt;=
+0<br>  <strong>ensures</strong> r &gt;= 0 <span
+class="math inline">\({\wedge}\)</span> r<sup>2</sup> &lt;= a &lt; (r +
+1)<sup>2</sup><br>{ <br>  <span
+class="meta">???</span><br>  <strong>while</strong> a &gt;= (r +
+1)<sup>2</sup><br>    <strong>invariant</strong> r &gt;= 0 <span
+class="math inline">\({\wedge}\)</span> r<sup>2</sup> &lt;=
+a<br>  …<br>}</p>
+</div>
+<div class="fragment">
+<p>Candidato: <span class="pseudo inline">r := 0</span></p>
+<div class="pseudo">
+<p>wp(r := 0, r &gt;= 0 <span class="math inline">\({\wedge}\)</span>
+r<sup>2</sup> &lt;= a)  ===  0 &gt;= 0 <span
+class="math inline">\({\wedge}\)</span> 0<sup>2</sup> &lt;= a    <span
+class="fragment">✅</span></p>
+</div>
+</div>
+</section>
+<section class="slide level2">
+
+<table class="pasos">
+<tr>
+<td>
+1️⃣
+</td>
+<td>
+2️⃣
+</td>
+<td class="current">
+3️⃣
+</td>
+<td>
+4️⃣
+</td>
+<td>
+5️⃣
+</td>
+<td>
+6️⃣
+</td>
+</tr>
+<tr>
+<td>
+Inv. y condición
+</td>
+<td>
+Inicialización
+</td>
+<td class="current">
+Cota
+</td>
+<td>
+Avanzar
+</td>
+<td>
+Restablecer
+</td>
+<td>
+Cota decrece
+</td>
+</tr>
+</table>
+<div class="pseudo">
+<p><strong>method</strong> raizEntera(a<span class="colon">:</span>
+<span class="type">int</span>) <strong>returns</strong> (r<span
+class="colon">:</span> <span
+class="type">int</span>)<br>  <strong>requires</strong> a &gt;=
+0<br>  <strong>ensures</strong> r &gt;= 0 <span
+class="math inline">\({\wedge}\)</span> r<sup>2</sup> &lt;= a &lt; (r +
+1)<sup>2</sup><br>{ <br>  r := 0;<br>  <strong>while</strong> a &gt;= (r
++ 1)<sup>2</sup><br>    <strong>invariant</strong> r &gt;= 0 <span
+class="math inline">\({\wedge}\)</span> r<sup>2</sup> &lt;=
+a<br>  …<br>}</p>
+</div>
+<ul>
+<li class="fragment"><p>La variable <code>r</code> comienza tomando el
+valor <code>0</code> y el bucle termina cuando <code>r</code> se hace
+igual o mayor a <code>√a</code>.</p></li>
+<li class="fragment"><p>Función de cota: <code>√a - r</code>.</p></li>
+</ul>
+</section>
+<section class="slide level2">
+
+<table class="pasos">
+<tr>
+<td>
+1️⃣
+</td>
+<td>
+2️⃣
+</td>
+<td>
+3️⃣
+</td>
+<td class="current">
+4️⃣
+</td>
+<td>
+5️⃣
+</td>
+<td>
+6️⃣
+</td>
+</tr>
+<tr>
+<td>
+Inv. y condición
+</td>
+<td>
+Inicialización
+</td>
+<td>
+Cota
+</td>
+<td class="current">
+Avanzar
+</td>
+<td>
+Restablecer
+</td>
+<td>
+Cota decrece
+</td>
+</tr>
+</table>
+<div class="pseudo">
+<p><strong>method</strong> raizEntera(a<span class="colon">:</span>
+<span class="type">int</span>) <strong>returns</strong> (r<span
+class="colon">:</span> <span
+class="type">int</span>)<br>  <strong>requires</strong> a &gt;=
+0<br>  <strong>ensures</strong> r &gt;= 0 <span
+class="math inline">\({\wedge}\)</span> r<sup>2</sup> &lt;= a &lt; (r +
+1)<sup>2</sup><br>{ <br>  r := 0;<br>  <strong>while</strong> a &gt;= (r
++ 1)<sup>2</sup><br>    <strong>invariant</strong> r &gt;= 0 <span
+class="math inline">\({\wedge}\)</span> r<sup>2</sup> &lt;=
+a<br>    <strong>decreases</strong> √a - r<br>  …<br>}</p>
+</div>
+<ul>
+<li>Para que el bucle avance a su terminación, hay que incrementar
+<code>r</code>.</li>
+</ul>
+</section>
+<section class="slide level2">
+
+<table class="pasos">
+<tr>
+<td>
+1️⃣
+</td>
+<td>
+2️⃣
+</td>
+<td>
+3️⃣
+</td>
+<td>
+4️⃣
+</td>
+<td class="current">
+5️⃣
+</td>
+<td>
+6️⃣
+</td>
+</tr>
+<tr>
+<td>
+Inv. y condición
+</td>
+<td>
+Inicialización
+</td>
+<td>
+Cota
+</td>
+<td>
+Avanzar
+</td>
+<td class="current">
+Restablecer
+</td>
+<td>
+Cota decrece
+</td>
+</tr>
+</table>
+<div class="pseudo">
+<p><strong>method</strong> raizEntera(a<span class="colon">:</span>
+<span class="type">int</span>) <strong>returns</strong> (r<span
+class="colon">:</span> <span
+class="type">int</span>)<br>  <strong>requires</strong> a &gt;=
+0<br>  <strong>ensures</strong> r &gt;= 0 <span
+class="math inline">\({\wedge}\)</span> r<sup>2</sup> &lt;= a &lt; (r +
+1)<sup>2</sup><br>{ <br>  r := 0;<br>  <strong>while</strong> a &gt;= (r
++ 1)<sup>2</sup><br>    <strong>invariant</strong> r &gt;= 0 <span
+class="math inline">\({\wedge}\)</span> r<sup>2</sup> &lt;=
+a<br>    <strong>decreases</strong> √a - r<br>  { r := r + 1; }<br>}</p>
+</div>
+<div class="fragment">
+<p>Comprobamos si hay que restablecer el invariante:</p>
+<div class="columns">
+<div class="column">
+<div class="pseudo">
+<p><span class="pre">{ r &gt;= 0 <span
+class="math inline">\({\wedge}\)</span> r<sup>2</sup> &lt;= a <span
+class="math inline">\({\wedge}\)</span> a &gt;= (r +
+1)<sup>2</sup>}</span><br>r := r + 1;<br><span class="post">{ r &gt;= 0
+<span class="math inline">\({\wedge}\)</span> r<sup>2</sup> &lt;= a
+}</span></p>
+</div>
+</div><div class="column fragment">
+<div class="pseudo">
+<p>wp(r := r + 1, r &gt;= 0 <span
+class="math inline">\({\wedge}\)</span> r<sup>2</sup> &lt;= a)<br>  ===
+r + 1 &gt;= 0 <span class="math inline">\({\wedge}\)</span> (r +
+1)<sup>2</sup> &lt;= a <span class="fragment">✅</span></p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="slide level2">
+
+<table class="pasos">
+<tr>
+<td>
+1️⃣
+</td>
+<td>
+2️⃣
+</td>
+<td>
+3️⃣
+</td>
+<td>
+4️⃣
+</td>
+<td>
+5️⃣
+</td>
+<td class="current">
+6️⃣
+</td>
+</tr>
+<tr>
+<td>
+Inv. y condición
+</td>
+<td>
+Inicialización
+</td>
+<td>
+Cota
+</td>
+<td>
+Avanzar
+</td>
+<td>
+Restablecer
+</td>
+<td class="current">
+Cota decrece
+</td>
+</tr>
+</table>
+<div class="pseudo">
+<p><strong>method</strong> raizEntera(a<span class="colon">:</span>
+<span class="type">int</span>) <strong>returns</strong> (r<span
+class="colon">:</span> <span
+class="type">int</span>)<br>  <strong>requires</strong> a &gt;=
+0<br>  <strong>ensures</strong> r &gt;= 0 <span
+class="math inline">\({\wedge}\)</span> r<sup>2</sup> &lt;= a &lt; (r +
+1)<sup>2</sup><br>{ <br>  r := 0;<br>  <strong>while</strong> a &gt;= (r
++ 1)<sup>2</sup><br>    <strong>invariant</strong> r &gt;= 0 <span
+class="math inline">\({\wedge}\)</span> r<sup>2</sup> &lt;=
+a<br>    <strong>decreases</strong> √a - r<br>  { r := r + 1; }<br>}</p>
+</div>
+<div class="fragment">
+<p>Obviamente, la función de coste decrece en cada iteración:</p>
+<div class="pseudo">
+<p><span class="pre">{ r &gt;= 0 <span
+class="math inline">\({\wedge}\)</span> r<sup>2</sup> &lt;= a <span
+class="math inline">\({\wedge}\)</span> a &gt;= (r + 1)<sup>2</sup>
+<span class="math inline">\({\wedge}\)</span> √a - r == t<sub>old</sub>
+}</span><br>r := r + 1<br><span class="pre">{ √a - r &lt;
+t<sub>old</sub> }</span></p>
+</div>
+</div>
+</section>
+<section id="posiblidad-3-resultado-final" class="slide level2">
+<h2>Posiblidad 3: Resultado final</h2>
+<div class="pseudo">
+<p><strong>method</strong> raizEntera(a<span class="colon">:</span>
+<span class="type">int</span>) <strong>returns</strong> (r<span
+class="colon">:</span> <span
+class="type">int</span>)<br>  <strong>requires</strong> a &gt;=
+0<br>  <strong>ensures</strong> r &gt;= 0 <span
+class="math inline">\({\wedge}\)</span> r<sup>2</sup> &lt;= a &lt; (r +
+1)<sup>2</sup><br>{ <br>  r := 0;<br>  <strong>while</strong> a &gt;= (r
++ 1)<sup>2</sup><br>    <strong>invariant</strong> r &gt;= 0 <span
+class="math inline">\({\wedge}\)</span> r<sup>2</sup> &lt;=
+a<br>    <strong>decreases</strong> √a - r<br>  { r := r + 1; }<br>}</p>
+</div>
+<div class="fragment">
+<p><strong>Coste en tiempo:</strong> <code>Θ(√a)</code></p>
+<p><strong>Coste en espacio:</strong> <code>Θ(1)</code></p>
+</div>
+</section></section>
+<section>
+<section id="estrategia-2-reemplazo-de-constante-por-variable"
+class="title-slide slide level1 center"
+data-background-image="img/BrownBackground.png">
+<h1 class="center" data-background-image="img/BrownBackground.png"><span
+class="sc_number">2.4</span>Estrategia 2:<br/>reemplazo de constante por
+variable</h1>
+
+</section>
+<section id="máximo-de-un-vector-especificación" class="slide level2">
+<h2>Máximo de un vector: especificación</h2>
+<p><em>Derivar una función que, dado un vector no vacío, devuelva el
+valor máximo del vector.</em></p>
+<div class="pseudo">
+<p><strong>method</strong> maximo(V[0..n)<span class="colon">:</span>
+<span class="type">array&lt;<span class="type">int</span>&gt;</span>)
+<strong>returns</strong> (m<span class="colon">:</span> <span
+class="type">int</span>)<br>  <strong>requires</strong> n &gt;=
+1<br>  <strong>ensures</strong> m == (máx j <span class="colon">:</span>
+0 &lt;= j &lt; n <span class="colon">:</span> V[j])</p>
+</div>
+<div class="fragment">
+<p>A partir de la postcondición, no hay un candidato claro para la
+condición del bucle.</p>
+</div>
+<div class="fragment">
+<p><strong>Estrategia 2</strong></p>
+<div class="info_box">
+<p>Reemplazar una constante <code>k</code> que aparezca en la
+poscondición por una variable nueva <code>i</code>, y añadir la
+condición <code>i == k</code>.</p>
+</div>
+</div>
+</section>
+<section class="slide level2">
+
+<table class="pasos">
+<tr>
+<td class="current">
+1️⃣
+</td>
+<td>
+2️⃣
+</td>
+<td>
+3️⃣
+</td>
+<td>
+4️⃣
+</td>
+<td>
+5️⃣
+</td>
+<td>
+6️⃣
+</td>
+</tr>
+<tr>
+<td class="current">
+Inv. y condición
+</td>
+<td>
+Inicialización
+</td>
+<td>
+Cota
+</td>
+<td>
+Avanzar
+</td>
+<td>
+Restablecer
+</td>
+<td>
+Cota decrece
+</td>
+</tr>
+</table>
+<div class="pseudo">
+<p><strong>ensures</strong> m == (máx j <span class="colon">:</span> 0
+&lt;= j &lt; n <span class="colon">:</span> V[j])</p>
+</div>
+<div class="fragment">
+<p><strong>Posibilidad 1</strong></p>
+<div class="pseudo">
+<p>m == (máx j <span class="colon">:</span> 0 &lt;= j &lt; <span
+class="hl">i</span> <span class="colon">:</span> V[j]) <span
+class="math inline">\({\wedge}\)</span> <span class="hl">i ==
+n</span></p>
+</div>
+<p>Condición del bucle: <span class="pseudo color_tema inline">i !=
+n</span></p>
+</div>
+<div class="fragment">
+<p><strong>Posibilidad 2</strong></p>
+<div class="pseudo">
+<p>m == (máx j <span class="colon">:</span> <span class="hl">i</span>
+&lt;= j &lt; n <span class="colon">:</span> V[j]) <span
+class="math inline">\({\wedge}\)</span> <span class="hl">i ==
+0</span></p>
+</div>
+<p>Condición del bucle: <span class="pseudo color_tema inline">i !=
+0</span></p>
+</div>
+</section>
+<section class="slide level2">
+
+<table class="pasos">
+<tr>
+<td class="current">
+1️⃣
+</td>
+<td>
+2️⃣
+</td>
+<td>
+3️⃣
+</td>
+<td>
+4️⃣
+</td>
+<td>
+5️⃣
+</td>
+<td>
+6️⃣
+</td>
+</tr>
+<tr>
+<td class="current">
+Inv. y condición
+</td>
+<td>
+Inicialización
+</td>
+<td>
+Cota
+</td>
+<td>
+Avanzar
+</td>
+<td>
+Restablecer
+</td>
+<td>
+Cota decrece
+</td>
+</tr>
+</table>
+<div class="pseudo">
+<p><strong>method</strong> maximo(V[0..n)<span class="colon">:</span>
+<span class="type">array&lt;<span class="type">int</span>&gt;</span>)
+<strong>returns</strong> (m<span class="colon">:</span> <span
+class="type">int</span>)<br>  <strong>requires</strong> n &gt;=
+1<br>  <strong>ensures</strong> m == (máx j <span class="colon">:</span>
+0 &lt;= j &lt; n <span class="colon">:</span>
+V[j])<br>{<br>  <strong>var</strong> i<span class="colon">:</span> <span
+class="type">int</span>;<br>  …<br>  <strong>while</strong> i !=
+n<br>    <strong>invariant</strong> 1 &lt;= i &lt;= n <span
+class="math inline">\({\wedge}\)</span> m == (máx j <span
+class="colon">:</span> 0 &lt;= j &lt; i <span class="colon">:</span>
+V[j])<br>  { … }<br>}</p>
+</div>
+<p>Añadimos condición <span class="pseudo inline">1 &lt;= i &lt;=
+n</span> al invariante para que los accesos <span
+class="pseudo inline">V[j]</span> se hagan dentro de los límites del
+vector <span class="pseudo inline">V</span>.</p>
+</section>
+<section class="slide level2">
+
+<table class="pasos">
+<tr>
+<td>
+1️⃣
+</td>
+<td class="current">
+2️⃣
+</td>
+<td>
+3️⃣
+</td>
+<td>
+4️⃣
+</td>
+<td>
+5️⃣
+</td>
+<td>
+6️⃣
+</td>
+</tr>
+<tr>
+<td>
+Inv. y condición
+</td>
+<td class="current">
+Inicialización
+</td>
+<td>
+Cota
+</td>
+<td>
+Avanzar
+</td>
+<td>
+Restablecer
+</td>
+<td>
+Cota decrece
+</td>
+</tr>
+</table>
+<div class="pseudo">
+<p><strong>method</strong> maximo(V[0..n)<span class="colon">:</span>
+<span class="type">array&lt;<span class="type">int</span>&gt;</span>)
+<strong>returns</strong> (m<span class="colon">:</span> <span
+class="type">int</span>)<br>  <strong>requires</strong> n &gt;=
+1<br>  <strong>ensures</strong> m == (máx j <span class="colon">:</span>
+0 &lt;= j &lt; n <span class="colon">:</span>
+V[j])<br>{<br>  <strong>var</strong> i<span class="colon">:</span> <span
+class="type">int</span>;<br>  …<br>  <strong>while</strong> i !=
+n<br>    <strong>invariant</strong> 1 &lt;= i &lt;= n <span
+class="math inline">\({\wedge}\)</span> m == (máx j <span
+class="colon">:</span> 0 &lt;= j &lt; i <span class="colon">:</span>
+V[j])<br>  …</p>
+</div>
+<ul>
+<li class="fragment"><p>Con <code>i := 1</code> tendremos que <span
+class="pseudo inline">m == (máx j <span class="colon">:</span> 0 &lt;= j
+&lt; 1 <span class="colon">:</span> V[j]) == V[0]</span>.</p></li>
+<li class="fragment"><p>Por tanto, inicializamos: <span
+class="pseudo inline">i := 1; m := V[0];</span></p></li>
+</ul>
+</section>
+<section class="slide level2">
+
+<table class="pasos">
+<tr>
+<td>
+1️⃣
+</td>
+<td>
+2️⃣
+</td>
+<td class="current">
+3️⃣
+</td>
+<td>
+4️⃣
+</td>
+<td>
+5️⃣
+</td>
+<td>
+6️⃣
+</td>
+</tr>
+<tr>
+<td>
+Inv. y condición
+</td>
+<td>
+Inicialización
+</td>
+<td class="current">
+Cota
+</td>
+<td>
+Avanzar
+</td>
+<td>
+Restablecer
+</td>
+<td>
+Cota decrece
+</td>
+</tr>
+</table>
+<div class="pseudo">
+<p><strong>method</strong> maximo(V[0..n)<span class="colon">:</span>
+<span class="type">array&lt;<span class="type">int</span>&gt;</span>)
+<strong>returns</strong> (m<span class="colon">:</span> <span
+class="type">int</span>)<br>  <strong>requires</strong> n &gt;=
+1<br>  <strong>ensures</strong> m == (máx j <span class="colon">:</span>
+0 &lt;= j &lt; n <span class="colon">:</span>
+V[j])<br>{<br>  <strong>var</strong> i<span class="colon">:</span> <span
+class="type">int</span>;<br>  i := 1; m :=
+V[0];<br>  <strong>while</strong> i !=
+n<br>    <strong>invariant</strong> 1 &lt;= i &lt;= n <span
+class="math inline">\({\wedge}\)</span> m == (máx j <span
+class="colon">:</span> 0 &lt;= j &lt; i <span class="colon">:</span>
+V[j])<br>  …</p>
+</div>
+<ul>
+<li><p>La variable <span class="pseudo inline">i</span> comienza con el
+valor <span class="pseudo inline">1</span> y salimos del bucle cuando
+<span class="pseudo inline">i</span> toma el valor <span
+class="pseudo inline">n</span>.</p></li>
+<li><p>Función de cota: <span class="pseudo color_tema inline">n -
+i</span>.</p></li>
+<li><p>Además, se deduce <span class="pseudo inline">n - i &gt;=
+0</span> de la condición <span class="pseudo inline">i &lt;= n</span>
+del invariante.</p></li>
+</ul>
+</section>
+<section class="slide level2">
+
+<table class="pasos">
+<tr>
+<td>
+1️⃣
+</td>
+<td>
+2️⃣
+</td>
+<td>
+3️⃣
+</td>
+<td class="current">
+4️⃣
+</td>
+<td>
+5️⃣
+</td>
+<td>
+6️⃣
+</td>
+</tr>
+<tr>
+<td>
+Inv. y condición
+</td>
+<td>
+Inicialización
+</td>
+<td>
+Cota
+</td>
+<td class="current">
+Avanzar
+</td>
+<td>
+Restablecer
+</td>
+<td>
+Cota decrece
+</td>
+</tr>
+</table>
+<div class="pseudo">
+<p><strong>method</strong> maximo(V[0..n)<span class="colon">:</span>
+<span class="type">array&lt;<span class="type">int</span>&gt;</span>)
+<strong>returns</strong> (m<span class="colon">:</span> <span
+class="type">int</span>)<br>  <strong>requires</strong> n &gt;=
+1<br>  <strong>ensures</strong> m == (máx j <span class="colon">:</span>
+0 &lt;= j &lt; n <span class="colon">:</span>
+V[j])<br>{<br>  <strong>var</strong> i<span class="colon">:</span> <span
+class="type">int</span>;<br>  i := 1; m :=
+V[0];<br>  <strong>while</strong> i !=
+n<br>    <strong>invariant</strong> 1 &lt;= i &lt;= n <span
+class="math inline">\({\wedge}\)</span> m == (máx j <span
+class="colon">:</span> 0 &lt;= j &lt; i <span class="colon">:</span>
+V[j])<br>    <strong>decreases</strong> n - i<br>  { … }<br>}</p>
+</div>
+<ul>
+<li>Avanzamos hacia la terminación incrementando <code>i</code>.</li>
+</ul>
+</section>
+<section class="slide level2">
+
+<table class="pasos">
+<tr>
+<td>
+1️⃣
+</td>
+<td>
+2️⃣
+</td>
+<td>
+3️⃣
+</td>
+<td>
+4️⃣
+</td>
+<td class="current">
+5️⃣
+</td>
+<td>
+6️⃣
+</td>
+</tr>
+<tr>
+<td>
+Inv. y condición
+</td>
+<td>
+Inicialización
+</td>
+<td>
+Cota
+</td>
+<td>
+Avanzar
+</td>
+<td class="current">
+Restablecer
+</td>
+<td>
+Cota decrece
+</td>
+</tr>
+</table>
+<div class="pseudo">
+<p><strong>method</strong> maximo(V[0..n)<span class="colon">:</span>
+<span class="type">array&lt;<span class="type">int</span>&gt;</span>)
+<strong>returns</strong> (m<span class="colon">:</span> <span
+class="type">int</span>)<br>  <strong>requires</strong> n &gt;=
+1<br>  <strong>ensures</strong> m == (máx j <span class="colon">:</span>
+0 &lt;= j &lt; n <span class="colon">:</span>
+V[j])<br>{<br>  <strong>var</strong> i<span class="colon">:</span> <span
+class="type">int</span>;<br>  i := 1; m :=
+V[0];<br>  <strong>while</strong> i !=
+n<br>    <strong>invariant</strong> 1 &lt;= i &lt;= n <span
+class="math inline">\({\wedge}\)</span> m == (máx j <span
+class="colon">:</span> 0 &lt;= j &lt; i <span class="colon">:</span>
+V[j])<br>    <strong>decreases</strong> n - i<br>  { <span
+class="meta">???</span>; i := i + 1; }<br>}</p>
+</div>
+<p>Comprobamos si el invariante se ve afectado:</p>
+<div class="pseudo" style="font-size:60%">
+<p><span class="pre">{ 1 &lt;= i &lt;= n <span
+class="math inline">\({\wedge}\)</span> m == (máx j <span
+class="colon">:</span> 0 &lt;= j &lt; i <span class="colon">:</span>
+V[j]) <span class="math inline">\({\wedge}\)</span> i != n }
+</span><br>i := i + 1<br><span class="post">{ 1 &lt;= i &lt;= n <span
+class="math inline">\({\wedge}\)</span> m == (máx j <span
+class="colon">:</span> 0 &lt;= j &lt; i <span class="colon">:</span>
+V[j]) } </span></p>
+</div>
+</section>
+<section class="slide level2">
+
+<div class="pseudo" style="font-size:60%">
+<p><span class="pre">{ 1 &lt;= i &lt;= n <span
+class="math inline">\({\wedge}\)</span> m == (máx j <span
+class="colon">:</span> 0 &lt;= j &lt; i <span class="colon">:</span>
+V[j]) <span class="math inline">\({\wedge}\)</span> i != n }
+</span><br>i := i + 1<br><span class="post">{ 1 &lt;= i &lt;= n <span
+class="math inline">\({\wedge}\)</span> m == (máx j <span
+class="colon">:</span> 0 &lt;= j &lt; i <span class="colon">:</span>
+V[j]) } </span></p>
+</div>
+<div class="fragment">
+<div class="pseudo" style="font-size:60%">
+<p>wp(i := i + 1, 1 &lt;= i &lt;= n <span
+class="math inline">\({\wedge}\)</span> m == (máx j <span
+class="colon">:</span> 0 &lt;= j &lt; i <span class="colon">:</span>
+V[j]))<br><br>  === 1 &lt;= i + 1 &lt;= n <span
+class="math inline">\({\wedge}\)</span> m == (máx j <span
+class="colon">:</span> 0 &lt;= j &lt; i + 1 <span class="colon">:</span>
+V[j])</p>
+</div>
+</div>
+<div class="fragment">
+<p>¿Se cumple lo siguiente?</p>
+<div class="pseudo" style="font-size:60%">
+<p>    1 &lt;= i &lt;= n <span class="math inline">\({\wedge}\)</span> m
+== (máx j <span class="colon">:</span> 0 &lt;= j &lt; i <span
+class="colon">:</span> V[j]) <span
+class="math inline">\({\wedge}\)</span> i != n<br>==&gt;<br>    1 &lt;=
+i + 1 &lt;= n <span class="math inline">\({\wedge}\)</span> m == (máx j
+<span class="colon">:</span> 0 &lt;= j &lt; i + 1 <span
+class="colon">:</span> V[j])<br><span class="fragment">===<br>    1
+&lt;= i + 1 &lt;= n <span class="math inline">\({\wedge}\)</span> m ==
+máx((máx j <span class="colon">:</span> 0 &lt;= j &lt; i <span
+class="colon">:</span> V[j]), V[i])</span><br></p>
+</div>
+</div>
+<div class="fragment">
+<p>Podemos restablecer el invariante mediante <span
+class="pseudo inline">m := máx(m, V[i])</span></p>
+</div>
+</section>
+<section class="slide level2">
+
+<table class="pasos">
+<tr>
+<td>
+1️⃣
+</td>
+<td>
+2️⃣
+</td>
+<td>
+3️⃣
+</td>
+<td>
+4️⃣
+</td>
+<td>
+5️⃣
+</td>
+<td class="current">
+6️⃣
+</td>
+</tr>
+<tr>
+<td>
+Inv. y condición
+</td>
+<td>
+Inicialización
+</td>
+<td>
+Cota
+</td>
+<td>
+Avanzar
+</td>
+<td>
+Restablecer
+</td>
+<td class="current">
+Cota decrece
+</td>
+</tr>
+</table>
+<div class="pseudo">
+<p><strong>method</strong> maximo(V[0..n)<span class="colon">:</span>
+<span class="type">array&lt;<span class="type">int</span>&gt;</span>)
+<strong>returns</strong> (m<span class="colon">:</span> <span
+class="type">int</span>)<br>  <strong>requires</strong> n &gt;=
+1<br>  <strong>ensures</strong> m == (máx j <span class="colon">:</span>
+0 &lt;= j &lt; n <span class="colon">:</span>
+V[j])<br>{<br>  <strong>var</strong> i<span class="colon">:</span> <span
+class="type">int</span>;<br>  i := 1; m :=
+V[0];<br>  <strong>while</strong> i !=
+n<br>    <strong>invariant</strong> 1 &lt;= i &lt;= n <span
+class="math inline">\({\wedge}\)</span> m == (máx j <span
+class="colon">:</span> 0 &lt;= j &lt; i <span class="colon">:</span>
+V[j])<br>    <strong>decreases</strong> n - i<br>  {<br>    m := máx(m,
+V[i]);<br>    i := i + 1;<br>  }<br>}</p>
+</div>
+<div class="fragment">
+<ul>
+<li>Puede demostrarse fácilmente que la función de cota <span
+class="pseudo inline">n - i</span> decrece en cada iteración.</li>
+</ul>
+</div>
+</section>
+<section id="resultado" class="slide level2">
+<h2>Resultado</h2>
+<div class="pseudo">
+<p><strong>method</strong> maximo(V[0..n)<span class="colon">:</span>
+<span class="type">array&lt;<span class="type">int</span>&gt;</span>)
+<strong>returns</strong> (m<span class="colon">:</span> <span
+class="type">int</span>)<br>  <strong>requires</strong> n &gt;=
+1<br>  <strong>ensures</strong> m == (máx j <span class="colon">:</span>
+0 &lt;= j &lt; n <span class="colon">:</span>
+V[j])<br>{<br>  <strong>var</strong> i<span class="colon">:</span> <span
+class="type">int</span>;<br>  i := 1; m :=
+V[0];<br>  <strong>while</strong> i !=
+n<br>    <strong>invariant</strong> 1 &lt;= i &lt;= n <span
+class="math inline">\({\wedge}\)</span> m == (máx j <span
+class="colon">:</span> 0 &lt;= j &lt; i <span class="colon">:</span>
+V[j])<br>    <strong>decreases</strong> n - i<br>  {<br>    m := máx(m,
+V[i]);<br>    i := i + 1;<br>  }<br>}</p>
+</div>
+<p><strong>Coste en tiempo:</strong> <code>Θ(n)</code>, donde
+<code>n</code> es la longitud del vector de entrada</p>
+<p><strong>Coste en espacio:</strong> <code>Θ(1)</code></p>
+</section></section>
+<section>
+<section id="estrategia-3-reemplazo-de-expresión-por-variable"
+class="title-slide slide level1 center"
+data-background-image="img/BrownBackground.png">
+<h1 class="center" data-background-image="img/BrownBackground.png"><span
+class="sc_number">2.5</span>Estrategia 3:<br/>reemplazo de expresión por
+variable</h1>
+
+</section>
+<section id="evaluación-de-un-polinomio" class="slide level2">
+<h2>Evaluación de un polinomio</h2>
+<p>Supongamos un polinomio <span class="math inline">\(P\)</span> de
+grado <span class="math inline">\(n\)</span>:</p>
+<p><span class="math display">\[
+P(x) = a_0 + a_1x + a_2x^2 + \dots + a_nx^n
+\]</span></p>
+<div class="fragment">
+<p>Dado un valor <span class="math inline">\(v\)</span>, queremos
+determinar el valor del polinomio para <span class="math inline">\(x =
+v\)</span>:</p>
+<p><span class="math display">\[
+a_0 + a_1v + a_2v^2 + \dots + a_nv^n
+\]</span></p>
+</div>
+<div class="fragment">
+<p>Representamos el polinomio mediante un array de <span
+class="math inline">\(n+1\)</span> componentes, donde la componente
+<span class="math inline">\(j\)</span>-ésima contiene el coeficiente
+<span class="math inline">\(a_j\)</span>:</p>
+<p><span class="math display">\[
+P = [a_0, a_1, a_2, \ldots, a_n]
+\]</span></p>
+</div>
+</section>
+<section id="evaluación-de-un-polinomio-especificación"
+class="slide level2">
+<h2>Evaluación de un polinomio: especificación</h2>
+<div class="pseudo">
+<p><strong>method</strong> evalPolinomio(P[0..n)<span
+class="colon">:</span> <span class="type">array&lt;<span
+class="type">int</span>&gt;</span>, v<span class="colon">:</span> <span
+class="type">int</span>) <strong>returns</strong> (r<span
+class="colon">:</span> <span
+class="type">int</span>)<br><strong>requires</strong> n &gt;=
+0<br><strong>ensures</strong> r == (Σj <span class="colon">:</span> 0
+&lt;= j &lt; n <span class="colon">:</span> P[j] * v<sup>j</sup>)</p>
+</div>
+</section>
+<section class="slide level2">
+
+<table class="pasos">
+<tr>
+<td class="current">
+1️⃣
+</td>
+<td>
+2️⃣
+</td>
+<td>
+3️⃣
+</td>
+<td>
+4️⃣
+</td>
+<td>
+5️⃣
+</td>
+<td>
+6️⃣
+</td>
+</tr>
+<tr>
+<td class="current">
+Inv. y condición
+</td>
+<td>
+Inicialización
+</td>
+<td>
+Cota
+</td>
+<td>
+Avanzar
+</td>
+<td>
+Restablecer
+</td>
+<td>
+Cota decrece
+</td>
+</tr>
+</table>
+<div class="pseudo">
+<p><strong>method</strong> evalPolinomio(P[0..n)<span
+class="colon">:</span> <span class="type">array&lt;<span
+class="type">int</span>&gt;</span>, v<span class="colon">:</span> <span
+class="type">int</span>) <strong>returns</strong> (r<span
+class="colon">:</span> <span
+class="type">int</span>)<br><strong>requires</strong> n &gt;=
+0<br><strong>ensures</strong> r == (Σj <span class="colon">:</span> 0
+&lt;= j &lt; n <span class="colon">:</span> P[j] * v<sup>j</sup>)</p>
+</div>
+<div class="fragment">
+<div class="pseudo">
+<p>r == (Σj <span class="colon">:</span> 0 &lt;= j &lt; <span
+class="hl">i</span> <span class="colon">:</span> P[j] * v<sup>j</sup>)
+<span class="math inline">\({\wedge}\)</span> <span class="hl">i ==
+n</span></p>
+</div>
+</div>
+<div class="fragment">
+<p><strong>Condición del bucle:</strong> <span
+class="pseudo color_tema inline">i != n</span></p>
+<p><strong>Invariante:</strong> <span class="pseudo color_tema inline">0
+&lt;= i &lt;= n <span class="math inline">\({\wedge}\)</span> r == (Σj
+<span class="colon">:</span> 0 &lt;= j &lt; i <span
+class="colon">:</span> P[j] * v<sup>j</sup>)</span></p>
+</div>
+</section>
+<section class="slide level2">
+
+<table class="pasos">
+<tr>
+<td>
+1️⃣
+</td>
+<td class="current">
+2️⃣
+</td>
+<td>
+3️⃣
+</td>
+<td>
+4️⃣
+</td>
+<td>
+5️⃣
+</td>
+<td>
+6️⃣
+</td>
+</tr>
+<tr>
+<td>
+Inv. y condición
+</td>
+<td class="current">
+Inicialización
+</td>
+<td>
+Cota
+</td>
+<td>
+Avanzar
+</td>
+<td>
+Restablecer
+</td>
+<td>
+Cota decrece
+</td>
+</tr>
+</table>
+<div class="pseudo">
+<p><span class="pre">{ n &gt;= 0 }</span><br><span
+class="meta">???</span><br><span class="post">{ 0 &lt;= i &lt;= n <span
+class="math inline">\({\wedge}\)</span> r == (Σj <span
+class="colon">:</span> 0 &lt;= j &lt; i <span class="colon">:</span>
+P[j] * v<sup>j</sup>) }</span></p>
+</div>
+<div class="fragment">
+<p>Podemos inicializar con <code>i := 0</code>, lo que nos obligará a
+que <code>r := 0</code></p>
+<div class="pseudo">
+<p>    n &gt;= 0<br>==&gt;<br>    wp((i := 0; r := 0), 0 &lt;= i &lt;= n
+<span class="math inline">\({\wedge}\)</span> r == (Σj <span
+class="colon">:</span> 0 &lt;= j &lt; i <span class="colon">:</span>
+P[j] * v<sup>j</sup>))<br>===<br>    0 &lt;= 0 &lt;= n <span
+class="math inline">\({\wedge}\)</span> r == (Σj <span
+class="colon">:</span> 0 &lt;= j &lt; 0 <span class="colon">:</span>
+P[j] * v<sup>j</sup>)</p>
+</div>
+</div>
+</section>
+<section class="slide level2">
+
+<table class="pasos">
+<tr>
+<td>
+1️⃣
+</td>
+<td>
+2️⃣
+</td>
+<td class="current">
+3️⃣
+</td>
+<td class="current">
+4️⃣
+</td>
+<td>
+5️⃣
+</td>
+<td>
+6️⃣
+</td>
+</tr>
+<tr>
+<td>
+Inv. y condición
+</td>
+<td>
+Inicialización
+</td>
+<td class="current">
+Cota
+</td>
+<td class="current">
+Avanzar
+</td>
+<td>
+Restablecer
+</td>
+<td>
+Cota decrece
+</td>
+</tr>
+</table>
+<div class="pseudo">
+<p><strong>method</strong> evalPolinomio(P[0..n)<span
+class="colon">:</span> <span class="type">array&lt;<span
+class="type">int</span>&gt;</span>, v<span class="colon">:</span> <span
+class="type">int</span>) <strong>returns</strong> (r<span
+class="colon">:</span> <span
+class="type">int</span>)<br><strong>requires</strong> n &gt;=
+0<br><strong>ensures</strong> r == (Σj <span class="colon">:</span> 0
+&lt;= j &lt; n <span class="colon">:</span> P[j] *
+v<sup>j</sup>)<br>{<br>  <strong>var</strong> i<span
+class="colon">:</span> <span class="type">int</span>;<br>  i := 0; r :=
+0;<br>  <strong>while</strong> i != n<br>    <strong>invariant</strong>
+0 &lt;= i &lt;= n <span class="math inline">\({\wedge}\)</span> r == (Σj
+<span class="colon">:</span> 0 &lt;= j &lt; i <span
+class="colon">:</span> P[j] * v<sup>j</sup>)<br>  { … }<br>}</p>
+</div>
+<ul>
+<li><p>Función de cota: <span class="pseudo color_tema inline">n -
+i</span>, que es ≥ 0.</p></li>
+<li><p>Avanzamos bucle mediante <code>i := i + 1</code></p></li>
+</ul>
+</section>
+<section class="slide level2">
+
+<table class="pasos">
+<tr>
+<td>
+1️⃣
+</td>
+<td>
+2️⃣
+</td>
+<td>
+3️⃣
+</td>
+<td>
+4️⃣
+</td>
+<td class="current">
+5️⃣
+</td>
+<td>
+6️⃣
+</td>
+</tr>
+<tr>
+<td>
+Inv. y condición
+</td>
+<td>
+Inicialización
+</td>
+<td>
+Cota
+</td>
+<td>
+Avanzar
+</td>
+<td class="current">
+Restablecer
+</td>
+<td>
+Cota decrece
+</td>
+</tr>
+</table>
+<div class="pseudo">
+<p><strong>method</strong> evalPolinomio(P[0..n)<span
+class="colon">:</span> <span class="type">array&lt;<span
+class="type">int</span>&gt;</span>, v<span class="colon">:</span> <span
+class="type">int</span>) <strong>returns</strong> (r<span
+class="colon">:</span> <span
+class="type">int</span>)<br><strong>requires</strong> n &gt;=
+0<br><strong>ensures</strong> r == (Σj <span class="colon">:</span> 0
+&lt;= j &lt; n <span class="colon">:</span> P[j] *
+v<sup>j</sup>)<br>{<br>  <strong>var</strong> i<span
+class="colon">:</span> <span class="type">int</span>;<br>  i := 0; r :=
+0;<br>  <strong>while</strong> i != n<br>    <strong>invariant</strong>
+0 &lt;= i &lt;= n <span class="math inline">\({\wedge}\)</span> r == (Σj
+<span class="colon">:</span> 0 &lt;= j &lt; i <span
+class="colon">:</span> P[j] *
+v<sup>j</sup>)<br>    <strong>decreases</strong> n - i<br>  { <span
+class="meta">???</span>; i := i + 1; }<br>}</p>
+</div>
+<p>Comprobamos si hay que restablecer el invariante:</p>
+<div class="pseudo" style="font-size:60%">
+<p><span class="pre">{ 0 &lt;= i &lt;= n <span
+class="math inline">\({\wedge}\)</span> r == (Σj <span
+class="colon">:</span> 0 &lt;= j &lt; i <span class="colon">:</span>
+P[j] * v<sup>j</sup>) <span class="math inline">\({\wedge}\)</span> i !=
+n }</span><br>i := i + 1;<br><span class="post">{ 0 &lt;= i &lt;= n
+<span class="math inline">\({\wedge}\)</span> r == (Σj <span
+class="colon">:</span> 0 &lt;= j &lt; i <span class="colon">:</span>
+P[j] * v<sup>j</sup>) }</span></p>
+</div>
+</section>
+<section class="slide level2">
+
+<p>¿Se cumple lo siguiente?</p>
+<div class="pseudo">
+<p>    0 &lt;= i &lt;= n <span class="math inline">\({\wedge}\)</span> r
+== (Σj <span class="colon">:</span> 0 &lt;= j &lt; i <span
+class="colon">:</span> P[j] * v<sup>j</sup>) <span
+class="math inline">\({\wedge}\)</span> i != n<br>==&gt;<br>    0 &lt;=
+i + 1 &lt;= n <span class="math inline">\({\wedge}\)</span> r == (Σj
+<span class="colon">:</span> 0 &lt;= j &lt; i + 1 <span
+class="colon">:</span> P[j] * v<sup>j</sup>)      <span
+class="fragment">❌</span><br><span class="fragment">===<br>    0 &lt;=
+i + 1 &lt;= n <span class="math inline">\({\wedge}\)</span> r == (Σj
+<span class="colon">:</span> 0 &lt;= j &lt; i <span
+class="colon">:</span> P[j] * v<sup>j</sup>) + P[i] *
+v<sup>i</sup></span></p>
+</div>
+<div class="fragment">
+<p>Necesitamos la asignación: <span class="pseudo inline">r := r + P[i]
+* v<sup>i</sup></span></p>
+</div>
+<div class="fragment">
+<p style="text-align:right">
+🤔 <strong>¿Y si el lenguaje no admite expresiones <span
+class="pseudo inline">v<sup>i</sup></span>?</strong>
+</p>
+</div>
+<div class="fragment">
+<p style="text-align:right">
+😰 <strong>¿Y si es demasiado ineficiente calcular <span
+class="pseudo inline">v<sup>i</sup></span> en cada iteración?</strong>
+</p>
+</div>
+</section>
+<section class="slide level2">
+
+<p><strong>Estrategia 3:</strong></p>
+<div class="info_box">
+<p>Añadir igualdades <code>z == e</code> al invariante, donde
+<code>z</code> es una variable nueva y <code>e</code> es una expresión
+costosa de calcular.</p>
+</div>
+<div class="fragment">
+<p> </p>
+<div class="pseudo">
+<p><strong>invariant</strong> 0 &lt;= i &lt;= n <span
+class="math inline">\({\wedge}\)</span> r == (Σj <span
+class="colon">:</span> 0 &lt;= j &lt; i <span class="colon">:</span>
+P[j] * v<sup>j</sup>) <span class="math inline">\({\wedge}\)</span>
+<span class="hl">s == v<sup>i</sup></span></p>
+</div>
+<p>Hay que volver al paso 2️⃣ <strong>Inicialización</strong>.</p>
+</div>
+</section>
+<section class="slide level2">
+
+<table class="pasos">
+<tr>
+<td>
+1️⃣
+</td>
+<td class="current">
+2️⃣
+</td>
+<td>
+3️⃣
+</td>
+<td>
+4️⃣
+</td>
+<td>
+5️⃣
+</td>
+<td>
+6️⃣
+</td>
+</tr>
+<tr>
+<td>
+Inv. y condición
+</td>
+<td class="current">
+Inicialización
+</td>
+<td>
+Cota
+</td>
+<td>
+Avanzar
+</td>
+<td>
+Restablecer
+</td>
+<td>
+Cota decrece
+</td>
+</tr>
+</table>
+<div class="pseudo">
+<p><strong>method</strong> evalPolinomio(P[0..n)<span
+class="colon">:</span> <span class="type">array&lt;<span
+class="type">int</span>&gt;</span>, v<span class="colon">:</span> <span
+class="type">int</span>) <strong>returns</strong> (r<span
+class="colon">:</span> <span
+class="type">int</span>)<br><strong>requires</strong> n &gt;=
+0<br><strong>ensures</strong> r == (Σj <span class="colon">:</span> 0
+&lt;= j &lt; n <span class="colon">:</span> P[j] *
+v<sup>j</sup>)<br>{<br>  <strong>var</strong> i<span
+class="colon">:</span> <span class="type">int</span>;<br>  i := 0; r :=
+0; <span class="meta">???</span><br>  <strong>while</strong> i !=
+n<br>    <strong>invariant</strong> 0 &lt;= i &lt;= n <span
+class="math inline">\({\wedge}\)</span> r == (Σj <span
+class="colon">:</span> 0 &lt;= j &lt; i <span class="colon">:</span>
+P[j] * v<sup>j</sup>) <span class="math inline">\({\wedge}\)</span> s ==
+v<sup>i</sup><br>    <strong>decreases</strong> n - i<br>  { ???; i := i
++ 1; }<br>}</p>
+</div>
+<div class="fragment">
+<div class="pseudo">
+<p><span class="pre">{ n &gt;= 0 }</span><br>i := 0; r := 0; <span
+class="hl">s := 1;</span><br><span class="post">{ 0 &lt;= i &lt;= n
+<span class="math inline">\({\wedge}\)</span> r == (Σj <span
+class="colon">:</span> 0 &lt;= j &lt; i <span class="colon">:</span>
+P[j] * v<sup>j</sup>) <span class="math inline">\({\wedge}\)</span> s ==
+v<sup>i</sup> }</span></p>
+</div>
+</div>
+</section>
+<section class="slide level2">
+
+<table class="pasos">
+<tr>
+<td>
+1️⃣
+</td>
+<td>
+2️⃣
+</td>
+<td>
+3️⃣
+</td>
+<td>
+4️⃣
+</td>
+<td class="current">
+5️⃣
+</td>
+<td>
+6️⃣
+</td>
+</tr>
+<tr>
+<td>
+Inv. y condición
+</td>
+<td>
+Inicialización
+</td>
+<td>
+Cota
+</td>
+<td>
+Avanzar
+</td>
+<td class="current">
+Restablecer
+</td>
+<td>
+Cota decrece
+</td>
+</tr>
+</table>
+<div class="pseudo">
+<p><strong>method</strong> evalPolinomio(P[0..n)<span
+class="colon">:</span> <span class="type">array&lt;<span
+class="type">int</span>&gt;</span>, v<span class="colon">:</span> <span
+class="type">int</span>) <strong>returns</strong> (r<span
+class="colon">:</span> <span
+class="type">int</span>)<br><strong>requires</strong> n &gt;=
+0<br><strong>ensures</strong> r == (Σj <span class="colon">:</span> 0
+&lt;= j &lt; n <span class="colon">:</span> P[j] *
+v<sup>j</sup>)<br>{<br>  <strong>var</strong> i<span
+class="colon">:</span> <span class="type">int</span>;<br>  i := 0; r :=
+0; s := 1;<br>  <strong>while</strong> i !=
+n<br>    <strong>invariant</strong> 0 &lt;= i &lt;= n <span
+class="math inline">\({\wedge}\)</span> r == (Σj <span
+class="colon">:</span> 0 &lt;= j &lt; i <span class="colon">:</span>
+P[j] * v<sup>j</sup>) <span class="math inline">\({\wedge}\)</span> s ==
+v<sup>i</sup><br>    <strong>decreases</strong> n - i<br>  { <span
+class="meta">???</span>; i := i + 1; }<br>}</p>
+</div>
+<p>¿Qué necesitamos para restablecer el invariante?</p>
+<div class="pseudo" style="font-size:60%">
+<p><span class="pre">{ 0 &lt;= i &lt;= n <span
+class="math inline">\({\wedge}\)</span> r == (Σj <span
+class="colon">:</span> 0 &lt;= j &lt; i <span class="colon">:</span>
+P[j] * v<sup>j</sup>) <span class="math inline">\({\wedge}\)</span> s ==
+v<sup>i</sup> <span class="math inline">\({\wedge}\)</span> i != n
+}</span><br>i := i + 1;<br><span class="post">{ 0 &lt;= i &lt;= n <span
+class="math inline">\({\wedge}\)</span> r == (Σj <span
+class="colon">:</span> 0 &lt;= j &lt; i <span class="colon">:</span>
+P[j] * v<sup>j</sup>) <span class="math inline">\({\wedge}\)</span> s ==
+v<sup>i</sup> }</span></p>
+</div>
+</section>
+<section class="slide level2">
+
+<p>¿Se cumple lo siguiente?</p>
+<div class="pseudo" style="font-size:60%">
+<p>    0 &lt;= i &lt;= n <span class="math inline">\({\wedge}\)</span> r
+== (Σj <span class="colon">:</span> 0 &lt;= j &lt; i <span
+class="colon">:</span> P[j] * v<sup>j</sup>) <span
+class="math inline">\({\wedge}\)</span> s == v<sup>i</sup> <span
+class="math inline">\({\wedge}\)</span> i != n<br>==&gt;<br>    0 &lt;=
+i + 1 &lt;= n <span class="math inline">\({\wedge}\)</span> r == (Σj
+<span class="colon">:</span> 0 &lt;= j &lt; i  <span
+class="colon">:</span> P[j] * v<sup>j</sup>) + P[i] * v<sup>i</sup>
+<span class="math inline">\({\wedge}\)</span> s == v<sup>i</sup> * v</p>
+</div>
+<ul>
+<li class="fragment"><p>Necesitamos la asignación múltiple: <span
+class="pseudo">r, s := r + P[i] * s, s * v;</span></p>
+<ul>
+<li class="fragment">Equivale a
+<code>r := r + P[i] * s; s := s * v;</code></li>
+<li class="fragment">pero <strong>NO</strong> equivale a
+<code>s := s * v; r := r + P[i] * s;</code></li>
+</ul></li>
+</ul>
+</section>
+<section class="slide level2">
+
+<table class="pasos">
+<tr>
+<td>
+1️⃣
+</td>
+<td>
+2️⃣
+</td>
+<td>
+3️⃣
+</td>
+<td>
+4️⃣
+</td>
+<td>
+5️⃣
+</td>
+<td class="current">
+6️⃣
+</td>
+</tr>
+<tr>
+<td>
+Inv. y condición
+</td>
+<td>
+Inicialización
+</td>
+<td>
+Cota
+</td>
+<td>
+Avanzar
+</td>
+<td>
+Restablecer
+</td>
+<td class="current">
+Cota decrece
+</td>
+</tr>
+</table>
+<div class="pseudo">
+<p><strong>method</strong> evalPolinomio(P[0..n)<span
+class="colon">:</span> <span class="type">array&lt;<span
+class="type">int</span>&gt;</span>, v<span class="colon">:</span> <span
+class="type">int</span>) <strong>returns</strong> (r<span
+class="colon">:</span> <span
+class="type">int</span>)<br><strong>requires</strong> n &gt;=
+0<br><strong>ensures</strong> r == (Σj <span class="colon">:</span> 0
+&lt;= j &lt; n <span class="colon">:</span> P[j] *
+v<sup>j</sup>)<br>{<br>  <strong>var</strong> i<span
+class="colon">:</span> <span class="type">int</span>;<br>  i := 0; r :=
+0; s := 1;<br>  <strong>while</strong> i !=
+n<br>    <strong>invariant</strong> 0 &lt;= i &lt;= n <span
+class="math inline">\({\wedge}\)</span> r == (Σj <span
+class="colon">:</span> 0 &lt;= j &lt; i <span class="colon">:</span>
+P[j] * v<sup>j</sup>) <span class="math inline">\({\wedge}\)</span> s ==
+v<sup>i</sup><br>    <strong>decreases</strong> n - i<br>  { <br>    r
+:= r + P[i] * s; <br>    s := s * v;<br>    i := i + 1;<br>  }<br>}</p>
+</div>
+<div class="fragment">
+<p>Claramente, <span class="pseudo inline">n - i</span> decrece en cada
+iteración.</p>
+</div>
+</section>
+<section id="resultado-final" class="slide level2">
+<h2>Resultado final</h2>
+<div class="pseudo">
+<p><strong>method</strong> evalPolinomio(P[0..n)<span
+class="colon">:</span> <span class="type">array&lt;<span
+class="type">int</span>&gt;</span>, v<span class="colon">:</span> <span
+class="type">int</span>) <strong>returns</strong> (r<span
+class="colon">:</span> <span
+class="type">int</span>)<br><strong>requires</strong> n &gt;=
+0<br><strong>ensures</strong> r == (Σj <span class="colon">:</span> 0
+&lt;= j &lt; n <span class="colon">:</span> P[j] *
+v<sup>j</sup>)<br>{<br>  <strong>var</strong> i<span
+class="colon">:</span> <span class="type">int</span>;<br>  i := 0; r :=
+0; s := 1;<br>  <strong>while</strong> i !=
+n<br>    <strong>invariant</strong> 0 &lt;= i &lt;= n <span
+class="math inline">\({\wedge}\)</span> r == (Σj <span
+class="colon">:</span> 0 &lt;= j &lt; i <span class="colon">:</span>
+P[j] * v<sup>j</sup>) <span class="math inline">\({\wedge}\)</span> s ==
+v<sup>i</sup><br>    <strong>decreases</strong> n - i<br>  { <br>    r
+:= r + P[i] * s; <br>    s := s * v;<br>    i := i + 1;<br>  }<br>}</p>
+</div>
+<p><strong>Coste en tiempo:</strong> <code>Θ(n)</code>, donde
+<code>n</code> es la longitud del vector.</p>
+<p><strong>Coste en espacio:</strong> <code>Θ(1)</code>.</p>
+</section></section>
+<section>
+<section id="segmento-de-suma-máxima-en-un-vector"
+class="title-slide slide level1 center"
+data-background-image="img/BrownBackground.png">
+<h1 class="center" data-background-image="img/BrownBackground.png"><span
+class="sc_number">2.6</span>Segmento de suma máxima en un vector</h1>
+
+</section>
+<section id="problema" class="slide level2">
+<h2>Problema</h2>
+<ul>
+<li>Tenemos un grupo de música que hace gira por varias ciudades.
+Sabemos el beneficio que se puede obtener en cada ciudad (negativo si es
+pérdida).</li>
+</ul>
+<p><img data-src="Tema2/Circuito.svg" style="width:100.0%" /></p>
+<aside class="notes">
+<p>Metáfora: gira de un grupo de música Suma total: 6 La suma máxima es
+[E-H] con una ganancia de 9</p>
+</aside>
+<ul>
+<li>¿En qué ciudades debe empezar y terminar la gira para maximizar el
+beneficio obtenible?
+<ul>
+<li>En el ejemplo de la figura, con la ruta E → H se obtiene una
+ganancia de <code>+9</code>.</li>
+</ul></li>
+</ul>
+</section>
+<section id="especificación" class="slide level2">
+<h2>Especificación</h2>
+<p><em>Calcular la suma máxima sobre todos los segmentos no vacíos de un
+vector de números enteros</em></p>
+<div class="pseudo">
+<p><strong>method</strong> segmentoSumaMaxima(V[0..n)<span
+class="colon">:</span> <span class="type">array&lt;<span
+class="type">int</span>&gt;</span>) <strong>returns</strong> (s<span
+class="colon">:</span> <span
+class="type">int</span>)<br><strong>requires</strong> n &gt;=
+1<br><strong>ensures</strong> s == (máx p, q <span
+class="colon">:</span> 0 &lt;= p &lt; q &lt;= n <span
+class="colon">:</span> (Σi <span class="colon">:</span> p &lt;= i &lt; q
+<span class="colon">:</span> V[i]))</p>
+</div>
+<div class="fragment">
+<p>Abreviamos mediante <span class="pseudo inline">ΣV[p..q)</span> la
+expresión <span class="pseudo inline">(Σi <span class="colon">:</span> p
+&lt;= i &lt; q <span class="colon">:</span> V[i])</span></p>
+<div class="pseudo">
+<p><strong>method</strong> segmentoSumaMaxima(V[0..n)<span
+class="colon">:</span> <span class="type">array&lt;<span
+class="type">int</span>&gt;</span>) <strong>returns</strong> (s<span
+class="colon">:</span> <span
+class="type">int</span>)<br><strong>requires</strong> n &gt;=
+1<br><strong>ensures</strong> s == (máx p, q <span
+class="colon">:</span> 0 &lt;= p &lt; q &lt;= n <span
+class="colon">:</span> ΣV[p..q))</p>
+</div>
+</div>
+</section>
+<section class="slide level2">
+
+<table class="pasos">
+<tr>
+<td class="current">
+1️⃣
+</td>
+<td>
+2️⃣
+</td>
+<td>
+3️⃣
+</td>
+<td>
+4️⃣
+</td>
+<td>
+5️⃣
+</td>
+<td>
+6️⃣
+</td>
+</tr>
+<tr>
+<td class="current">
+Inv. y condición
+</td>
+<td>
+Inicialización
+</td>
+<td>
+Cota
+</td>
+<td>
+Avanzar
+</td>
+<td>
+Restablecer
+</td>
+<td>
+Cota decrece
+</td>
+</tr>
+</table>
+<div class="pseudo">
+<p><strong>ensures</strong> s == (máx p, q <span class="colon">:</span>
+0 &lt;= p &lt; q &lt;= n <span class="colon">:</span> ΣV[p..q))</p>
+</div>
+<p>La postcondición no está expresada en forma de conjunción.</p>
+<div class="fragment">
+<p>Reemplazamos la constante <code>n</code> por una variable
+<code>i</code>:</p>
+<div class="pseudo">
+<p>s == (máx p, q <span class="colon">:</span> 0 &lt;= p &lt; q &lt;=
+<span class="hl">i</span> <span class="colon">:</span> ΣV[p..q)) <span
+class="math inline">\({\wedge}\)</span> <span class="hl">i ==
+n</span></p>
+</div>
+</div>
+<div class="fragment">
+<p><strong>Condición del bucle:</strong> <span
+class="pseudo color_tema inline">i != n</span></p>
+<p><strong>Invariante:</strong> <span class="pseudo color_tema inline">1
+&lt;= i &lt;= n <span class="math inline">\({\wedge}\)</span> s == (máx
+p, q <span class="colon">:</span> 0 &lt;= p &lt; q &lt;= i <span
+class="colon">:</span> ΣV[p..q))</span></p>
+</div>
+</section>
+<section class="slide level2">
+
+<table class="pasos">
+<tr>
+<td>
+1️⃣
+</td>
+<td class="current">
+2️⃣
+</td>
+<td>
+3️⃣
+</td>
+<td>
+4️⃣
+</td>
+<td>
+5️⃣
+</td>
+<td>
+6️⃣
+</td>
+</tr>
+<tr>
+<td>
+Inv. y condición
+</td>
+<td class="current">
+Inicialización
+</td>
+<td>
+Cota
+</td>
+<td>
+Avanzar
+</td>
+<td>
+Restablecer
+</td>
+<td>
+Cota decrece
+</td>
+</tr>
+</table>
+<div class="pseudo">
+<p><strong>method</strong> segmentoSumaMaxima(V[0..n)<span
+class="colon">:</span> <span class="type">array&lt;<span
+class="type">int</span>&gt;</span>) <strong>returns</strong> (s<span
+class="colon">:</span> <span
+class="type">int</span>)<br><strong>requires</strong> n &gt;=
+1<br><strong>ensures</strong> s == (máx p, q <span
+class="colon">:</span> 0 &lt;= p &lt; q &lt;= n <span
+class="colon">:</span> ΣV[p..q))<br>{<br>  <strong>var</strong> i<span
+class="colon">:</span> <span class="type">int</span>;<br>  <span
+class="meta">???</span><br>  <strong>while</strong> i !=
+n<br>    <strong>invariant</strong> 1 &lt;= i &lt;= n <span
+class="math inline">\({\wedge}\)</span> s == (máx p, q <span
+class="colon">:</span> 0 &lt;= p &lt; q &lt;= i <span
+class="colon">:</span> ΣV[p..q))<br>  { … }<br>}</p>
+</div>
+<div class="fragment">
+<p>Si inicializamos <code>i := 1</code> tenemos:</p>
+<div class="pseudo">
+<p>    s == (máx p, q <span class="colon">:</span> 0 &lt;= p &lt; q
+&lt;= 1 <span class="colon">:</span> ΣV[p..q))<br>===<br>    s ==
+ΣV[0..1) == V[0]</p>
+</div>
+</div>
+</section>
+<section class="slide level2">
+
+<table class="pasos">
+<tr>
+<td>
+1️⃣
+</td>
+<td>
+2️⃣
+</td>
+<td class="current">
+3️⃣
+</td>
+<td class="current">
+4️⃣
+</td>
+<td>
+5️⃣
+</td>
+<td>
+6️⃣
+</td>
+</tr>
+<tr>
+<td>
+Inv. y condición
+</td>
+<td>
+Inicialización
+</td>
+<td class="current">
+Cota
+</td>
+<td class="current">
+Avanzar
+</td>
+<td>
+Restablecer
+</td>
+<td>
+Cota decrece
+</td>
+</tr>
+</table>
+<div class="pseudo">
+<p><strong>method</strong> segmentoSumaMaxima(V[0..n)<span
+class="colon">:</span> <span class="type">array&lt;<span
+class="type">int</span>&gt;</span>) <strong>returns</strong> (s<span
+class="colon">:</span> <span
+class="type">int</span>)<br><strong>requires</strong> n &gt;=
+1<br><strong>ensures</strong> s == (máx p, q <span
+class="colon">:</span> 0 &lt;= p &lt; q &lt;= n <span
+class="colon">:</span> ΣV[p..q))<br>{<br>  <strong>var</strong> i<span
+class="colon">:</span> <span class="type">int</span>;<br>  i := 1; s :=
+V[0];<br>  <strong>while</strong> i !=
+n<br>    <strong>invariant</strong> 1 &lt;= i &lt;= n <span
+class="math inline">\({\wedge}\)</span> s == (máx p, q <span
+class="colon">:</span> 0 &lt;= p &lt; q &lt;= i <span
+class="colon">:</span> ΣV[p..q))<br>  { … }<br>}</p>
+</div>
+<div class="fragment">
+<p>Escogemos <span class="pseudo color_tema inline">n - i</span> como
+función de cota, e incorporamos la instrucción <span
+class="pseudo inline">i := i + 1</span> al bucle.</p>
+</div>
+</section>
+<section class="slide level2">
+
+<table class="pasos">
+<tr>
+<td>
+1️⃣
+</td>
+<td>
+2️⃣
+</td>
+<td>
+3️⃣
+</td>
+<td>
+4️⃣
+</td>
+<td class="current">
+5️⃣
+</td>
+<td>
+6️⃣
+</td>
+</tr>
+<tr>
+<td>
+Inv. y condición
+</td>
+<td>
+Inicialización
+</td>
+<td>
+Cota
+</td>
+<td>
+Avanzar
+</td>
+<td class="current">
+Restablecer
+</td>
+<td>
+Cota decrece
+</td>
+</tr>
+</table>
+<div class="pseudo">
+<p><strong>method</strong> segmentoSumaMaxima(V[0..n)<span
+class="colon">:</span> <span class="type">array&lt;<span
+class="type">int</span>&gt;</span>) <strong>returns</strong> (s<span
+class="colon">:</span> <span
+class="type">int</span>)<br><strong>requires</strong> n &gt;=
+1<br><strong>ensures</strong> s == (máx p, q <span
+class="colon">:</span> 0 &lt;= p &lt; q &lt;= n <span
+class="colon">:</span> ΣV[p..q))<br>{<br>  <strong>var</strong> i<span
+class="colon">:</span> <span class="type">int</span>;<br>  i := 1; s :=
+V[0];<br>  <strong>while</strong> i !=
+n<br>    <strong>invariant</strong> 1 &lt;= i &lt;= n <span
+class="math inline">\({\wedge}\)</span> s == (máx p, q <span
+class="colon">:</span> 0 &lt;= p &lt; q &lt;= i <span
+class="colon">:</span> ΣV[p..q))<br>  { <span class="meta">???</span>; i
+:= i + 1; }<br>}</p>
+</div>
+<div class="fragment">
+<p>Tenemos que comprobar si se cumple lo siguiente:</p>
+<div class="pseudo">
+<p><span class="pre">{ 1 &lt;= i &lt;= n <span
+class="math inline">\({\wedge}\)</span> s == (máx p, q <span
+class="colon">:</span> 0 &lt;= p &lt; q &lt;= i <span
+class="colon">:</span> ΣV[p..q)) <span
+class="math inline">\({\wedge}\)</span> i != n }</span><br>i := i +
+1;<br><span class="post">{ 1 &lt;= i &lt;= n <span
+class="math inline">\({\wedge}\)</span> s == (máx p, q <span
+class="colon">:</span> 0 &lt;= p &lt; q &lt;= i <span
+class="colon">:</span> ΣV[p..q)) }</span></p>
+</div>
+</div>
+</section>
+<section class="slide level2">
+
+<p>Para ello tenemos que demostrar:</p>
+<div class="pseudo">
+<p>    1 &lt;= i &lt;= n <span class="math inline">\({\wedge}\)</span> s
+== (máx p, q <span class="colon">:</span> 0 &lt;= p &lt; q &lt;= i <span
+class="colon">:</span> ΣV[p..q)) <span
+class="math inline">\({\wedge}\)</span> i != n<br>==&gt;<br>    1 &lt;=
+i + 1 &lt;= n <span class="math inline">\({\wedge}\)</span> s == (máx p,
+q <span class="colon">:</span> 0 &lt;= p &lt; q &lt;= i + 1 <span
+class="colon">:</span> ΣV[p..q))   <span class="fragment">❌</span></p>
+</div>
+<div class="fragment">
+<p>Descomponemos <span class="pseudo inline">(máx p, q <span
+class="colon">:</span> 0 &lt;= p &lt; q &lt;= i + 1 <span
+class="colon">:</span> ΣV[p..q))</span> en dos:</p>
+<div class="pseudo">
+<p>  máx(<br>    (máx p, q <span class="colon">:</span> 0 &lt;= p &lt; q
+&lt;= i + 1 <span class="math inline">\({\wedge}\)</span> <span
+class="hl">q &lt; i + 1</span> <span class="colon">:</span>
+ΣV[p..q)),<br>    (máx p, q <span class="colon">:</span> 0 &lt;= p &lt;
+q &lt;= i + 1 <span class="math inline">\({\wedge}\)</span> <span
+class="hl">q == i + 1</span> <span class="colon">:</span>
+ΣV[p..q))<br>  )<br><span class="fragment">==<br>  máx(<br>    (máx p, q
+<span class="colon">:</span> 0 &lt;= p &lt; q &lt;= i <span
+class="colon">:</span> ΣV[p..q)),<br>    (máx p <span
+class="colon">:</span> 0 &lt;= p &lt; i + 1 <span class="colon">:</span>
+ΣV[p..i+1))<br>  )</span></p>
+</div>
+</div>
+</section>
+<section class="slide level2">
+
+<p>Por tanto, para que el invariante se preserve, necesitamos una
+asignación como la siguiente:</p>
+<div class="pseudo">
+<p>s := máx(s, (máx p <span class="colon">:</span> 0 &lt;= p &lt; i + 1
+<span class="colon">:</span> ΣV[p..i+1)))</p>
+</div>
+<div class="fragment">
+<p>El lenguaje de programación no permite la expresión<br/><span
+class="pseudo">(máx p : 0 &lt;= p &lt; i + 1 : ΣV[p..i+1))</span></p>
+</div>
+<div class="fragment">
+<p><strong>Estrategia:</strong> introducir variable nueva <code>m</code>
+que contenga el valor de esa expresión:</p>
+<div class="pseudo">
+<p><strong>invariant</strong> 1 &lt;= i &lt;= n <span
+class="math inline">\({\wedge}\)</span> s == (máx p, q <span
+class="colon">:</span> 0 &lt;= p &lt; q &lt;= i <span
+class="colon">:</span> ΣV[p..q)) <br>          <span
+class="math inline">\({\wedge}\)</span> <span class="hl">m == (máx p
+<span class="colon">:</span> 0 &lt;= p &lt; i + 1 <span
+class="colon">:</span> ΣV[p..i+1))</span></p>
+</div>
+</div>
+</section>
+<section id="interpretación-intuitiva" class="slide level2">
+<h2>Interpretación intuitiva</h2>
+<p>Suponemos que ya hemos calculado el subsegmento de suma máxima dentro
+de la ventana <code>V[0..i)</code>:</p>
+<div style="text-align:center">
+<p><img data-src="Tema2/Ventana1.svg" style="width:60.0%" /></p>
+</div>
+<p>Al incrementar <code>i</code>, aumenta la ventana del vector
+<code>V</code> sobre la que buscar el segmento de suma máxima:</p>
+<div style="text-align:center">
+<p><img data-src="Tema2/Ventana2.svg" style="width:60.0%" /></p>
+</div>
+</section>
+<section id="interpretación-intuitiva-1" class="slide level2">
+<h2>Interpretación intuitiva</h2>
+<ul>
+<li>Al ampliar la ventana con <code>V[i]</code>, aparecen nuevos
+subsegmentos, además de los que ya había en la iteración anterior. Todos
+los subsegmentos «nuevos» acaban en en <code>V[i]</code>.</li>
+</ul>
+<div style="text-align:center">
+<p><img data-src="Tema2/Ventana3.svg" style="width:60.0%" /></p>
+</div>
+</section>
+<section id="interpretación-intuitiva-2" class="slide level2">
+<h2>Interpretación intuitiva</h2>
+<div class="info_box">
+<p>La variable <code>m</code> contiene la suma máxima de entre todos los
+segmentos no vacíos que contienen <code>V[i]</code></p>
+</div>
+<div style="text-align:center">
+<p><img data-src="Tema2/Ventana4.svg" style="width:60.0%" /></p>
+</div>
+<div class="pseudo">
+<p><strong>invariant</strong> 1 &lt;= i &lt;= n <span
+class="math inline">\({\wedge}\)</span> s == (máx p, q <span
+class="colon">:</span> 0 &lt;= p &lt; q &lt;= i <span
+class="colon">:</span> ΣV[p..q)) <br>          <span
+class="math inline">\({\wedge}\)</span> <span class="hl">m == (máx p
+<span class="colon">:</span> 0 &lt;= p &lt; i + 1 <span
+class="colon">:</span> ΣV[p..i+1))</span></p>
+</div>
+</section>
+<section id="interpretación-intuitiva-3" class="slide level2">
+<h2>Interpretación intuitiva</h2>
+<p>Al ampliar la ventana de <code>V[0..i)</code> a
+<code>V[0..i+1)</code>, el segmento de suma máxima puede estar:</p>
+<ul>
+<li><p>Entre los segmentos «antiguos» que no incluyen <code>V[i]</code>.
+Entre ellos, el de suma máxima tiene suma <code>s</code>.</p></li>
+<li><p>Entre los segmentos «nuevos» que sí incluyen <code>V[i]</code>.
+Entre ellos, el de suma máxima tiene suma <code>m</code>.</p></li>
+</ul>
+<p>Por esto se actualiza <code>s</code> del siguiente modo:</p>
+<div class="pseudo">
+<p>s := máx(s, m);</p>
+</div>
+</section>
+<section class="slide level2">
+
+<p><strong>Problema:</strong> Cuando <code>i == n</code>, el invariante
+no está bien definido.</p>
+<div class="pseudo">
+<p><strong>invariant</strong> 1 &lt;= i &lt;= n <span
+class="math inline">\({\wedge}\)</span> s == (máx p, q <span
+class="colon">:</span> 0 &lt;= p &lt; q &lt;= i <span
+class="colon">:</span> ΣV[p..q)) <br>          <span
+class="math inline">\({\wedge}\)</span> <span class="hl">m == (máx p
+<span class="colon">:</span> 0 &lt;= p &lt; i + 1 <span
+class="colon">:</span> ΣV[p..i+1))</span></p>
+</div>
+<div class="fragment">
+<p>Corregimos el invariante:</p>
+<div class="pseudo">
+<p><strong>invariant</strong> 1 &lt;= i &lt;= n <span
+class="math inline">\({\wedge}\)</span> s == (máx p, q <span
+class="colon">:</span> 0 &lt;= p &lt; q &lt;= i <span
+class="colon">:</span> ΣV[p..q)) <br>          <span
+class="math inline">\({\wedge}\)</span> <span class="hl">m == (máx p
+<span class="colon">:</span> 0 &lt;= p &lt; i <span
+class="colon">:</span> ΣV[p..i))</span></p>
+</div>
+</div>
+</section>
+<section class="slide level2">
+
+<div class="pseudo">
+<p><strong>method</strong> segmentoSumaMaxima(V[0..n)<span
+class="colon">:</span> <span class="type">array&lt;<span
+class="type">int</span>&gt;</span>) <strong>returns</strong> (s<span
+class="colon">:</span> <span
+class="type">int</span>)<br><strong>requires</strong> n &gt;=
+1<br><strong>ensures</strong> s == (máx p, q <span
+class="colon">:</span> 0 &lt;= p &lt; q &lt;= n <span
+class="colon">:</span> ΣV[p..q))<br>{<br>  <strong>var</strong> i<span
+class="colon">:</span> <span class="type">int</span>, m<span
+class="colon">:</span> <span class="type">int</span>;<br>  i := 1; s :=
+V[0]; <span class="meta">???</span><br>  <strong>while</strong> i !=
+n<br>    <strong>invariant</strong> 1 &lt;= i &lt;= n <span
+class="math inline">\({\wedge}\)</span> s == (máx p, q <span
+class="colon">:</span> 0 &lt;= p &lt; q &lt;= i <span
+class="colon">:</span> ΣV[p..q))<br>              <span
+class="math inline">\({\wedge}\)</span> m == (máx p <span
+class="colon">:</span> 0 &lt;= p &lt; i <span class="colon">:</span>
+ΣV[p..i))<br>    <strong>decreases</strong> n - i<br>  { <br>    <span
+class="meta">???</span>;<br>    <span class="pre">{ m == (máx p <span
+class="colon">:</span> 0 &lt;= p &lt; i+1 <span class="colon">:</span>
+ΣV[p..i+1)) }</span><br>    s := máx(s, m);<br>    i := i +
+1;<br>  }<br>}</p>
+</div>
+</section>
+<section class="slide level2">
+
+<table class="pasos">
+<tr>
+<td>
+1️⃣
+</td>
+<td class="current">
+2️⃣
+</td>
+<td>
+3️⃣
+</td>
+<td>
+4️⃣
+</td>
+<td>
+5️⃣
+</td>
+<td>
+6️⃣
+</td>
+</tr>
+<tr>
+<td>
+Inv. y condición
+</td>
+<td class="current">
+Inicialización
+</td>
+<td>
+Cota
+</td>
+<td>
+Avanzar
+</td>
+<td>
+Restablecer
+</td>
+<td>
+Cota decrece
+</td>
+</tr>
+</table>
+<p>Inicializamos <span class="pseudo inline">m</span> de modo que se
+cumpla el invariante:</p>
+<div class="pseudo">
+<p><span class="pre">{ n &gt;= 1 }</span><br>i := 1; s := v[0]; m :=
+<span class="meta">???</span><br><span class="post">{ 1 &lt;= i &lt;= n
+<span class="math inline">\({\wedge}\)</span> s == (máx p, q <span
+class="colon">:</span> 0 &lt;= p &lt; q &lt;= i <span
+class="colon">:</span> ΣV[p..q)) <br>  <span
+class="math inline">\({\wedge}\)</span> m == (máx p <span
+class="colon">:</span> 0 &lt;= p &lt; i <span class="colon">:</span>
+ΣV[p..i)) }</span></p>
+</div>
+<div class="fragment">
+<p>Tras la asignación <code>i := 1</code>, la última condición del
+invariante se convierte en:</p>
+<div class="pseudo">
+<p>    m == (máx p <span class="colon">:</span> 0 &lt;= p &lt; 1 <span
+class="colon">:</span> ΣV[p..1))<br>===<br>    m ==
+ΣV[0..1)<br>===<br>    m == V[0]</p>
+</div>
+</div>
+</section>
+<section class="slide level2">
+
+<table class="pasos">
+<tr>
+<td>
+1️⃣
+</td>
+<td>
+2️⃣
+</td>
+<td>
+3️⃣
+</td>
+<td>
+4️⃣
+</td>
+<td class="current">
+5️⃣
+</td>
+<td>
+6️⃣
+</td>
+</tr>
+<tr>
+<td>
+Inv. y condición
+</td>
+<td>
+Inicialización
+</td>
+<td>
+Cota
+</td>
+<td>
+Avanzar
+</td>
+<td class="current">
+Restablecer
+</td>
+<td>
+Cota decrece
+</td>
+</tr>
+</table>
+<div class="pseudo">
+<p><strong>method</strong> segmentoSumaMaxima(V[0..n)<span
+class="colon">:</span> <span class="type">array&lt;<span
+class="type">int</span>&gt;</span>) <strong>returns</strong> (s<span
+class="colon">:</span> <span
+class="type">int</span>)<br><strong>requires</strong> n &gt;=
+1<br><strong>ensures</strong> s == (máx p, q <span
+class="colon">:</span> 0 &lt;= p &lt; q &lt;= n <span
+class="colon">:</span> ΣV[p..q))<br>{<br>  <strong>var</strong> i<span
+class="colon">:</span> <span class="type">int</span>, m<span
+class="colon">:</span> <span class="type">int</span>;<br>  i := 1; s :=
+V[0]; m := V[0];<br>  <strong>while</strong> i !=
+n<br>    <strong>invariant</strong> 1 &lt;= i &lt;= n <span
+class="math inline">\({\wedge}\)</span> s == (máx p, q <span
+class="colon">:</span> 0 &lt;= p &lt; q &lt;= i <span
+class="colon">:</span> ΣV[p..q))<br>              <span
+class="math inline">\({\wedge}\)</span> m == (máx p <span
+class="colon">:</span> 0 &lt;= p &lt; i <span class="colon">:</span>
+ΣV[p..i))<br>    <strong>decreases</strong> n - i<br>  { <br>    <span
+class="meta">???</span>;<br>    <span class="pre">{ m == (máx p <span
+class="colon">:</span> 0 &lt;= p &lt; i+1 <span class="colon">:</span>
+ΣV[p..i+1)) }</span><br>    s := máx(s, m);<br>    i := i +
+1;<br>  }<br>}</p>
+</div>
+</section>
+<section class="slide level2">
+
+<div class="pseudo">
+<p><span class="pre">{ m == (máx p <span class="colon">:</span> 0 &lt;=
+p &lt; i <span class="colon">:</span> ΣV[p..i)) <span
+class="math inline">\({\wedge}\)</span> i != n }</span><br><span
+class="meta">???</span><br><span class="pre">{ m == (máx p <span
+class="colon">:</span> 0 &lt;= p &lt; i+1 <span class="colon">:</span>
+ΣV[p..i+1) }</span></p>
+</div>
+<p>Tenemos que:</p>
+<div class="pseudo">
+<p>   (máx p <span class="colon">:</span> 0 &lt;= p &lt; i+1 <span
+class="colon">:</span> ΣV[p..i+1))<br><span
+class="fragment">==<br>   (máx p <span class="colon">:</span> 0 &lt;= p
+&lt; i+1 <span class="colon">:</span> ΣV[p..i) + V[i])</span><br><span
+class="fragment">==<br>   (máx p <span class="colon">:</span> 0 &lt;= p
+&lt; i+1 <span class="colon">:</span> ΣV[p..i)) + V[i]</span><br><span
+class="fragment">==<br>   máx((máx p <span class="colon">:</span> 0
+&lt;= p &lt; i <span class="colon">:</span> ΣV[p..i)), ΣV[i..i)) +
+V[i]</span><br><span class="fragment">==<br>   máx((máx p <span
+class="colon">:</span> 0 &lt;= p &lt; i <span class="colon">:</span>
+ΣV[p..i)), 0) + V[i]</span></p>
+</div>
+<div class="fragment">
+<p>Necesitamos la asignación: <span class="pseudo color_tema inline">m
+:= max(m, 0) + V[i];</span></p>
+</div>
+</section>
+<section id="interpretación-intuitiva-4" class="slide level2">
+<h2>Interpretación intuitiva</h2>
+<p style="text-align:center">
+<span class="pseudo inline">m := max(m, 0) + V[i];</span>
+</p>
+<div class="fragment">
+<ul>
+<li>Inicialmente, la variable <code>m</code> contiene la suma máxima de
+entre todos los segmentos no vacíos que terminan en
+<code>V[i-1]</code>:</li>
+</ul>
+<div style="text-align:center">
+<p><img data-src="Tema2/Ventana5.svg" style="width:60.0%" /></p>
+</div>
+</div>
+<div class="fragment">
+<ul>
+<li>Tras el incremento de <code>i + 1</code>, la variable <code>m</code>
+debe considerar los segmentos no vacíos que terminan en
+<code>V[i]</code>. Obviamente, <code>V[i]</code> pertenece a esa
+suma.</li>
+</ul>
+<div style="text-align:center">
+<p><img data-src="Tema2/Ventana2.svg" style="width:60.0%" /></p>
+</div>
+</div>
+</section>
+<section id="interpretación-intuitiva-5" class="slide level2">
+<h2>Interpretación intuitiva</h2>
+<p style="text-align:center">
+<span class="pseudo inline">m := max(m, 0) + V[i];</span>
+</p>
+<ul>
+<li>El nuevo segmento de suma máxima que termina en <code>V[i]</code>
+puede consistir solamente en <code>V[i]</code>:</li>
+</ul>
+<div style="text-align:center">
+<p><img data-src="Tema2/Ventana6.svg" style="width:60.0%" /></p>
+</div>
+<div class="fragment">
+<ul>
+<li>O podemos añadir el segmento de suma máxima que termina en
+<code>V[i+1]</code>, cuya suma estaba almacenada en <code>m</code>.</li>
+</ul>
+<div style="text-align:center">
+<p><img data-src="Tema2/Ventana7.svg" style="width:60.0%" /></p>
+</div>
+<aside class="notes">
+<p>Obviamente <code>V[i]</code> tiene que estar en la suma, porque el
+segmento es no vacío. A ver si me interesa prolongar</p>
+</aside>
+</div>
+</section>
+<section class="slide level2">
+
+<table class="pasos">
+<tr>
+<td>
+1️⃣
+</td>
+<td>
+2️⃣
+</td>
+<td>
+3️⃣
+</td>
+<td>
+4️⃣
+</td>
+<td>
+5️⃣
+</td>
+<td class="current">
+6️⃣
+</td>
+</tr>
+<tr>
+<td>
+Inv. y condición
+</td>
+<td>
+Inicialización
+</td>
+<td>
+Cota
+</td>
+<td>
+Avanzar
+</td>
+<td>
+Restablecer
+</td>
+<td class="current">
+Cota decrece
+</td>
+</tr>
+</table>
+<div class="pseudo" style="font-size:70%">
+<p><strong>method</strong> segmentoSumaMaxima(V[0..n)<span
+class="colon">:</span> <span class="type">array&lt;<span
+class="type">int</span>&gt;</span>) <strong>returns</strong> (s<span
+class="colon">:</span> <span
+class="type">int</span>)<br><strong>requires</strong> n &gt;=
+1<br><strong>ensures</strong> s == (máx p, q <span
+class="colon">:</span> 0 &lt;= p &lt; q &lt;= n <span
+class="colon">:</span> ΣV[p..q))<br>{<br>  <strong>var</strong> i<span
+class="colon">:</span> <span class="type">int</span>, m<span
+class="colon">:</span> <span class="type">int</span>;<br>  i := 1; s :=
+V[0]; m := V[0];<br>  <strong>while</strong> i !=
+n<br>    <strong>invariant</strong> 1 &lt;= i &lt;= n <span
+class="math inline">\({\wedge}\)</span> s == (máx p, q <span
+class="colon">:</span> 0 &lt;= p &lt; q &lt;= i <span
+class="colon">:</span> ΣV[p..q))<br>              <span
+class="math inline">\({\wedge}\)</span> m == (máx p <span
+class="colon">:</span> 0 &lt;= p &lt; i <span class="colon">:</span>
+ΣV[p..i))<br>    <strong>decreases</strong> n - i<br>  { <br>    m :=
+max(m, 0) + V[i];<br>    s := máx(s, m);<br>    i := i +
+1;<br>  }<br>}</p>
+</div>
+<div class="fragment">
+<p>Es fácil demostrar que <code>n - i</code> decrece en cada
+iteración.</p>
+</div>
+</section>
+<section id="resultado-final-1" class="slide level2">
+<h2>Resultado final</h2>
+<div class="pseudo" style="font-size:60%">
+<p><strong>method</strong> segmentoSumaMaxima(V[0..n)<span
+class="colon">:</span> <span class="type">array&lt;<span
+class="type">int</span>&gt;</span>) <strong>returns</strong> (s<span
+class="colon">:</span> <span
+class="type">int</span>)<br><strong>requires</strong> n &gt;=
+1<br><strong>ensures</strong> s == (máx p, q <span
+class="colon">:</span> 0 &lt;= p &lt; q &lt;= n <span
+class="colon">:</span> ΣV[p..q))<br>{<br>  <strong>var</strong> i<span
+class="colon">:</span> <span class="type">int</span>, m<span
+class="colon">:</span> <span class="type">int</span>;<br>  i := 1; s :=
+V[0]; m := V[0];<br>  <strong>while</strong> i !=
+n<br>    <strong>invariant</strong> 1 &lt;= i &lt;= n <span
+class="math inline">\({\wedge}\)</span> s == (máx p, q <span
+class="colon">:</span> 0 &lt;= p &lt; q &lt;= i <span
+class="colon">:</span> ΣV[p..q))<br>              <span
+class="math inline">\({\wedge}\)</span> m == (máx p <span
+class="colon">:</span> 0 &lt;= p &lt; i <span class="colon">:</span>
+ΣV[p..i))<br>    <strong>decreases</strong> n - i<br>  { <br>    m :=
+max(m, 0) + V[i];<br>    s := máx(s, m);<br>    i := i +
+1;<br>  }<br>}</p>
+</div>
+<p><strong>Coste en tiempo:</strong> <code>Θ(n)</code> donde
+<code>n</code> es la longitud del vector de entrada.</p>
+<p><strong>Coste en espacio:</strong> <code>Θ(1)</code></p>
+</section></section>
+    </div>
+  </div>
+
+  <script src="dist/reveal.js"></script>
+
+  <!-- reveal.js plugins -->
+  <script src="plugin/notes/notes.js"></script>
+  <script src="plugin/search/search.js"></script>
+  <script src="plugin/zoom/zoom.js"></script>
+  <script src="plugin/highlight/highlight.js"></script>
+  <script src="plugin/math/math.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+        // Display controls in the bottom right corner
+        controls: false,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: true,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'bottom-right',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: false,
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: false,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: false,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'default',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Prints all fragments in their visible states on the same slide 
+        pdfSeparateFragments: false,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: true,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'slide',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'fade',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1600,
+
+        height: 900,
+
+        math: {
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom,
+          // RevealHighlight          
+        ]
+      });
+    </script>
+    </body>
+</html>
