@@ -1793,7 +1793,7 @@ class="type">int</span>)<br>  <strong>requires</strong> n &gt;= 0 <span
 class="math inline">\({\wedge}\)</span> 0 &lt;= j &lt;= k &lt;=
 n<br>  <strong>ensures</strong> s == (Σi <span class="colon">:</span>
 <span class="hl"> j </span> &lt;= i &lt; <span class="hl"> k </span>
-<span class="colon">:</span> V[i])<br>  <strong>decreases</strong>
+<span class="colon">:</span> V[i])<br>  <strong>decreases</strong> k -
 j<br>{<br>  <strong>if</strong> j == k <strong>then</strong> { s := 0; }
 <br>  <strong>else</strong> <strong>if</strong> j + 1 == k { s := V[j];
 }<br>  <strong>else</strong> {<br>    <strong>var</strong> m<span
