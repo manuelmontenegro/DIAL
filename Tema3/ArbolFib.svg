@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="157.85847mm"
+   height="83.307732mm"
+   viewBox="0 0 157.85847 83.307732"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.4 (e7c3feb100, 2024-10-09)"
+   sodipodi:docname="ArbolFib.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     showguides="false"
+     inkscape:zoom="0.71891835"
+     inkscape:cx="433.28982"
+     inkscape:cy="162.049"
+     inkscape:window-width="1920"
+     inkscape:window-height="1011"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs1" />
+  <g
+     inkscape:label="Capa 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-13.070664,-17.696069)">
+    <g
+       id="g1"
+       transform="translate(34.698372,-34.351195)">
+      <rect
+         style="fill:#9effdd;fill-opacity:1;stroke-width:0.165"
+         id="rect1"
+         width="25.954607"
+         height="11.339896"
+         x="57.251991"
+         y="52.047264" />
+      <text
+         xml:space="preserve"
+         style="font-weight:bold;font-size:4.5861px;font-family:raleway;-inkscape-font-specification:'raleway Bold';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#000000;fill-opacity:0.25098;stroke-width:0.165"
+         x="61.936245"
+         y="59.333878"
+         id="text1"><tspan
+           sodipodi:role="line"
+           id="tspan1"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:monospace;-inkscape-font-specification:monospace;fill:#000000;fill-opacity:1;stroke-width:0.165"
+           x="61.936245"
+           y="59.333878">fib(4)</tspan></text>
+    </g>
+    <g
+       id="g2"
+       transform="translate(0.07682088,-12.063583)">
+      <rect
+         style="fill:#9effdd;fill-opacity:1;stroke-width:0.165"
+         id="rect1-0"
+         width="25.954607"
+         height="11.339896"
+         x="57.251991"
+         y="52.047264" />
+      <text
+         xml:space="preserve"
+         style="font-weight:bold;font-size:4.5861px;font-family:raleway;-inkscape-font-specification:'raleway Bold';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#000000;fill-opacity:0.25098;stroke-width:0.165"
+         x="61.936245"
+         y="59.333878"
+         id="text1-9"><tspan
+           sodipodi:role="line"
+           id="tspan1-3"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:monospace;-inkscape-font-specification:monospace;fill:#000000;fill-opacity:1;stroke-width:0.165"
+           x="61.936245"
+           y="59.333878">fib(3)</tspan></text>
+    </g>
+    <g
+       id="g2-6"
+       transform="translate(-26.792728,12.715379)">
+      <rect
+         style="fill:#9effdd;fill-opacity:1;stroke-width:0.165"
+         id="rect1-1"
+         width="25.954607"
+         height="11.339896"
+         x="57.251991"
+         y="52.047264" />
+      <text
+         xml:space="preserve"
+         style="font-weight:bold;font-size:4.5861px;font-family:raleway;-inkscape-font-specification:'raleway Bold';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#000000;fill-opacity:0.25098;stroke-width:0.165"
+         x="61.936245"
+         y="59.333878"
+         id="text1-8"><tspan
+           sodipodi:role="line"
+           id="tspan1-7"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:monospace;-inkscape-font-specification:monospace;fill:#000000;fill-opacity:1;stroke-width:0.165"
+           x="61.936245"
+           y="59.333878">fib(2)</tspan></text>
+    </g>
+    <g
+       id="g2-3"
+       transform="translate(-44.181327,37.616641)">
+      <rect
+         style="fill:#9effdd;fill-opacity:1;stroke-width:0.165"
+         id="rect1-7"
+         width="25.954607"
+         height="11.339896"
+         x="57.251991"
+         y="52.047264" />
+      <text
+         xml:space="preserve"
+         style="font-weight:bold;font-size:4.5861px;font-family:raleway;-inkscape-font-specification:'raleway Bold';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#000000;fill-opacity:0.25098;stroke-width:0.165"
+         x="61.936245"
+         y="59.333878"
+         id="text1-5"><tspan
+           sodipodi:role="line"
+           id="tspan1-9"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:monospace;-inkscape-font-specification:monospace;fill:#000000;fill-opacity:1;stroke-width:0.165"
+           x="61.936245"
+           y="59.333878">fib(1)</tspan></text>
+    </g>
+    <g
+       id="g1-9"
+       transform="translate(-38.743031,71.967836)">
+      <g
+         id="g2-7"
+         transform="translate(29.406705,-34.351195)">
+        <rect
+           style="fill:#9effdd;fill-opacity:1;stroke-width:0.165"
+           id="rect1-3"
+           width="25.954607"
+           height="11.339896"
+           x="57.251991"
+           y="52.047264" />
+        <text
+           xml:space="preserve"
+           style="font-weight:bold;font-size:4.5861px;font-family:raleway;-inkscape-font-specification:'raleway Bold';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#000000;fill-opacity:0.25098;stroke-width:0.165"
+           x="61.936245"
+           y="59.333878"
+           id="text1-6"><tspan
+             sodipodi:role="line"
+             id="tspan1-1"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:monospace;-inkscape-font-specification:monospace;fill:#000000;fill-opacity:1;stroke-width:0.165"
+             x="61.936245"
+             y="59.333878">fib(0)</tspan></text>
+      </g>
+    </g>
+    <path
+       style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.165;stroke-opacity:1"
+       d="M 34.778809,75.906134 26.931786,89.497576"
+       id="path1" />
+    <path
+       style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.165;stroke-opacity:1"
+       d="M 58.716983,89.735197 50.86996,76.143747"
+       id="path1-9" />
+    <g
+       id="g2-6-5"
+       transform="translate(70.266143,-11.506584)">
+      <rect
+         style="fill:#9effdd;fill-opacity:1;stroke-width:0.165"
+         id="rect1-1-0"
+         width="25.954607"
+         height="11.339896"
+         x="57.251991"
+         y="52.047264" />
+      <text
+         xml:space="preserve"
+         style="font-weight:bold;font-size:4.5861px;font-family:raleway;-inkscape-font-specification:'raleway Bold';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#000000;fill-opacity:0.25098;stroke-width:0.165"
+         x="61.936245"
+         y="59.333878"
+         id="text1-8-3"><tspan
+           sodipodi:role="line"
+           id="tspan1-7-6"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:monospace;-inkscape-font-specification:monospace;fill:#000000;fill-opacity:1;stroke-width:0.165"
+           x="61.936245"
+           y="59.333878">fib(2)</tspan></text>
+    </g>
+    <g
+       id="g2-3-1"
+       transform="translate(52.877544,13.394678)">
+      <rect
+         style="fill:#9effdd;fill-opacity:1;stroke-width:0.165"
+         id="rect1-7-0"
+         width="25.954607"
+         height="11.339896"
+         x="57.251991"
+         y="52.047264" />
+      <text
+         xml:space="preserve"
+         style="font-weight:bold;font-size:4.5861px;font-family:raleway;-inkscape-font-specification:'raleway Bold';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#000000;fill-opacity:0.25098;stroke-width:0.165"
+         x="61.936245"
+         y="59.333878"
+         id="text1-5-6"><tspan
+           sodipodi:role="line"
+           id="tspan1-9-3"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:monospace;-inkscape-font-specification:monospace;fill:#000000;fill-opacity:1;stroke-width:0.165"
+           x="61.936245"
+           y="59.333878">fib(1)</tspan></text>
+    </g>
+    <g
+       id="g1-9-2"
+       transform="translate(58.31584,47.745869)">
+      <g
+         id="g2-7-0"
+         transform="translate(29.406705,-34.351195)">
+        <rect
+           style="fill:#9effdd;fill-opacity:1;stroke-width:0.165"
+           id="rect1-3-6"
+           width="25.954607"
+           height="11.339896"
+           x="57.251991"
+           y="52.047264" />
+        <text
+           xml:space="preserve"
+           style="font-weight:bold;font-size:4.5861px;font-family:raleway;-inkscape-font-specification:'raleway Bold';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#000000;fill-opacity:0.25098;stroke-width:0.165"
+           x="61.936245"
+           y="59.333878"
+           id="text1-6-1"><tspan
+             sodipodi:role="line"
+             id="tspan1-1-5"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:monospace;-inkscape-font-specification:monospace;fill:#000000;fill-opacity:1;stroke-width:0.165"
+             x="61.936245"
+             y="59.333878">fib(0)</tspan></text>
+      </g>
+    </g>
+    <path
+       style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.165;stroke-opacity:1"
+       d="m 131.83768,51.684169 -7.84702,13.59144"
+       id="path1-5" />
+    <path
+       style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.165;stroke-opacity:1"
+       d="m 155.77585,65.513229 -7.84702,-13.59144"
+       id="path1-9-4" />
+    <g
+       id="g2-3-9"
+       transform="translate(10.767212,12.832898)">
+      <rect
+         style="fill:#9effdd;fill-opacity:1;stroke-width:0.165"
+         id="rect1-7-3"
+         width="25.954607"
+         height="11.339896"
+         x="57.251991"
+         y="52.047264" />
+      <text
+         xml:space="preserve"
+         style="font-weight:bold;font-size:4.5861px;font-family:raleway;-inkscape-font-specification:'raleway Bold';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#000000;fill-opacity:0.25098;stroke-width:0.165"
+         x="61.936245"
+         y="59.333878"
+         id="text1-5-7"><tspan
+           sodipodi:role="line"
+           id="tspan1-9-4"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:monospace;-inkscape-font-specification:monospace;fill:#000000;fill-opacity:1;stroke-width:0.165"
+           x="61.936245"
+           y="59.333878">fib(1)</tspan></text>
+    </g>
+    <path
+       style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.165;stroke-opacity:1"
+       d="M 60.125425,51.471346 45.009815,64.786767"
+       id="path1-7"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.165;stroke-opacity:1"
+       d="M 82.039435,64.840374 76.216576,51.248924"
+       id="path1-9-44"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.165;stroke-opacity:1"
+       d="M 97.045743,28.813903 71.073256,40.105164"
+       id="path1-7-6"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.165;stroke-opacity:1"
+       d="M 137.55114,40.362646 111.57865,29.071385"
+       id="path1-7-6-1"
+       sodipodi:nodetypes="cc" />
+  </g>
+</svg>

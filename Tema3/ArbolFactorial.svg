@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="40.007366mm"
+   height="81.836433mm"
+   viewBox="0 0 40.007365 81.836434"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.4 (e7c3feb100, 2024-10-09)"
+   sodipodi:docname="ArbolFactorial.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     showguides="false"
+     inkscape:zoom="1.0167041"
+     inkscape:cx="116.55309"
+     inkscape:cy="142.12592"
+     inkscape:window-width="1920"
+     inkscape:window-height="1011"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs1" />
+  <g
+     inkscape:label="Capa 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-91.950367,-17.696069)">
+    <path
+       style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.165;stroke-opacity:1"
+       d="M 112.2207,28.625994 V 88.480349"
+       id="path1" />
+    <g
+       id="g1"
+       transform="translate(34.698372,-34.351195)">
+      <rect
+         style="fill:#9effdd;fill-opacity:1;stroke-width:0.165001"
+         id="rect1"
+         width="40.007366"
+         height="11.339896"
+         x="57.251995"
+         y="52.047264" />
+      <text
+         xml:space="preserve"
+         style="font-weight:bold;font-size:4.5861px;font-family:raleway;-inkscape-font-specification:'raleway Bold';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#000000;fill-opacity:0.25098;stroke-width:0.165"
+         x="61.407066"
+         y="59.333878"
+         id="text1"><tspan
+           sodipodi:role="line"
+           id="tspan1"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:monospace;-inkscape-font-specification:monospace;fill:#000000;fill-opacity:1;stroke-width:0.165"
+           x="61.407066"
+           y="59.333878">factorial(4)</tspan></text>
+    </g>
+    <g
+       id="g2"
+       transform="translate(34.698372,-16.727061)">
+      <rect
+         style="fill:#9effdd;fill-opacity:1;stroke-width:0.165001"
+         id="rect1-9"
+         width="40.007366"
+         height="11.339896"
+         x="57.251995"
+         y="52.047264" />
+      <text
+         xml:space="preserve"
+         style="font-weight:bold;font-size:4.5861px;font-family:raleway;-inkscape-font-specification:'raleway Bold';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#000000;fill-opacity:0.25098;stroke-width:0.165"
+         x="61.407066"
+         y="59.333878"
+         id="text1-2"><tspan
+           sodipodi:role="line"
+           id="tspan1-6"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:monospace;-inkscape-font-specification:monospace;fill:#000000;fill-opacity:1;stroke-width:0.165"
+           x="61.407066"
+           y="59.333878">factorial(3)</tspan></text>
+    </g>
+    <g
+       id="g2-0"
+       transform="translate(34.698372,0.897073)">
+      <rect
+         style="fill:#9effdd;fill-opacity:1;stroke-width:0.165001"
+         id="rect1-4"
+         width="40.007366"
+         height="11.339896"
+         x="57.251995"
+         y="52.047264" />
+      <text
+         xml:space="preserve"
+         style="font-weight:bold;font-size:4.5861px;font-family:raleway;-inkscape-font-specification:'raleway Bold';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#000000;fill-opacity:0.25098;stroke-width:0.165"
+         x="61.407066"
+         y="59.333878"
+         id="text1-8"><tspan
+           sodipodi:role="line"
+           id="tspan1-7"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:monospace;-inkscape-font-specification:monospace;fill:#000000;fill-opacity:1;stroke-width:0.165"
+           x="61.407066"
+           y="59.333878">factorial(2)</tspan></text>
+    </g>
+    <g
+       id="g2-2"
+       transform="translate(34.698372,18.521207)">
+      <rect
+         style="fill:#9effdd;fill-opacity:1;stroke-width:0.165001"
+         id="rect1-2"
+         width="40.007366"
+         height="11.339896"
+         x="57.251995"
+         y="52.047264" />
+      <text
+         xml:space="preserve"
+         style="font-weight:bold;font-size:4.5861px;font-family:raleway;-inkscape-font-specification:'raleway Bold';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#000000;fill-opacity:0.25098;stroke-width:0.165"
+         x="61.407066"
+         y="59.333878"
+         id="text1-6"><tspan
+           sodipodi:role="line"
+           id="tspan1-1"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:monospace;-inkscape-font-specification:monospace;fill:#000000;fill-opacity:1;stroke-width:0.165"
+           x="61.407066"
+           y="59.333878">factorial(1)</tspan></text>
+    </g>
+    <g
+       id="g2-9"
+       transform="translate(34.698372,36.145341)">
+      <rect
+         style="fill:#9effdd;fill-opacity:1;stroke-width:0.165001"
+         id="rect1-49"
+         width="40.007366"
+         height="11.339896"
+         x="57.251995"
+         y="52.047264" />
+      <text
+         xml:space="preserve"
+         style="font-weight:bold;font-size:4.5861px;font-family:raleway;-inkscape-font-specification:'raleway Bold';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#000000;fill-opacity:0.25098;stroke-width:0.165"
+         x="61.407066"
+         y="59.333878"
+         id="text1-0"><tspan
+           sodipodi:role="line"
+           id="tspan1-9"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:monospace;-inkscape-font-specification:monospace;fill:#000000;fill-opacity:1;stroke-width:0.165"
+           x="61.407066"
+           y="59.333878">factorial(0)</tspan></text>
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="94.908798mm"
+   height="72.876465mm"
+   viewBox="0 0 94.908797 72.876465"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.4 (e7c3feb100, 2024-10-09)"
+   sodipodi:docname="SintaxisSuma2.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     showguides="false"
+     inkscape:zoom="1.4378367"
+     inkscape:cx="83.458713"
+     inkscape:cy="114.40799"
+     inkscape:window-width="1920"
+     inkscape:window-height="1011"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs1" />
+  <g
+     inkscape:label="Capa 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-53.340541,-24.669711)">
+    <path
+       style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.165;stroke-opacity:1"
+       d="M 97.045743,28.813903 71.073256,40.105164"
+       id="path1-7-6"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.165;stroke-opacity:1"
+       d="M 137.55114,40.362646 111.57865,29.071385"
+       id="path1-7-6-1"
+       sodipodi:nodetypes="cc" />
+    <text
+       xml:space="preserve"
+       style="font-size:8.46667px;font-family:'Fira Code';-inkscape-font-specification:'Fira Code';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#a7ff77;stroke-width:0.0649999"
+       x="101.76402"
+       y="29.406704"
+       id="text3"><tspan
+         sodipodi:role="line"
+         id="tspan3"
+         style="font-size:8.46667px;fill:#000000;fill-opacity:1;stroke-width:0.065"
+         x="101.76402"
+         y="29.406704">+</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:8.46667px;font-family:'Fira Code';-inkscape-font-specification:'Fira Code';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#000000;fill-opacity:1;stroke-width:0.0649999"
+       x="60.586163"
+       y="48.340805"
+       id="text4"><tspan
+         sodipodi:role="line"
+         id="tspan4"
+         style="stroke-width:0.065"
+         x="60.586163"
+         y="48.340805">suma</tspan></text>
+    <path
+       style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.165;stroke-opacity:1"
+       d="M 57.050749,66.6049 71.561524,51.449327"
+       id="path1-7-6-1-6-1"
+       sodipodi:nodetypes="cc" />
+    <text
+       xml:space="preserve"
+       style="font-size:8.46667px;font-family:'Fira Code';-inkscape-font-specification:'Fira Code';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#000000;fill-opacity:1;stroke-width:0.0649999"
+       x="53.127789"
+       y="74.909157"
+       id="text3-7-3-5"><tspan
+         sodipodi:role="line"
+         id="tspan3-7-8-9"
+         style="font-size:8.46667px;fill:#ff0000;fill-opacity:1;stroke-width:0.065"
+         x="53.127789"
+         y="74.909157">V</tspan></text>
+    <path
+       style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.165;stroke-opacity:1"
+       d="M 88.691226,66.464879 74.180451,51.309307"
+       id="path1-7-6-1-6-1-1"
+       sodipodi:nodetypes="cc" />
+    <text
+       xml:space="preserve"
+       style="font-size:8.46667px;font-family:'Fira Code';-inkscape-font-specification:'Fira Code';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#a7ff77;stroke-width:0.0649999"
+       x="86.316704"
+       y="74.546913"
+       id="text3-4"><tspan
+         sodipodi:role="line"
+         id="tspan3-4"
+         style="font-size:8.46667px;fill:#ff0000;fill-opacity:1;stroke-width:0.065"
+         x="86.316704"
+         y="74.546913">i</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:8.46667px;font-family:'Fira Code';-inkscape-font-specification:'Fira Code';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#000000;fill-opacity:1;stroke-width:0.0649999"
+       x="129.0061"
+       y="50.843197"
+       id="text3-7-3-5-5"><tspan
+         sodipodi:role="line"
+         id="tspan3-7-8-9-9"
+         style="font-size:8.46667px;fill:#000000;fill-opacity:1;stroke-width:0.065"
+         x="129.0061"
+         y="50.843197">V[i]</tspan></text>
+  </g>
+</svg>

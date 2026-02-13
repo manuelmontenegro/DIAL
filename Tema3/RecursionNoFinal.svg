@@ -1,0 +1,576 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="158.13269mm"
+   height="194.85536mm"
+   viewBox="0 0 158.1327 194.85535"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.4 (e7c3feb100, 2024-10-09)"
+   sodipodi:docname="RecursionNoFinal.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     showguides="true"
+     inkscape:zoom="1"
+     inkscape:cx="324"
+     inkscape:cy="504.5"
+     inkscape:window-width="1920"
+     inkscape:window-height="1011"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="g7" />
+  <defs
+     id="defs1">
+    <marker
+       style="overflow:visible"
+       id="Triangle"
+       refX="0"
+       refY="0"
+       orient="auto-start-reverse"
+       inkscape:stockid="Triangle arrow"
+       markerWidth="1"
+       markerHeight="1"
+       viewBox="0 0 1 1"
+       inkscape:isstock="true"
+       inkscape:collect="always"
+       preserveAspectRatio="xMidYMid">
+      <path
+         transform="scale(0.5)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 5.77,0 -2.88,5 V -5 Z"
+         id="path135" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="Triangle-7"
+       refX="0"
+       refY="0"
+       orient="auto-start-reverse"
+       inkscape:stockid="Triangle arrow"
+       markerWidth="1"
+       markerHeight="1"
+       viewBox="0 0 1 1"
+       inkscape:isstock="true"
+       inkscape:collect="always"
+       preserveAspectRatio="xMidYMid">
+      <path
+         transform="scale(0.5)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 5.77,0 -2.88,5 V -5 Z"
+         id="path135-5" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="Triangle-0"
+       refX="0"
+       refY="0"
+       orient="auto-start-reverse"
+       inkscape:stockid="Triangle arrow"
+       markerWidth="1"
+       markerHeight="1"
+       viewBox="0 0 1 1"
+       inkscape:isstock="true"
+       inkscape:collect="always"
+       preserveAspectRatio="xMidYMid">
+      <path
+         transform="scale(0.5)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 5.77,0 -2.88,5 V -5 Z"
+         id="path135-4" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="Triangle-4"
+       refX="0"
+       refY="0"
+       orient="auto-start-reverse"
+       inkscape:stockid="Triangle arrow"
+       markerWidth="1"
+       markerHeight="1"
+       viewBox="0 0 1 1"
+       inkscape:isstock="true"
+       inkscape:collect="always"
+       preserveAspectRatio="xMidYMid">
+      <path
+         transform="scale(0.5)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 5.77,0 -2.88,5 V -5 Z"
+         id="path135-2" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="Triangle-40"
+       refX="0"
+       refY="0"
+       orient="auto-start-reverse"
+       inkscape:stockid="Triangle arrow"
+       markerWidth="1"
+       markerHeight="1"
+       viewBox="0 0 1 1"
+       inkscape:isstock="true"
+       inkscape:collect="always"
+       preserveAspectRatio="xMidYMid">
+      <path
+         transform="scale(0.5)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 5.77,0 -2.88,5 V -5 Z"
+         id="path135-7" />
+    </marker>
+  </defs>
+  <g
+     inkscape:label="Capa 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-51.070307,8.6399696)">
+    <g
+       id="g1"
+       transform="matrix(1.5682589,0,0,1.5682589,7.700995,-70.538878)"
+       style="stroke-width:0.63765">
+      <rect
+         style="fill:#9effdd;fill-opacity:1;stroke-width:0.105213"
+         id="rect1"
+         width="71.235725"
+         height="11.339896"
+         x="57.251991"
+         y="52.047264" />
+      <text
+         xml:space="preserve"
+         style="font-weight:bold;font-size:4.5861px;font-family:raleway;-inkscape-font-specification:'raleway Bold';text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:#000000;fill-opacity:0.25098;stroke-width:0.105213"
+         x="93.986557"
+         y="59.333878"
+         id="text1"><tspan
+           sodipodi:role="line"
+           id="tspan1"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:monospace;-inkscape-font-specification:monospace;text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1;stroke-width:0.105213"
+           x="93.986557"
+           y="59.333878">f(x̅<tspan
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.5861px;font-family:Sans;-inkscape-font-specification:'Sans, Normal';font-variant-ligatures:normal;font-variant-position:sub;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.105213"
+   id="tspan20">0</tspan>)</tspan></text>
+    </g>
+    <g
+       id="g3"
+       class="fragment"
+       transform="matrix(1.1354347,0,0,1.1354347,-6.9166943,-9.008017)"
+       style="stroke-width:0.88072">
+      <path
+         style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.14532;stroke-opacity:1"
+         d="m 141.14564,33.115862 v 9.817379"
+         id="path1"
+         sodipodi:nodetypes="cc" />
+      <g
+         id="g2"
+         transform="matrix(1.3811969,0,0,1.3811969,12.87409,-29.112365)"
+         style="stroke-width:0.63765">
+        <rect
+           style="fill:#9effdd;fill-opacity:1;stroke-width:0.105213"
+           id="rect1-9"
+           width="71.235725"
+           height="11.339896"
+           x="57.251991"
+           y="52.047264" />
+        <text
+           xml:space="preserve"
+           style="font-weight:bold;font-size:4.5861px;font-family:raleway;-inkscape-font-specification:'raleway Bold';text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:#000000;fill-opacity:0.25098;stroke-width:0.105213"
+           x="94.785965"
+           y="59.333878"
+           id="text1-0"><tspan
+             sodipodi:role="line"
+             id="tspan1-8"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:monospace;-inkscape-font-specification:monospace;text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1;stroke-width:0.105213"
+             x="94.785965"
+             y="59.333878">f(<tspan
+   style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Raleway;-inkscape-font-specification:'Raleway Italic';fill:#d4007a;fill-opacity:1;stroke-width:0.105213"
+   id="tspan14">s</tspan><tspan
+   id="tspan18"
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Raleway;-inkscape-font-specification:Raleway;fill:#d4007a;fill-opacity:1;stroke-width:0.105213">(</tspan>x̅<tspan
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.5861px;font-family:Sans;-inkscape-font-specification:'Sans, Normal';font-variant-ligatures:normal;font-variant-position:sub;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.105213"
+   id="tspan21">0</tspan><tspan
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Raleway;-inkscape-font-specification:Raleway;fill:#d4007a;fill-opacity:1;stroke-width:0.105213"
+   id="tspan15">)</tspan>)</tspan></text>
+      </g>
+    </g>
+    <g
+       id="g4"
+       class="fragment"
+       transform="matrix(1.1354347,0,0,1.1354347,-6.9166943,-9.008017)"
+       style="stroke-width:0.88072">
+      <g
+         id="g2-0"
+         transform="matrix(1.3811969,0,0,1.3811969,12.87409,-4.0332806)"
+         style="stroke-width:0.63765">
+        <rect
+           style="fill:#9effdd;fill-opacity:1;stroke-width:0.105213"
+           id="rect1-9-3"
+           width="71.235725"
+           height="11.339896"
+           x="57.251991"
+           y="52.047264" />
+        <text
+           xml:space="preserve"
+           style="font-weight:bold;font-size:4.5861px;font-family:raleway;-inkscape-font-specification:'raleway Bold';text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:#000000;fill-opacity:0.25098;stroke-width:0.105213"
+           x="92.892479"
+           y="59.037655"
+           id="text1-0-5"><tspan
+             sodipodi:role="line"
+             id="tspan1-8-1"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:monospace;-inkscape-font-specification:monospace;text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1;stroke-width:0.105213"
+             x="92.892479"
+             y="59.037655">f(<tspan
+   style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Raleway;-inkscape-font-specification:'Raleway Italic';fill:#d4007a;fill-opacity:1;stroke-width:0.105213"
+   id="tspan14-7">s<tspan
+   style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.5861px;font-family:Raleway;-inkscape-font-specification:'Raleway, Italic';font-variant-ligatures:normal;font-variant-position:super;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.105213"
+   id="tspan19">2</tspan></tspan><tspan
+   id="tspan18-4"
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Raleway;-inkscape-font-specification:Raleway;fill:#d4007a;fill-opacity:1;stroke-width:0.105213">(</tspan>x̅<tspan
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.5861px;font-family:Sans;-inkscape-font-specification:'Sans, Normal';font-variant-ligatures:normal;font-variant-position:sub;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.105213"
+   id="tspan22">0</tspan><tspan
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Raleway;-inkscape-font-specification:Raleway;fill:#d4007a;fill-opacity:1;stroke-width:0.105213"
+   id="tspan15-3">)</tspan>)</tspan></text>
+      </g>
+      <path
+         style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.14532;stroke-opacity:1"
+         d="m 141.14564,58.154708 v 9.817379"
+         id="path1-2"
+         sodipodi:nodetypes="cc" />
+    </g>
+    <g
+       id="g5"
+       class="fragment"
+       transform="matrix(1.1354347,0,0,1.1354347,-6.9166943,-9.008017)"
+       style="stroke-width:0.88072">
+      <path
+         style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.14532;stroke-opacity:1"
+         d="m 141.14564,83.355915 v 9.817379"
+         id="path1-6"
+         sodipodi:nodetypes="cc" />
+    </g>
+    <g
+       id="g6"
+       class="fragment"
+       transform="matrix(1.1354347,0,0,1.1354347,-7.1256308,37.561181)"
+       style="stroke-width:0.88072">
+      <text
+         xml:space="preserve"
+         style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6.33431px;font-family:Sans;-inkscape-font-specification:'Sans, Italic';font-variant-ligatures:normal;font-variant-position:super;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:#d4007a;fill-opacity:1;stroke:none;stroke-width:0.321463;stroke-dasharray:none;stroke-opacity:1"
+         x="141.29901"
+         y="62.43898"
+         id="text24"><tspan
+           sodipodi:role="line"
+           id="tspan24"
+           style="fill:#000000;fill-opacity:1;stroke-width:0.321463"
+           x="141.29901"
+           y="62.43898">....</tspan></text>
+      <g
+         id="g2-0-6-6-0"
+         transform="matrix(1.3811969,0,0,1.3811969,12.904315,14.08983)"
+         style="stroke-width:0.63765">
+        <rect
+           style="fill:#9effdd;fill-opacity:1;stroke-width:0.105213"
+           id="rect1-9-3-9-4-1"
+           width="71.235725"
+           height="11.339896"
+           x="57.251991"
+           y="52.047264" />
+        <text
+           xml:space="preserve"
+           style="font-weight:bold;font-size:4.5861px;font-family:raleway;-inkscape-font-specification:'raleway Bold';text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:#000000;fill-opacity:0.25098;stroke-width:0.105213"
+           x="92.954926"
+           y="59.172817"
+           id="text1-0-5-4-2"><tspan
+             sodipodi:role="line"
+             id="tspan1-8-1-5-8"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:monospace;-inkscape-font-specification:monospace;text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1;stroke-width:0.105213"
+             x="92.954926"
+             y="59.172817">f(<tspan
+   style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Raleway;-inkscape-font-specification:'Raleway Italic';fill:#d4007a;fill-opacity:1;stroke-width:0.105213"
+   id="tspan14-7-8-0">s   </tspan><tspan
+   id="tspan18-4-0-5"
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Raleway;-inkscape-font-specification:Raleway;fill:#d4007a;fill-opacity:1;stroke-width:0.105213">(</tspan>x̅<tspan
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.5861px;font-family:Sans;-inkscape-font-specification:'Sans, Normal';font-variant-ligatures:normal;font-variant-position:sub;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.105213"
+   id="tspan22-8-2">0</tspan><tspan
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Raleway;-inkscape-font-specification:Raleway;fill:#d4007a;fill-opacity:1;stroke-width:0.105213"
+   id="tspan15-3-4-0">)</tspan>)</tspan></text>
+      </g>
+      <path
+         style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.14532;stroke-opacity:1"
+         d="m 141.17586,76.04013 v 9.81738"
+         id="path1-1-7"
+         sodipodi:nodetypes="cc" />
+      <text
+         xml:space="preserve"
+         style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6.33431px;font-family:Sans;-inkscape-font-specification:'Sans, Italic';font-variant-ligatures:normal;font-variant-position:super;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.321463;stroke-dasharray:none;stroke-opacity:1"
+         x="163.73978"
+         y="94.97831"
+         id="text27"><tspan
+           sodipodi:role="line"
+           id="tspan27"
+           style="stroke-width:0.321463"
+           x="163.73978"
+           y="94.97831" /></text>
+      <text
+         xml:space="preserve"
+         style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.88056px;font-family:Sans;-inkscape-font-specification:'Sans, Italic';font-variant-ligatures:normal;font-variant-position:super;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.321463;stroke-dasharray:none;stroke-opacity:1"
+         x="140.48221"
+         y="93.355835"
+         id="text28"><tspan
+           sodipodi:role="line"
+           id="tspan28"
+           style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.88056px;font-family:Sans;-inkscape-font-specification:'Sans, Italic';font-variant-ligatures:normal;font-variant-position:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#d4007a;fill-opacity:1;stroke-width:0.321463"
+           x="140.48221"
+           y="93.355835">n-1</tspan></text>
+    </g>
+    <g
+       id="g33"
+       transform="matrix(1.1354347,0,0,1.1354347,-6.9166943,0.60533096)"
+       class="fragment"
+       style="stroke-width:0.88072">
+      <g
+         id="g2-0-6-6"
+         transform="matrix(1.3811969,0,0,1.3811969,12.739873,72.139557)"
+         style="stroke-width:0.63765">
+        <rect
+           style="fill:#9effdd;fill-opacity:1;stroke-width:0.105213"
+           id="rect1-9-3-9-4"
+           width="71.235725"
+           height="11.339896"
+           x="57.251991"
+           y="52.047264" />
+        <text
+           xml:space="preserve"
+           style="font-weight:bold;font-size:4.5861px;font-family:raleway;-inkscape-font-specification:'raleway Bold';text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:#000000;fill-opacity:0.25098;stroke-width:0.105213"
+           x="92.954926"
+           y="59.172817"
+           id="text1-0-5-4"><tspan
+             sodipodi:role="line"
+             id="tspan1-8-1-5"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:monospace;-inkscape-font-specification:monospace;text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1;stroke-width:0.105213"
+             x="92.954926"
+             y="59.172817">f(<tspan
+   style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Raleway;-inkscape-font-specification:'Raleway Italic';fill:#d4007a;fill-opacity:1;stroke-width:0.105213"
+   id="tspan14-7-8">s<tspan
+   style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.5861px;font-family:Sans;-inkscape-font-specification:'Sans, Italic';font-variant-ligatures:normal;font-variant-position:super;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.105213"
+   id="tspan23">n</tspan></tspan><tspan
+   id="tspan18-4-0"
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Raleway;-inkscape-font-specification:Raleway;fill:#d4007a;fill-opacity:1;stroke-width:0.105213">(</tspan>x̅<tspan
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.5861px;font-family:Sans;-inkscape-font-specification:'Sans, Normal';font-variant-ligatures:normal;font-variant-position:sub;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.105213"
+   id="tspan22-8">0</tspan><tspan
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Raleway;-inkscape-font-specification:Raleway;fill:#d4007a;fill-opacity:1;stroke-width:0.105213"
+   id="tspan15-3-4">)</tspan>)</tspan></text>
+      </g>
+      <path
+         style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.14532;stroke-opacity:1"
+         d="m 141.01142,134.08982 v 9.81738"
+         id="path1-1"
+         sodipodi:nodetypes="cc" />
+    </g>
+    <g
+       id="g7"
+       class="fragment"
+       transform="translate(-0.18401487,25.668583)">
+      <path
+         style="fill:none;stroke:#000000;stroke-width:0.365;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Triangle)"
+         d="m 97.462022,149.51062 c -15.461332,-11.49152 0,-28.20647 0,-28.20647"
+         id="path6" />
+      <text
+         xml:space="preserve"
+         style="font-weight:bold;font-size:7.19219px;font-family:raleway;-inkscape-font-specification:'raleway Bold';text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:#000000;fill-opacity:0.25098;stroke-width:0.165002"
+         x="84.308136"
+         y="138.67789"
+         id="text1-0-5-4-0"><tspan
+           sodipodi:role="line"
+           id="tspan1-8-1-5-0"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:monospace;-inkscape-font-specification:monospace;text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1;stroke-width:0.165002"
+           x="84.308136"
+           y="138.67789">z</tspan></text>
+      <text
+         xml:space="preserve"
+         style="font-weight:bold;font-size:7.19219px;font-family:raleway;-inkscape-font-specification:'raleway Bold';text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:#000000;fill-opacity:0.25098;stroke-width:0.165002"
+         x="73.090935"
+         y="159.55429"
+         id="text1-0-5-4-0-6"><tspan
+           sodipodi:role="line"
+           id="tspan1-8-1-5-0-68"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:monospace;-inkscape-font-specification:monospace;text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1;stroke-width:0.165002"
+           x="73.090935"
+           y="159.55429"><tspan
+   style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Raleway;-inkscape-font-specification:'Raleway Italic';fill:#d4007a;fill-opacity:1;stroke-width:0.165002"
+   id="tspan25-7"><tspan
+   style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:monospace;-inkscape-font-specification:'monospace Italic';fill:#000000;fill-opacity:1;stroke-width:0.165002"
+   id="tspan26">z</tspan> = triv(</tspan><tspan
+   style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Raleway;-inkscape-font-specification:'Raleway Italic';fill:#d4007a;fill-opacity:1;stroke-width:0.165002"
+   id="tspan14-7-8-9-7">s<tspan
+   style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.19219px;font-family:Sans;-inkscape-font-specification:'Sans, Italic';font-variant-ligatures:normal;font-variant-position:super;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.165002"
+   id="tspan23-1-6">n</tspan></tspan><tspan
+   id="tspan18-4-0-2-6"
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Raleway;-inkscape-font-specification:Raleway;fill:#d4007a;fill-opacity:1;stroke-width:0.165002">(</tspan>x̅<tspan
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.19219px;font-family:Sans;-inkscape-font-specification:'Sans, Normal';font-variant-ligatures:normal;font-variant-position:sub;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.165002"
+   id="tspan22-8-6-5">0</tspan><tspan
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Raleway;-inkscape-font-specification:Raleway;fill:#d4007a;fill-opacity:1;stroke-width:0.165002"
+   id="tspan15-3-4-9-3">))</tspan></tspan></text>
+    </g>
+    <g
+       id="g34"
+       class="fragment"
+       transform="matrix(1.1354347,0,0,1.1354347,-6.9166943,1.2061652)"
+       style="stroke-width:0.88072">
+      <g
+         id="g32"
+         transform="translate(32.279168)"
+         style="stroke-width:0.88072">
+        <g
+           id="g31"
+           transform="translate(-32.014583,3.175)"
+           style="stroke-width:0.88072">
+          <g
+             id="g30"
+             style="stroke-width:0.88072">
+            <text
+               xml:space="preserve"
+               style="font-weight:bold;font-size:6.33431px;font-family:raleway;-inkscape-font-specification:'raleway Bold';text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:#000000;fill-opacity:0.25098;stroke-width:0.14532"
+               x="66.657349"
+               y="117.88779"
+               id="text1-0-5-4-0-2-2"><tspan
+                 sodipodi:role="line"
+                 id="tspan1-8-1-5-0-7-3"
+                 style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:monospace;-inkscape-font-specification:monospace;text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1;stroke-width:0.14532"
+                 x="66.657349"
+                 y="117.88779"><tspan
+   style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Raleway;-inkscape-font-specification:'Raleway Italic';fill:#d4007a;fill-opacity:1;stroke-width:0.14532"
+   id="tspan25-8-2">c(<tspan
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:monospace;-inkscape-font-specification:monospace;fill:#000000;fill-opacity:1;stroke-width:0.14532"
+   id="tspan29">z</tspan>, </tspan><tspan
+   style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Raleway;-inkscape-font-specification:'Raleway Italic';fill:#d4007a;fill-opacity:1;stroke-width:0.14532"
+   id="tspan14-7-8-9-6-7">s    </tspan><tspan
+   id="tspan18-4-0-2-7-9"
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Raleway;-inkscape-font-specification:Raleway;fill:#d4007a;fill-opacity:1;stroke-width:0.14532">(</tspan>x̅<tspan
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6.33431px;font-family:Sans;-inkscape-font-specification:'Sans, Normal';font-variant-ligatures:normal;font-variant-position:sub;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.14532"
+   id="tspan22-8-6-0-0">0</tspan><tspan
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Raleway;-inkscape-font-specification:Raleway;fill:#d4007a;fill-opacity:1;stroke-width:0.14532"
+   id="tspan15-3-4-9-9-1">))</tspan></tspan></text>
+          </g>
+        </g>
+        <text
+           xml:space="preserve"
+           style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.88056px;font-family:Sans;-inkscape-font-specification:'Sans, Italic';font-variant-ligatures:normal;font-variant-position:super;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.321463;stroke-dasharray:none;stroke-opacity:1"
+           x="36.723541"
+           y="118.60429"
+           id="text28-9"><tspan
+             sodipodi:role="line"
+             id="tspan28-9"
+             style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.88056px;font-family:Sans;-inkscape-font-specification:'Sans, Italic';font-variant-ligatures:normal;font-variant-position:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#d4007a;fill-opacity:1;stroke-width:0.321463"
+             x="36.723541"
+             y="118.60429">n-1</tspan></text>
+      </g>
+      <g
+         id="g7-6"
+         transform="translate(-0.77877675,-1.007125)"
+         style="stroke-width:0.88072">
+        <path
+           style="fill:none;stroke:#000000;stroke-width:0.321463;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Triangle-40)"
+           d="m 91.950363,127.55294 c -13.6171,-10.12081 0,-24.842 0,-24.842"
+           id="path6-4" />
+      </g>
+    </g>
+    <g
+       id="g9"
+       class="fragment"
+       transform="matrix(1.1354347,0,0,1.1354347,-6.9166943,-9.008017)"
+       style="stroke-width:0.88072">
+      <path
+         style="fill:none;stroke:#000000;stroke-width:0.321463;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Triangle-7)"
+         d="m 91.34947,77.066755 c -13.6171,-10.12081 0,-24.842004 0,-24.842004"
+         id="path6-0" />
+      <text
+         xml:space="preserve"
+         style="font-weight:bold;font-size:6.33431px;font-family:raleway;-inkscape-font-specification:'raleway Bold';text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:#000000;fill-opacity:0.25098;stroke-width:0.145319;stroke-dasharray:none"
+         x="70.754097"
+         y="67.352371"
+         id="text1-0-5-4-0-23"><tspan
+           sodipodi:role="line"
+           id="tspan1-8-1-5-0-9"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:monospace;-inkscape-font-specification:monospace;text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1;stroke-width:0.145319;stroke-dasharray:none"
+           x="70.754097"
+           y="67.352371"><tspan
+   style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Raleway;-inkscape-font-specification:'Raleway Italic';fill:#d4007a;fill-opacity:1;stroke-width:0.145319;stroke-dasharray:none"
+   id="tspan25-6">c(..., s<tspan
+   style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6.33431px;font-family:Raleway;-inkscape-font-specification:'Raleway, Italic';font-variant-ligatures:normal;font-variant-position:super;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.145319"
+   id="tspan32">2</tspan></tspan><tspan
+   id="tspan18-4-0-2-3"
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Raleway;-inkscape-font-specification:Raleway;fill:#d4007a;fill-opacity:1;stroke-width:0.145319;stroke-dasharray:none">(</tspan>x̅<tspan
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6.33431px;font-family:Sans;-inkscape-font-specification:'Sans, Normal';font-variant-ligatures:normal;font-variant-position:sub;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.145319;stroke-dasharray:none"
+   id="tspan22-8-6-9">0</tspan><tspan
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Raleway;-inkscape-font-specification:Raleway;fill:#d4007a;fill-opacity:1;stroke-width:0.145319;stroke-dasharray:none"
+   id="tspan15-3-4-9-4">))</tspan></tspan></text>
+    </g>
+    <g
+       id="g10"
+       class="fragment"
+       transform="matrix(1.1354347,0,0,1.1354347,-6.9166943,-9.008017)"
+       style="stroke-width:0.88072">
+      <path
+         style="fill:none;stroke:#000000;stroke-width:0.321463;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Triangle-0)"
+         d="m 91.465839,51.325562 c -13.6171,-10.120807 0,-24.841997 0,-24.841997"
+         id="path6-6" />
+      <text
+         xml:space="preserve"
+         style="font-weight:bold;font-size:6.33431px;font-family:raleway;-inkscape-font-specification:'raleway Bold';text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:#000000;fill-opacity:0.25098;stroke-width:0.145319;stroke-dasharray:none"
+         x="69.335854"
+         y="42.91861"
+         id="text1-0-5-4-0-23-2"><tspan
+           sodipodi:role="line"
+           id="tspan1-8-1-5-0-9-8"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:monospace;-inkscape-font-specification:monospace;text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1;stroke-width:0.145319;stroke-dasharray:none"
+           x="69.335854"
+           y="42.91861"><tspan
+   style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Raleway;-inkscape-font-specification:'Raleway Italic';fill:#d4007a;fill-opacity:1;stroke-width:0.145319;stroke-dasharray:none"
+   id="tspan25-6-8">c(..., s</tspan><tspan
+   id="tspan18-4-0-2-3-9"
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Raleway;-inkscape-font-specification:Raleway;fill:#d4007a;fill-opacity:1;stroke-width:0.145319;stroke-dasharray:none">(</tspan>x̅<tspan
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6.33431px;font-family:Sans;-inkscape-font-specification:'Sans, Normal';font-variant-ligatures:normal;font-variant-position:sub;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.145319;stroke-dasharray:none"
+   id="tspan22-8-6-9-8">0</tspan><tspan
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Raleway;-inkscape-font-specification:Raleway;fill:#d4007a;fill-opacity:1;stroke-width:0.145319;stroke-dasharray:none"
+   id="tspan15-3-4-9-4-3">))</tspan></tspan></text>
+    </g>
+    <g
+       id="g11"
+       class="fragment"
+       transform="matrix(1.1354347,0,0,1.1354347,-6.9166943,-9.008017)"
+       style="stroke-width:0.88072">
+      <path
+         style="fill:none;stroke:#000000;stroke-width:0.321463;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Triangle-4)"
+         d="m 91.691641,26.00415 c -13.6171,-10.12081 0,-24.8420001 0,-24.8420001"
+         id="path6-05" />
+      <text
+         xml:space="preserve"
+         style="font-weight:bold;font-size:6.33431px;font-family:raleway;-inkscape-font-specification:'raleway Bold';text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:#000000;fill-opacity:0.25098;stroke-width:0.145319;stroke-dasharray:none"
+         x="70.532585"
+         y="17.610708"
+         id="text1-0-5-4-0-23-2-7"><tspan
+           sodipodi:role="line"
+           id="tspan1-8-1-5-0-9-8-6"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:monospace;-inkscape-font-specification:monospace;text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1;stroke-width:0.145319;stroke-dasharray:none"
+           x="70.532585"
+           y="17.610708"><tspan
+   style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Raleway;-inkscape-font-specification:'Raleway Italic';fill:#d4007a;fill-opacity:1;stroke-width:0.145319;stroke-dasharray:none"
+   id="tspan25-6-8-2">c(..., </tspan>x̅<tspan
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6.33431px;font-family:Sans;-inkscape-font-specification:'Sans, Normal';font-variant-ligatures:normal;font-variant-position:sub;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.145319;stroke-dasharray:none"
+   id="tspan22-8-6-9-8-2">0</tspan><tspan
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Raleway;-inkscape-font-specification:Raleway;fill:#d4007a;fill-opacity:1;stroke-width:0.145319;stroke-dasharray:none"
+   id="tspan15-3-4-9-4-3-5">)</tspan></tspan></text>
+    </g>
+  </g>
+</svg>
