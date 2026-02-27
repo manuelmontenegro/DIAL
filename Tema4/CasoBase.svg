@@ -1,0 +1,572 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="276.57715mm"
+   height="147.25261mm"
+   viewBox="0 0 276.57715 147.25261"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.4 (e7c3feb100, 2024-10-09)"
+   sodipodi:docname="CasoBase.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     inkscape:zoom="0.50835205"
+     inkscape:cx="743.57918"
+     inkscape:cy="8.8521331"
+     inkscape:window-width="1920"
+     inkscape:window-height="1011"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs1">
+    <marker
+       style="overflow:visible"
+       id="Triangle"
+       refX="0"
+       refY="0"
+       orient="auto-start-reverse"
+       inkscape:stockid="Triangle arrow"
+       markerWidth="1"
+       markerHeight="1"
+       viewBox="0 0 1 1"
+       inkscape:isstock="true"
+       inkscape:collect="always"
+       preserveAspectRatio="xMidYMid">
+      <path
+         transform="scale(0.5)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 5.77,0 -2.88,5 V -5 Z"
+         id="path135" />
+    </marker>
+    <linearGradient
+       id="swatch10"
+       inkscape:swatch="solid">
+      <stop
+         style="stop-color:#9a0000;stop-opacity:1;"
+         offset="0"
+         id="stop10" />
+    </linearGradient>
+    <marker
+       style="overflow:visible"
+       id="Triangle-7"
+       refX="0"
+       refY="0"
+       orient="auto-start-reverse"
+       inkscape:stockid="Triangle arrow"
+       markerWidth="1"
+       markerHeight="1"
+       viewBox="0 0 1 1"
+       inkscape:isstock="true"
+       inkscape:collect="always"
+       preserveAspectRatio="xMidYMid">
+      <path
+         transform="scale(0.5)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 5.77,0 -2.88,5 V -5 Z"
+         id="path135-4" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="Triangle-7-1"
+       refX="0"
+       refY="0"
+       orient="auto-start-reverse"
+       inkscape:stockid="Triangle arrow"
+       markerWidth="1"
+       markerHeight="1"
+       viewBox="0 0 1 1"
+       inkscape:isstock="true"
+       inkscape:collect="always"
+       preserveAspectRatio="xMidYMid">
+      <path
+         transform="scale(0.5)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 5.77,0 -2.88,5 V -5 Z"
+         id="path135-4-7" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="Triangle-5"
+       refX="0"
+       refY="0"
+       orient="auto-start-reverse"
+       inkscape:stockid="Triangle arrow"
+       markerWidth="1"
+       markerHeight="1"
+       viewBox="0 0 1 1"
+       inkscape:isstock="true"
+       inkscape:collect="always"
+       preserveAspectRatio="xMidYMid">
+      <path
+         transform="scale(0.5)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 5.77,0 -2.88,5 V -5 Z"
+         id="path135-0" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="Triangle-72"
+       refX="0"
+       refY="0"
+       orient="auto-start-reverse"
+       inkscape:stockid="Triangle arrow"
+       markerWidth="1"
+       markerHeight="1"
+       viewBox="0 0 1 1"
+       inkscape:isstock="true"
+       inkscape:collect="always"
+       preserveAspectRatio="xMidYMid">
+      <path
+         transform="scale(0.5)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 5.77,0 -2.88,5 V -5 Z"
+         id="path135-7" />
+    </marker>
+  </defs>
+  <g
+     inkscape:groupmode="layer"
+     id="layer2"
+     inkscape:label="Capa 2"
+     transform="translate(-5.2318661)" />
+  <g
+     inkscape:label="Capa 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-17.202736,-19.442426)">
+    <g
+       id="g38"
+       transform="matrix(1.9345703,0,0,1.9345703,-11.187621,-17.933076)"
+       style="stroke-width:0.51691">
+      <g
+         id="g10"
+         transform="matrix(0.63870658,0,0,0.6384122,6.7642747,7.0571145)"
+         style="stroke-width:0.809498">
+        <ellipse
+           style="fill:#008067;fill-opacity:1;stroke:#000000;stroke-width:0.619264"
+           id="path1"
+           cx="103.70417"
+           cy="32.919895"
+           rx="33.960842"
+           ry="13.40217" />
+        <text
+           xml:space="preserve"
+           style="font-size:8.46667px;font-family:Raleway;-inkscape-font-specification:Raleway;font-variant-position:super;text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:#008067;fill-opacity:1;stroke:#000000;stroke-width:0.619264"
+           x="103.52637"
+           y="35.967896"
+           id="text10"><tspan
+             sodipodi:role="line"
+             id="tspan10"
+             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:8.46667px;font-family:Raleway;-inkscape-font-specification:'Raleway Bold';text-align:center;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.619264"
+             x="103.52637"
+             y="35.967896">Problema</tspan></text>
+      </g>
+    </g>
+    <g
+       id="g11"
+       transform="matrix(1.2356228,0,0,1.2350533,-61.14342,43.602405)"
+       style="stroke-width:0.809498">
+      <ellipse
+         style="fill:#61b9a8;fill-opacity:1;stroke:#000000;stroke-width:0.619264"
+         id="path1-8"
+         cx="94.595901"
+         cy="30.447651"
+         rx="24.852571"
+         ry="10.929925" />
+      <text
+         xml:space="preserve"
+         style="font-size:4.93889px;font-family:Raleway;-inkscape-font-specification:Raleway;font-variant-position:super;text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:#008067;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.619264"
+         x="94.824379"
+         y="32.479481"
+         id="text10-9"><tspan
+           sodipodi:role="line"
+           id="tspan10-2"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.93889px;font-family:Raleway;-inkscape-font-specification:'Raleway, Normal';font-variant-ligatures:normal;font-variant-position:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;baseline-shift:baseline;text-anchor:middle;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.619264"
+           x="94.824379"
+           y="32.479481">Subproblema 1</tspan></text>
+    </g>
+    <g
+       id="g11-8"
+       transform="matrix(1.2356228,0,0,1.2350533,11.762657,51.028393)"
+       style="stroke-width:0.809498">
+      <ellipse
+         style="fill:#61b9a8;fill-opacity:1;stroke:#000000;stroke-width:0.619264"
+         id="path1-8-0"
+         cx="94.595901"
+         cy="30.447651"
+         rx="24.852571"
+         ry="10.929925" />
+      <text
+         xml:space="preserve"
+         style="font-size:4.93889px;font-family:Raleway;-inkscape-font-specification:Raleway;font-variant-position:super;text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:#008067;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.619264"
+         x="94.824379"
+         y="32.479481"
+         id="text10-9-9"><tspan
+           sodipodi:role="line"
+           id="tspan10-2-7"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.93889px;font-family:Raleway;-inkscape-font-specification:'Raleway, Normal';font-variant-ligatures:normal;font-variant-position:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;baseline-shift:baseline;text-anchor:middle;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.619264"
+           x="94.824379"
+           y="32.479481">Subproblema 2</tspan></text>
+    </g>
+    <path
+       style="fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.465001;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Triangle-7)"
+       d="m 168.39735,44.034474 c 22.3348,5.463898 24.43835,21.533971 24.43835,21.533971"
+       id="path11-7"
+       sodipodi:nodetypes="cc" />
+    <g
+       id="g11-2"
+       transform="matrix(1.2356228,0,0,1.2350533,84.244086,44.754529)"
+       style="stroke-width:0.809498">
+      <ellipse
+         style="fill:#61b9a8;fill-opacity:1;stroke:#000000;stroke-width:0.619264"
+         id="path1-8-4"
+         cx="94.595901"
+         cy="30.447651"
+         rx="24.852571"
+         ry="10.929925" />
+      <text
+         xml:space="preserve"
+         style="font-size:4.93889px;font-family:Raleway;-inkscape-font-specification:Raleway;font-variant-position:super;text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:#008067;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.619264"
+         x="94.824379"
+         y="32.479481"
+         id="text10-9-3"><tspan
+           sodipodi:role="line"
+           id="tspan10-2-71"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.93889px;font-family:Raleway;-inkscape-font-specification:'Raleway, Normal';font-variant-ligatures:normal;font-variant-position:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;baseline-shift:baseline;text-anchor:middle;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.619264"
+           x="94.824379"
+           y="32.479481">Subproblema 3</tspan></text>
+    </g>
+    <path
+       style="fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.465001;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Triangle)"
+       d="M 95.39905,45.574839 C 73.064262,51.038737 64.208078,65.823189 64.208078,65.823189"
+       id="path11"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.465001;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Triangle-7-1)"
+       d="m 133.97713,53.537778 c 8.82951,10.606388 5.46667,20.248349 5.46667,20.248349"
+       id="path11-7-4"
+       sodipodi:nodetypes="cc" />
+    <ellipse
+       style="fill:#bbe1da;fill-opacity:1;stroke:#000000;stroke-width:0.764999"
+       id="path1-8-3"
+       cx="32.935551"
+       cy="113.38541"
+       rx="15.350315"
+       ry="8.4460411" />
+    <text
+       xml:space="preserve"
+       style="font-size:3.4121px;font-family:Raleway;-inkscape-font-specification:Raleway;font-variant-position:super;text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:#008067;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.764999"
+       x="36.997025"
+       y="102.77435"
+       id="text10-9-5"
+       transform="scale(0.89403596,1.1185232)"><tspan
+         sodipodi:role="line"
+         id="tspan10-2-6"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.4121px;font-family:Raleway;-inkscape-font-specification:'Raleway, Normal';font-variant-ligatures:normal;font-variant-position:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;baseline-shift:baseline;text-anchor:middle;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.764999"
+         x="36.997025"
+         y="102.77435" /></text>
+    <ellipse
+       style="fill:#bbe1da;fill-opacity:1;stroke:#000000;stroke-width:0.764999"
+       id="path1-8-3-6"
+       cx="71.158562"
+       cy="115.19643"
+       rx="15.350315"
+       ry="8.4460411" />
+    <text
+       xml:space="preserve"
+       style="font-size:3.4121px;font-family:Raleway;-inkscape-font-specification:Raleway;font-variant-position:super;text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:#008067;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.764999"
+       x="79.750351"
+       y="104.39347"
+       id="text10-9-5-2"
+       transform="scale(0.89403596,1.1185232)"><tspan
+         sodipodi:role="line"
+         id="tspan10-2-6-6"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.4121px;font-family:Raleway;-inkscape-font-specification:'Raleway, Normal';font-variant-ligatures:normal;font-variant-position:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;baseline-shift:baseline;text-anchor:middle;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.764999"
+         x="79.750351"
+         y="104.39347" /></text>
+    <ellipse
+       style="fill:#bbe1da;fill-opacity:1;stroke:#000000;stroke-width:0.764999"
+       id="path1-8-3-2"
+       cx="112.3895"
+       cy="117.86894"
+       rx="15.350315"
+       ry="8.4460411" />
+    <text
+       xml:space="preserve"
+       style="font-size:3.4121px;font-family:Raleway;-inkscape-font-specification:Raleway;font-variant-position:super;text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:#008067;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.764999"
+       x="125.86813"
+       y="106.78278"
+       id="text10-9-5-0"
+       transform="scale(0.89403596,1.1185232)"><tspan
+         sodipodi:role="line"
+         id="tspan10-2-6-2"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.4121px;font-family:Raleway;-inkscape-font-specification:'Raleway, Normal';font-variant-ligatures:normal;font-variant-position:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;baseline-shift:baseline;text-anchor:middle;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.764999"
+         x="125.86813"
+         y="106.78278" /></text>
+    <ellipse
+       style="fill:#bbe1da;fill-opacity:1;stroke:#000000;stroke-width:0.764999"
+       id="path1-8-3-28"
+       cx="148.78088"
+       cy="117.83417"
+       rx="15.350315"
+       ry="8.4460411" />
+    <text
+       xml:space="preserve"
+       style="font-size:3.4121px;font-family:Raleway;-inkscape-font-specification:Raleway;font-variant-position:super;text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:#008067;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.764999"
+       x="166.57271"
+       y="106.75169"
+       id="text10-9-5-9"
+       transform="scale(0.89403596,1.1185232)"><tspan
+         sodipodi:role="line"
+         id="tspan10-2-6-7"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.4121px;font-family:Raleway;-inkscape-font-specification:'Raleway, Normal';font-variant-ligatures:normal;font-variant-position:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;baseline-shift:baseline;text-anchor:middle;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.764999"
+         x="166.57271"
+         y="106.75169" /></text>
+    <ellipse
+       style="fill:#bbe1da;fill-opacity:1;stroke:#000000;stroke-width:0.764999"
+       id="path1-8-3-9"
+       cx="192.59245"
+       cy="117.52001"
+       rx="15.350315"
+       ry="8.4460411" />
+    <text
+       xml:space="preserve"
+       style="font-size:3.4121px;font-family:Raleway;-inkscape-font-specification:Raleway;font-variant-position:super;text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:#008067;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.764999"
+       x="215.57698"
+       y="106.47083"
+       id="text10-9-5-3"
+       transform="scale(0.89403596,1.1185232)"><tspan
+         sodipodi:role="line"
+         id="tspan10-2-6-1"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.4121px;font-family:Raleway;-inkscape-font-specification:'Raleway, Normal';font-variant-ligatures:normal;font-variant-position:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;baseline-shift:baseline;text-anchor:middle;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.764999"
+         x="215.57698"
+         y="106.47083" /></text>
+    <ellipse
+       style="fill:#bbe1da;fill-opacity:1;stroke:#000000;stroke-width:0.764999"
+       id="path1-8-3-4"
+       cx="231.94641"
+       cy="114.64001"
+       rx="15.350315"
+       ry="8.4460411" />
+    <text
+       xml:space="preserve"
+       style="font-size:3.4121px;font-family:Raleway;-inkscape-font-specification:Raleway;font-variant-position:super;text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:#008067;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.764999"
+       x="259.59528"
+       y="103.89601"
+       id="text10-9-5-5"
+       transform="scale(0.89403596,1.1185232)"><tspan
+         sodipodi:role="line"
+         id="tspan10-2-6-0"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.4121px;font-family:Raleway;-inkscape-font-specification:'Raleway, Normal';font-variant-ligatures:normal;font-variant-position:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;baseline-shift:baseline;text-anchor:middle;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.764999"
+         x="259.59528"
+         y="103.89601" /></text>
+    <ellipse
+       style="fill:#bbe1da;fill-opacity:1;stroke:#000000;stroke-width:0.764999"
+       id="path1-8-3-3"
+       cx="269.85947"
+       cy="111.03584"
+       rx="15.350315"
+       ry="8.4460411" />
+    <text
+       xml:space="preserve"
+       style="font-size:3.4121px;font-family:Raleway;-inkscape-font-specification:Raleway;font-variant-position:super;text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:#008067;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.764999"
+       x="302.00192"
+       y="100.67374"
+       id="text10-9-5-20"
+       transform="scale(0.89403596,1.1185232)"><tspan
+         sodipodi:role="line"
+         id="tspan10-2-6-61"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.4121px;font-family:Raleway;-inkscape-font-specification:'Raleway, Normal';font-variant-ligatures:normal;font-variant-position:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;baseline-shift:baseline;text-anchor:middle;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.764999"
+         x="302.00192"
+         y="100.67374" /></text>
+    <ellipse
+       style="fill:#dcf1ee;fill-opacity:1;stroke:#000000;stroke-width:0.764999"
+       id="path1-8-3-28-6"
+       ry="4.5424957"
+       rx="8.3239346"
+       cy="139.81949"
+       cx="133.11078" />
+    <text
+       xml:space="preserve"
+       style="font-size:3.4121px;font-family:Raleway;-inkscape-font-specification:Raleway;font-variant-position:super;text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:#008067;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.764999"
+       x="149.04533"
+       y="126.40736"
+       id="text10-9-5-9-5"
+       transform="scale(0.89403596,1.1185232)"><tspan
+         sodipodi:role="line"
+         id="tspan10-2-6-7-6"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.4121px;font-family:Raleway;-inkscape-font-specification:'Raleway, Normal';font-variant-ligatures:normal;font-variant-position:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;baseline-shift:baseline;text-anchor:middle;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.764999"
+         x="149.04533"
+         y="126.40736" /></text>
+    <ellipse
+       style="fill:#dcf1ee;fill-opacity:1;stroke:#000000;stroke-width:0.764999"
+       id="path1-8-3-28-6-5"
+       ry="4.5424957"
+       rx="8.3239346"
+       cy="140.02815"
+       cx="154.18556" />
+    <text
+       xml:space="preserve"
+       style="font-size:3.4121px;font-family:Raleway;-inkscape-font-specification:Raleway;font-variant-position:super;text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:#008067;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.764999"
+       x="172.61798"
+       y="126.59391"
+       id="text10-9-5-9-5-2"
+       transform="scale(0.89403596,1.1185232)"><tspan
+         sodipodi:role="line"
+         id="tspan10-2-6-7-6-5"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.4121px;font-family:Raleway;-inkscape-font-specification:'Raleway, Normal';font-variant-ligatures:normal;font-variant-position:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;baseline-shift:baseline;text-anchor:middle;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.764999"
+         x="172.61798"
+         y="126.59391" /></text>
+    <ellipse
+       style="fill:#dcf1ee;fill-opacity:1;stroke:#000000;stroke-width:0.764999"
+       id="path1-8-3-28-6-0"
+       ry="4.5424957"
+       rx="8.3239346"
+       cy="139.14369"
+       cx="175.62117" />
+    <text
+       xml:space="preserve"
+       style="font-size:3.4121px;font-family:Raleway;-inkscape-font-specification:Raleway;font-variant-position:super;text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:#008067;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.764999"
+       x="196.59419"
+       y="125.80318"
+       id="text10-9-5-9-5-7"
+       transform="scale(0.89403596,1.1185232)"><tspan
+         sodipodi:role="line"
+         id="tspan10-2-6-7-6-8"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.4121px;font-family:Raleway;-inkscape-font-specification:'Raleway, Normal';font-variant-ligatures:normal;font-variant-position:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;baseline-shift:baseline;text-anchor:middle;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.764999"
+         x="196.59419"
+         y="125.80318" /></text>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.364999;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Triangle)"
+       d="M 39.035449,92.568829 C 32.789776,97.773554 31.74883,104.01923 31.74883,104.01923"
+       id="path2" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.365001;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Triangle)"
+       d="m 68.181913,92.829067 c 6.505908,7.026381 7.026381,12.231103 7.026381,12.231103"
+       id="path3" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.365001;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Triangle)"
+       d="m 115.54492,100.89639 c -6.50591,4.94449 -7.54685,8.5878 -7.54685,8.5878"
+       id="path4" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.365001;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Triangle)"
+       d="m 144.17092,100.37592 c 4.16378,6.50591 3.64331,8.5878 3.64331,8.5878"
+       id="path5" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.365001;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Triangle)"
+       d="m 194.39653,95.691665 c -7.28661,7.286615 -4.16379,13.011815 -4.16379,13.011815"
+       id="path6" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.365001;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Triangle)"
+       d="m 220.42016,92.568831 c 5.98543,12.491339 7.54686,13.532289 7.54686,13.532289"
+       id="path7" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.365001;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Triangle)"
+       d="m 229.78867,87.62434 c 15.35394,0.260236 34.09095,15.09371 34.09095,15.09371"
+       id="path8" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.365001;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Triangle)"
+       d="m 140.33243,124.70801 c -5.33484,3.96861 -6.57096,9.82392 -6.57096,9.82392"
+       id="path9" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.365001;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Triangle)"
+       d="m 153.34425,125.94414 c 2.14695,3.9686 2.27706,8.65286 2.27706,8.65286"
+       id="path10" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.365001;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Triangle)"
+       d="m 161.86699,122.43095 c 10.7998,6.70108 13.14193,11.06004 13.14193,11.06004"
+       id="path12" />
+    <g
+       id="g14"
+       class="fragment">
+      <g
+         id="g13">
+        <path
+           style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.365001;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Triangle)"
+           d="m 132.20005,144.35586 v 11.84075"
+           id="path13"
+           sodipodi:nodetypes="cc" />
+        <path
+           style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.365001;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Triangle-5)"
+           d="m 154.91046,144.13942 v 11.84075"
+           id="path13-8"
+           sodipodi:nodetypes="cc" />
+        <path
+           style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.365001;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Triangle-72)"
+           d="m 175.89499,143.96162 v 11.84075"
+           id="path13-2"
+           sodipodi:nodetypes="cc" />
+      </g>
+      <g
+         id="g12-10"
+         transform="matrix(0.83065183,0,0,0.99635695,56.954999,87.313508)"
+         style="stroke-width:1.09922">
+        <rect
+           style="fill:#e1e867;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.840901;stroke-opacity:1"
+           id="rect11-2"
+           width="19.920609"
+           height="8.7220631"
+           x="79.646225"
+           y="70.529266" />
+      </g>
+      <g
+         id="g12-10-2"
+         transform="matrix(0.83065183,0,0,0.99635695,80.418027,87.277263)"
+         style="stroke-width:1.09922">
+        <rect
+           style="fill:#e1e867;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.840901;stroke-opacity:1"
+           id="rect11-2-0"
+           width="19.920609"
+           height="8.7220631"
+           x="79.646225"
+           y="70.529266" />
+      </g>
+      <g
+         id="g12-10-26"
+         transform="matrix(0.83065183,0,0,0.99635695,102.69084,86.908354)"
+         style="stroke-width:1.09922">
+        <rect
+           style="fill:#e1e867;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.840901;stroke-opacity:1"
+           id="rect11-2-6"
+           width="19.920609"
+           height="8.7220631"
+           x="79.646225"
+           y="70.529266" />
+      </g>
+      <rect
+         style="fill:#ff7377;fill-opacity:1;stroke:#000000;stroke-width:0.365001;stroke-dasharray:none;stroke-opacity:1"
+         id="rect12"
+         width="78.070892"
+         height="5.2047267"
+         x="116.32563"
+         y="148.25941"
+         ry="2.6023633" />
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:9.55465px;font-family:Raleway;-inkscape-font-specification:'Raleway Bold';font-variant-ligatures:normal;font-variant-position:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.564999;stroke-dasharray:none;stroke-opacity:1"
+       x="244.63556"
+       y="153.98083"
+       id="text15"
+       class="fragment"><tspan
+         sodipodi:role="line"
+         id="tspan15"
+         style="fill:#c7003e;fill-opacity:1;stroke:none;stroke-width:0.564999"
+         x="244.63556"
+         y="153.98083">Resolución caso base</tspan></text>
+  </g>
+</svg>

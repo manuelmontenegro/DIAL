@@ -117,6 +117,10 @@ li.hands_up {
   text-indent: -0.75rem;
 }
 
+li.biblio::before {
+  content: "📕 ";
+}
+
 li.hands_up::before {
   content: "👍 ";
 }
