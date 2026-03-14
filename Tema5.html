@@ -1,0 +1,13205 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Manuel Montenegro Montes Dpto. de Sistemas Informáticos y Computación Facultad de Informática Universidad Complutense de Madrid">
+  <title>Programación dinámica</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="dist/reset.css">
+  <link rel="stylesheet" href="dist/reveal.css">
+  <link rel="stylesheet" href="css/nnfx-light.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <style>
+    .reveal .sourceCode {  /* see #7635 */
+      overflow: visible;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <link rel="stylesheet" href="css/dial.css" id="theme">
+    <style>
+  :root {
+    --color-tema: #30A0A0;
+  }
+    </style>
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide" data-background-image="img/CyanBackground.png" class="center">
+  <p class="subtitle">Tema 5</p>
+  <h1 class="title">Programación dinámica</h1>
+<div id="author-container">
+<div class="author">
+<strong>Manuel Montenegro Montes</strong><br>Dpto. de Sistemas
+Informáticos y Computación<br>Facultad de Informática<br>Universidad
+Complutense de Madrid
+</div>
+</div>
+</section>
+
+<section>
+<section id="introducción-sucesión-de-fibonacci"
+class="title-slide slide level1 center"
+data-background-image="img/CyanBackground.png">
+<h1 class="center" data-background-image="img/CyanBackground.png"><span
+class="sc_number">5.1</span>Introducción: sucesión de Fibonacci</h1>
+
+</section>
+<section id="descripción-del-problema" class="slide level2">
+<h2>Descripción del problema</h2>
+<ul>
+<li class="fragment"><p>La sucesión de Fibonacci <span
+class="math inline">\((f_n)\)</span> viene dada por la siguiente
+fórmula:</p>
+<p><span class="math display">\[
+  \begin{array}{rcl}
+  f_0 &amp; = &amp; 0 \\
+  f_1 &amp; = &amp; 1 \\
+  f_n &amp; = &amp; f_{n-1} + f_{n-2} \text{ para } n \geq 2 \\
+  \end{array}
+  \]</span></p></li>
+<li class="fragment"><p>Queremos implementar una función que, dado <span
+class="math inline">\(n\)</span>, devuelva el <span
+class="math inline">\(n\)</span>-ésimo número de la sucesión de
+Fibonacci.</p>
+<div class="cpp cpp_block">
+<p><span class="type">long</span> <span class="type">long</span>
+fib(<span class="type">int</span> n);</p>
+</div></li>
+</ul>
+</section>
+<section id="descripción-del-problema-1" class="slide level2">
+<h2>Descripción del problema</h2>
+<div class="columns">
+<div class="column">
+<div class="cpp cpp_block">
+<p><span class="type">long</span> <span class="type">long</span>
+fib(<span class="type">int</span> n) {<br>  <strong>if</strong> (n &lt;=
+<span class="number">1</span>) {<br>    <strong>return</strong>
+n;<br>  } <strong>else</strong> {<br>    <strong>return</strong> fib(n -
+<span class="number">1</span>) + fib(n - <span
+class="number">2</span>);<br>  }<br>}</p>
+</div>
+</div><div class="column fragment">
+<p>Recurrencia de coste:</p>
+<p><span class="math display">\[\small
+T(n) = \begin{cases}
+k_1 &amp; \text{ si } n \leq 1\\
+T(n - 1) + T(n - 2) + k_2 &amp; \text{ si } n &gt; 1\\
+\end{cases}
+\]</span></p>
+</div>
+</div>
+<div class="fragment">
+<p><span class="math display">\[\small
+T(n) \leq \begin{cases}
+k_1 &amp; \text{ si } n \leq 1\\
+2T(n - 1) + k_2 &amp; \text{ si } n &gt; 1\\
+\end{cases} \qquad \Longrightarrow \qquad \textcolor{red}{T(n) \in
+\mathcal{O}(2^n)}
+\]</span></p>
+</div>
+<div class="fragment">
+<p><span class="math display">\[\small
+T(n) \geq \begin{cases}
+k_1 &amp; \text{ si } n \leq 1\\
+2T(n - 2) + k_2 &amp; \text{ si } n &gt; 1\\
+\end{cases} \qquad \Longrightarrow \qquad \textcolor{red}{T(n) \in
+\Omega(2^{\frac{n}{2}})}
+\]</span></p>
+</div>
+</section>
+<section id="árbol-de-activación" class="slide level2">
+<h2>Árbol de activación</h2>
+<p>Supongamos la llamada <code>fib(5)</code>:</p>
+<p><img data-src="Tema5/ArbolFib.svg" /></p>
+</section>
+<section id="hay-muchas-llamadas-repetidas" class="slide level2">
+<h2>Hay muchas llamadas «repetidas»</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><img data-src="Tema5/ArbolFib.svg" /></p>
+</div><div class="column" style="width:50%;">
+<ul>
+<li><p><code>fib(3)</code> se calcula 2 veces.</p></li>
+<li><p><code>fib(2)</code> se calcula 3 veces.</p></li>
+<li><p><code>fib(1)</code> se calcula 5 veces.</p></li>
+<li><p><code>fib(0)</code> se calcula 3 veces.</p></li>
+</ul>
+</div>
+</div>
+<div class="info_box fragment">
+<p>💡 ¿Y si guardamos en un <em>array</em> los resultados parciales de
+<code>fib</code> para no tener que recalcularlos varias veces?</p>
+</div>
+</section>
+<section id="programación-dinámica-descendente"
+class="slide level2 subsection center">
+<h2 class="subsection center">Programación dinámica descendente</h2>
+</section>
+<section id="programación-dinámica-descendente-1" class="slide level2">
+<h2>Programación dinámica descendente</h2>
+<ul>
+<li><p>Supongamos que tenemos un vector <code>tabla</code>.</p>
+<ul>
+<li><p>Inicialmente, todas sus posiciones toman un valor especial
+<code>-1</code>.</p></li>
+<li><p>Cada vez que calculemos un <span
+class="math inline">\(f_i\)</span>, guardamos el resultado en
+<code>tabla[i]</code> para reutilizarlo posteriormente.</p></li>
+</ul></li>
+</ul>
+<div class="fragment">
+<ul>
+<li><p>Cuando se hace una llamada a <code>fib(n)</code>:</p>
+<ul>
+<li><p>Si <code>tabla[n] == -1</code>, se calcula <span
+class="math inline">\(f_i\)</span> y se actualiza <code>tabla[n]</code>
+con el resultado.</p></li>
+<li><p>En caso contrario, se devuelve directamente
+<code>tabla[n]</code>.</p></li>
+</ul></li>
+</ul>
+</div>
+<div class="fragment">
+<ul>
+<li><p>El array <code>tabla</code> se propaga por la cadena de llamadas
+recursivas mediante un parámetro de entrada/salida:</p>
+<div class="cpp cpp_block">
+<p><span class="type">long</span> <span class="type">long</span>
+fib_pd(<span class="type">int</span> n, <span class="hl"><span
+class="type">vector</span>&lt;<span class="type">long</span> <span
+class="type">long</span>&gt; &amp;tabla</span>) { ... }</p>
+</div></li>
+</ul>
+</div>
+</section>
+<section id="implementación" class="slide level2">
+<h2>Implementación</h2>
+<div class="cpp cpp_block">
+<p><span class="type">long</span> <span class="type">long</span>
+fib_desc(<span class="type">int</span> n, <span
+class="type">vector</span>&lt;<span class="type">long</span> <span
+class="type">long</span>&gt; &amp;tabla) { <br>  <strong>if</strong>
+(tabla[n] == -<span class="number">1</span>)
+{<br>    <strong>if</strong> (n &lt;= <span class="number">1</span>)
+{<br>      tabla[n] = n;<br>    } <strong>else</strong>
+{<br>      tabla[n] = fib_desc(n - <span class="number">1</span>, tabla)
++ fib_desc(n - <span class="number">2</span>,
+tabla);<br>    }<br>  }<br>  <strong>return</strong> tabla[n];<br>}</p>
+</div>
+<div class="fragment">
+<p>Llamada inicial:</p>
+<div class="cpp cpp_block">
+<p><span class="type">long</span> <span class="type">long</span>
+fib(<span class="type">int</span> n) { <br>  <span
+class="type">vector</span>&lt;<span class="type">long</span> <span
+class="type">long</span>&gt; tabla(n + <span class="number">1</span>,
+-<span class="number">1</span>);  <span class="arrow_box_left">Vector
+<code>tabla[0..n] = [-1, -1, -1, ..., -1]</code></span><br>  <strong>return</strong>
+fib_desc(n, tabla);<br>}</p>
+</div>
+</div>
+</section>
+<section id="árbol-de-activación-1" class="slide level2">
+<h2>Árbol de activación</h2>
+<p><img data-src="Tema5/ArbolFib2.svg" style="width:80.0%" /></p>
+<div style="text-align:center">
+<p>Coste de <code>fib(n)</code>: <span
+class="math inline">\(\Theta(n)\)</span></p>
+</div>
+</section>
+<section id="uso-de-la-tabla-de-progración-dinámica"
+class="slide level2">
+<h2>Uso de la tabla de progración dinámica</h2>
+<ul>
+<li><p>Supongamos que queremos calcular <span
+class="math inline">\(f_7\)</span>:</p></li>
+<li><p>Inicializamos la tabla:</p></li>
+</ul>
+<div style="display:flex;justify-content: center; margin-top: 1em">
+<div
+style="width: 2em; text-align: center; border: 1px solid black; font-family: monospace; background-color: #E0E0FF;">
+-1
+</div>
+<div
+style="width: 2em; text-align: center; border: 1px solid black; font-family: monospace; background-color: #E0E0FF;">
+-1
+</div>
+<div
+style="width: 2em; text-align: center; border: 1px solid black; font-family: monospace; background-color: #E0E0FF;">
+-1
+</div>
+<div
+style="width: 2em; text-align: center; border: 1px solid black; font-family: monospace; background-color: #E0E0FF;">
+-1
+</div>
+<div
+style="width: 2em; text-align: center; border: 1px solid black; font-family: monospace; background-color: #E0E0FF;">
+-1
+</div>
+<div
+style="width: 2em; text-align: center; border: 1px solid black; font-family: monospace; background-color: #E0E0FF;">
+-1
+</div>
+<div
+style="width: 2em; text-align: center; border: 1px solid black; font-family: monospace; background-color: #E0E0FF;">
+-1
+</div>
+<div
+style="width: 2em; text-align: center; border: 1px solid black; font-family: monospace; background-color: #E0E0FF;">
+-1
+</div>
+</div>
+<div style="display:flex;justify-content: center;">
+<div style="width: 2em; text-align: center; font-family: monospace;">
+<span style="font-size:50%;">0
+</div>
+<div style="width: 2em; text-align: center; font-family: monospace;">
+<span style="font-size:50%;">1
+</div>
+<div style="width: 2em; text-align: center; font-family: monospace;">
+<span style="font-size:50%;">2
+</div>
+<div style="width: 2em; text-align: center; font-family: monospace;">
+<span style="font-size:50%;">3
+</div>
+<div style="width: 2em; text-align: center; font-family: monospace;">
+<span style="font-size:50%;">4
+</div>
+<div style="width: 2em; text-align: center; font-family: monospace;">
+<span style="font-size:50%;">5
+</div>
+<div style="width: 2em; text-align: center; font-family: monospace;">
+<span style="font-size:50%;">6
+</div>
+<div style="width: 2em; text-align: center; font-family: monospace;">
+<span style="font-size:50%;">7
+</div>
+</div>
+<div class="fragment">
+<ul>
+<li>Al finalizar la llamada <code>fib_pd(5)</code>, <strong>todos los
+elementos</strong> de la tabla han sido inicializados con el valor
+correspondiente:</li>
+</ul>
+<div style="display:flex;justify-content: center; margin-top: 1em">
+<div
+style="width: 2em; text-align: center; border: 1px solid black; font-family: monospace; background-color: #E0FFFF;">
+0
+</div>
+<div
+style="width: 2em; text-align: center; border: 1px solid black; font-family: monospace; background-color: #E0FFFF;">
+1
+</div>
+<div
+style="width: 2em; text-align: center; border: 1px solid black; font-family: monospace; background-color: #E0FFFF;">
+1
+</div>
+<div
+style="width: 2em; text-align: center; border: 1px solid black; font-family: monospace; background-color: #E0FFFF;">
+2
+</div>
+<div
+style="width: 2em; text-align: center; border: 1px solid black; font-family: monospace; background-color: #E0FFFF;">
+3
+</div>
+<div
+style="width: 2em; text-align: center; border: 1px solid black; font-family: monospace; background-color: #E0FFFF;">
+5
+</div>
+<div
+style="width: 2em; text-align: center; border: 1px solid black; font-family: monospace; background-color: #E0FFFF;">
+8
+</div>
+<div
+style="width: 2em; text-align: center; border: 1px solid black; font-family: monospace; background-color: #E0FFFF;">
+13
+</div>
+</div>
+<div style="display:flex;justify-content: center;">
+<div style="width: 2em; text-align: center; font-family: monospace;">
+<span style="font-size:50%;">0
+</div>
+<div style="width: 2em; text-align: center; font-family: monospace;">
+<span style="font-size:50%;">1
+</div>
+<div style="width: 2em; text-align: center; font-family: monospace;">
+<span style="font-size:50%;">2
+</div>
+<div style="width: 2em; text-align: center; font-family: monospace;">
+<span style="font-size:50%;">3
+</div>
+<div style="width: 2em; text-align: center; font-family: monospace;">
+<span style="font-size:50%;">4
+</div>
+<div style="width: 2em; text-align: center; font-family: monospace;">
+<span style="font-size:50%;">5
+</div>
+<div style="width: 2em; text-align: center; font-family: monospace;">
+<span style="font-size:50%;">6
+</div>
+<div style="width: 2em; text-align: center; font-family: monospace;">
+<span style="font-size:50%;">7
+</div>
+</div>
+</div>
+</section>
+<section id="uso-de-la-tabla-de-programación-dinámica"
+class="slide level2">
+<h2>Uso de la tabla de programación dinámica</h2>
+<ul>
+<li>En general, tras la llamada a <code>fib_pd(n)</code>, todo el array
+<code>tabla[0..n]</code> ha sido rellenado con los valores
+correspondientes a la sucesión de Fibonacci.</li>
+</ul>
+<div style="display:flex;justify-content: center; margin-top: 1em">
+<div
+style="width: 2em; height: 1.5em; text-align: center; border: 1px solid black; font-family: monospace; background-color: #E0FFFF;">
+<span class="math inline">\(f_0\)</span>
+</div>
+<div
+style="width: 2em; height: 1.5em; text-align: center; border: 1px solid black; font-family: monospace; background-color: #E0FFFF;">
+<span class="math inline">\(f_1\)</span>
+</div>
+<div
+style="width: 2em; height: 1.5em; text-align: center; border: 1px solid black; font-family: monospace; background-color: #E0FFFF;">
+<span class="math inline">\(f_2\)</span>
+</div>
+<div
+style="width: 5em; height: 1.5em; text-align: center; border: 1px solid black; font-family: monospace; background-color: #E0FFFF;">
+…
+</div>
+<div
+style="width: 2em; height: 1.5em; text-align: center; border: 1px solid black; font-family: monospace; background-color: #E0FFFF;">
+<span class="math inline">\(f_i\)</span>
+</div>
+</div>
+<div style="display:flex;justify-content: center;">
+<div style="width: 2em; text-align: center; font-family: monospace;">
+<span style="font-size:50%;">0
+</div>
+<div style="width: 2em; text-align: center; font-family: monospace;">
+<span style="font-size:50%;">1
+</div>
+<div style="width: 2em; text-align: center; font-family: monospace;">
+<span style="font-size:50%;">2
+</div>
+<div style="width: 5em; text-align: center; font-family: monospace;">
+<span style="font-size:50%;">
+</div>
+<div style="width: 2em; text-align: center; font-family: monospace;">
+<span style="font-size:50%;">n
+</div>
+</div>
+<p> </p>
+<div class="info_box fragment">
+<p>💡 ¿Y si nos olvidamos de la recursión y rellenamos directamente el
+vector de manera iterativa?</p>
+</div>
+</section>
+<section id="programación-dinámica-ascendente"
+class="slide level2 subsection center">
+<h2 class="subsection center">Programación dinámica ascendente</h2>
+</section>
+<section id="cómo-rellenar-el-vector" class="slide level2">
+<h2>¿Cómo rellenar el vector?</h2>
+<div style="display:flex;justify-content: center; margin-top: 1em">
+<div
+style="width: 3em; height: 1.5em; text-align: center; border: 1px solid black; font-family: monospace; background-color: #E0FFFF;">
+
+</div>
+<div
+style="width: 5em; height: 1.5em; text-align: center; border: 1px solid black; font-family: monospace; background-color: #E0FFFF;">
+…
+</div>
+<div
+style="width: 3em; height: 1.5em; text-align: center; border: 1px solid black; font-family: monospace; background-color: #E0FFFF;">
+<span class="math inline">\(f_{i-2}\)</span>
+</div>
+<div
+style="width: 3em; height: 1.5em; text-align: center; border: 1px solid black; font-family: monospace; background-color: #E0FFFF;">
+<span class="math inline">\(f_{i-1}\)</span>
+</div>
+<div
+style="width: 3em; height: 1.5em; text-align: center; border: 1px solid black; font-family: monospace; background-color: #FFFFE0;">
+??
+</div>
+<div
+style="width: 5em; height: 1.5em; text-align: center; border: 1px solid black; font-family: monospace; background-color: #FFFFE0;">
+…
+</div>
+<div
+style="width: 3em; height: 1.5em; text-align: center; border: 1px solid black; font-family: monospace; background-color: #FFFFE0;">
+
+</div>
+</div>
+<div style="display:flex;justify-content: center;">
+<div style="width: 3em; text-align: center; font-family: monospace;">
+<span style="font-size:50%;">0
+</div>
+<div style="width: 5em; text-align: center; font-family: monospace;">
+<span style="font-size:50%;">
+</div>
+<div style="width: 3em; text-align: center; font-family: monospace;">
+<span style="font-size:50%;">i-1
+</div>
+<div style="width: 3em; text-align: center; font-family: monospace;">
+<span style="font-size:50%;">i-2
+</div>
+<div style="width: 3em; text-align: center; font-family: monospace;">
+<span style="font-size:50%;">i
+</div>
+<div style="width: 5em; text-align: center; font-family: monospace;">
+<span style="font-size:50%;">
+</div>
+<div style="width: 3em; text-align: center; font-family: monospace;">
+<span style="font-size:50%;">n
+</div>
+</div>
+<ul>
+<li><p>El elemento <code>tabla[i]</code>, es decir, <span
+class="math inline">\(f_i\)</span>, se obtiene a partir de la suma de
+los dos anteriores.</p>
+<ul>
+<li>Para calcular <code>tabla[i]</code> es necesario haber calculado
+<code>tabla[i-1]</code> y <code>tabla[i-2]</code>.</li>
+</ul></li>
+<li><p>Por tanto, hemos de rellenar el vector <code>tabla</code>
+<strong>de izquierda a derecha</strong>.</p>
+<ul>
+<li>Es decir, desde la posición <code>0</code> hasta la posición
+<code>n</code>.</li>
+</ul></li>
+</ul>
+</section>
+<section id="implementación-1" class="slide level2">
+<h2>Implementación</h2>
+<div class="cpp cpp_block">
+<p><span class="type">long</span> <span class="type">long</span>
+fib_pd(<span class="type">int</span> n) {   <span class="comment">//
+Suponemos n &gt;= 2</span><br>  <span class="type">const</span> <span
+class="type">vector</span>&lt;<span class="type">long</span> <span
+class="type">long</span>&gt; tabla(n + <span class="number">1</span>,
+-<span class="number">1</span>);  <span class="arrow_box_left">Vector
+<code>tabla[0..n] = [-1, -1, -1, ..., -1]</code></span><br><br>  tabla[<span
+class="number">0</span>] = <span
+class="number">0</span>;                              <span
+class="arrow_box_left">Rellenamos casos base</span><br>  tabla[<span
+class="number">1</span>] = <span
+class="number">1</span>;<br><br>  <strong>for</strong> (<span
+class="type">int</span> i = <span class="number">2</span>; i &lt;= n;
+i++) {<br>    tabla[i] = tabla[i - <span class="number">1</span>] +
+tabla[i - <span class="number">2</span>];  <span
+class="arrow_box_left">Rellenamos casos
+recursivos</span><br>  }<br><br>  <strong>return</strong>
+tabla[n];                           <span
+class="arrow_box_left">Obtenemos el elemento pedido</span><br>}</p>
+</div>
+<div class="fragment" style="text-align:center">
+<p>Coste en tiempo: <span class="color_tema"><span
+class="math inline">\(\Theta(n)\)</span></span></p>
+<p>Coste en espacio: <span class="color_tema"><span
+class="math inline">\(\Theta(n)\)</span></span></p>
+</div>
+</section>
+<section id="sobre-el-coste-en-espacio" class="slide level2">
+<h2>Sobre el coste en espacio</h2>
+<div style="display:flex;justify-content: center; margin-top: 1em">
+<div
+style="width: 3em; height: 1.5em; text-align: center; border: 1px solid black; font-family: monospace; background-color: #E0FFFF;">
+
+</div>
+<div
+style="width: 5em; height: 1.5em; text-align: center; border: 1px solid black; font-family: monospace; background-color: #E0FFFF;">
+…
+</div>
+<div
+style="width: 3em; height: 1.5em; text-align: center; border: 1px solid black; font-family: monospace; background-color: #E0FFFF;">
+<span class="math inline">\(f_{i-2}\)</span>
+</div>
+<div
+style="width: 3em; height: 1.5em; text-align: center; border: 1px solid black; font-family: monospace; background-color: #E0FFFF;">
+<span class="math inline">\(f_{i-1}\)</span>
+</div>
+<div
+style="width: 3em; height: 1.5em; text-align: center; border: 1px solid black; font-family: monospace; background-color: #FFFFE0;">
+??
+</div>
+<div
+style="width: 5em; height: 1.5em; text-align: center; border: 1px solid black; font-family: monospace; background-color: #FFFFE0;">
+…
+</div>
+<div
+style="width: 3em; height: 1.5em; text-align: center; border: 1px solid black; font-family: monospace; background-color: #FFFFE0;">
+
+</div>
+</div>
+<div style="display:flex;justify-content: center;">
+<div style="width: 3em; text-align: center; font-family: monospace;">
+<span style="font-size:50%;">0
+</div>
+<div style="width: 5em; text-align: center; font-family: monospace;">
+<span style="font-size:50%;">
+</div>
+<div style="width: 3em; text-align: center; font-family: monospace;">
+<span style="font-size:50%;">i-1
+</div>
+<div style="width: 3em; text-align: center; font-family: monospace;">
+<span style="font-size:50%;">i-2
+</div>
+<div style="width: 3em; text-align: center; font-family: monospace;">
+<span style="font-size:50%;">i
+</div>
+<div style="width: 5em; text-align: center; font-family: monospace;">
+<span style="font-size:50%;">
+</div>
+<div style="width: 3em; text-align: center; font-family: monospace;">
+<span style="font-size:50%;">n
+</div>
+</div>
+<p> </p>
+<ul>
+<li><p>Para calcular el elemento <code>tabla[i]</code> solamente
+necesitamos los dos anteriores: <code>tabla[i-1]</code> y
+<code>tabla[i-2]</code>.</p></li>
+<li><p>Los elementos del segmento <code>tabla[0..i-3]</code> son
+irrelevantes.</p></li>
+</ul>
+<div class="info_box fragment">
+<p>💡 ¿Y si almacenamos solamente los elementos necesarios para calcular
+el valor actual de <code>tabla[i]</code>?</p>
+</div>
+</section>
+<section id="optimización-de-espacio"
+class="slide level2 subsection center">
+<h2 class="subsection center">Optimización de espacio</h2>
+</section>
+<section id="optimización-de-espacio-1" class="slide level2">
+<h2>Optimización de espacio</h2>
+<ul>
+<li>En lugar de tener un array <code>tabla</code>, almacenamos tres
+variables: <code>a</code>, <code>b</code> y <code>c</code>:</li>
+</ul>
+<div style="display:flex;justify-content: center;">
+<div style="width: 3em; text-align: center; font-family: monospace;">
+<span style="font-size:70%;">a
+</div>
+<div style="width: 3em; text-align: center; font-family: monospace;">
+<span style="font-size:70%;">b
+</div>
+<div style="width: 3em; text-align: center; font-family: monospace;">
+<span style="font-size:70%;">c
+</div>
+</div>
+<div style="display:flex;justify-content: center;">
+<div
+style="width: 3em; height: 1.5em; text-align: center; border: 1px solid black; font-family: monospace; background-color: #E0FFFF;">
+<span class="math inline">\(f_{i-2}\)</span>
+</div>
+<div
+style="width: 3em; height: 1.5em; text-align: center; border: 1px solid black; font-family: monospace; background-color: #E0FFFF;">
+<span class="math inline">\(f_{i-1}\)</span>
+</div>
+<div
+style="width: 3em; height: 1.5em; text-align: center; border: 1px solid black; font-family: monospace; background-color: #E0FFFF;">
+<span class="math inline">\(f_i\)</span>
+</div>
+</div>
+<ul>
+<li>En cada iteración, actualizamos los valores de estas tres
+variables:</li>
+</ul>
+<div style="display:flex;justify-content: center;">
+<div style="width: 3em; text-align: center; font-family: monospace;">
+<span style="font-size:70%;">a
+</div>
+<div style="width: 3em; text-align: center; font-family: monospace;">
+<span style="font-size:70%;">b
+</div>
+<div style="width: 3em; text-align: center; font-family: monospace;">
+<span style="font-size:70%;">c
+</div>
+</div>
+<div style="display:flex;justify-content: center;">
+<div
+style="width: 3em; height: 1.5em; text-align: center; border: 1px solid black; font-family: monospace; background-color: #E0FFFF;">
+<span class="math inline">\(f_{i-1}\)</span>
+</div>
+<div
+style="width: 3em; height: 1.5em; text-align: center; border: 1px solid black; font-family: monospace; background-color: #E0FFFF;">
+<span class="math inline">\(f_i\)</span>
+</div>
+<div
+style="width: 3em; height: 1.5em; text-align: center; border: 1px solid black; font-family: monospace; background-color: #E0FFFF;">
+<span class="math inline">\(f_{i+1}\)</span>
+</div>
+</div>
+<div class="fragment">
+<p> </p>
+<div class="cpp cpp_block">
+<p>a = b;<br>b = c;<br>c = a + b;</p>
+</div>
+</div>
+</section>
+<section id="implementación-2" class="slide level2">
+<h2>Implementación</h2>
+<div class="cpp cpp_block">
+<p><span class="type">long</span> <span class="type">long</span>
+fib_pd(<span class="type">int</span> n) {   <span class="comment">//
+Suponemos n &gt;= 2</span><br>  <span class="type">long</span> <span
+class="type">long</span> a = <span class="number">0</span>;    <span
+class="arrow_box_left"><span
+class="math inline">\(f_0\)</span></span><br>  <span
+class="type">long</span> <span class="type">long</span> b = <span
+class="number">1</span>;    <span class="arrow_box_left"><span
+class="math inline">\(f_1\)</span></span><br>  <span
+class="type">long</span> <span class="type">long</span> c = <span
+class="number">1</span>;    <span class="arrow_box_left"><span
+class="math inline">\(f_2\)</span></span><br>  <br>  <strong>for</strong>
+(<span class="type">int</span> i = <span class="number">3</span>; i
+&lt;= n; i++) {    <span class="arrow_box_left">Invariante: a = <span
+class="math inline">\(f_{i-3}\)</span> <span
+class="math inline">\(\wedge\)</span> b = <span
+class="math inline">\(f_{i-2}\)</span> <span
+class="math inline">\(\wedge\)</span> c = <span
+class="math inline">\(f_{i-1}\)</span></span><br>    a = b; b = c; c = a
++ b;<br>  }<br><br>  <strong>return</strong> c;<br>}</p>
+</div>
+<div class="fragment">
+<div style="text-align:center">
+<p>Coste en tiempo: <span class="math inline">\(\Theta(n)\)</span></p>
+<p>Coste en espacio: <span class="color_tema"><span
+class="math inline">\(\Theta(1)\)</span></span></p>
+</div>
+</div>
+</section></section>
+<section>
+<section id="números-combinatorios"
+class="title-slide slide level1 center"
+data-background-image="img/CyanBackground.png">
+<h1 class="center" data-background-image="img/CyanBackground.png"><span
+class="sc_number">5.2</span>Números combinatorios</h1>
+
+</section>
+<section id="descripción-del-problema-2" class="slide level2">
+<h2>Descripción del problema</h2>
+<ul>
+<li class="fragment"><p>Tenemos un conjunto de tamaño <span
+class="math inline">\(n\)</span>. ¿Cuántos subconjuntos distintos de
+tamaño <span class="math inline">\(k\)</span> se pueden obtener a partir
+de él?</p></li>
+<li class="fragment"><p>Respuesta:</p>
+<p><span class="math display">\[
+  \binom{n}{k}
+  \]</span></p></li>
+<li class="fragment"><p>Es posible obtener el resultado de <span
+class="math inline">\(\binom{n}{k}\)</span> utilizando la fórmula basada
+en factoriales:</p>
+<p><span class="math display">\[
+  \binom{n}{k} = \frac{n!}{k! * (n-k)!}
+  \]</span></p></li>
+<li class="fragment"><p><span class="color_tema"><em>Pero también hay
+una alternativa que se expresa recursivamente…</em></span></p></li>
+</ul>
+</section>
+<section id="números-combinatorios-definición-recursiva"
+class="slide level2">
+<h2>Números combinatorios: definición recursiva</h2>
+<p><span class="math display">\[
+\begin{array}{rcll}
+\displaystyle \binom{n}{0} &amp; = &amp; 1 &amp; \qquad \text{para todo
+}n \geq 0 \\
+\displaystyle \binom{0}{k} &amp; = &amp; 0 &amp; \qquad \text{para todo
+}k &gt; 0 \\
+\displaystyle \binom{n}{k} &amp; = &amp; \displaystyle \binom{n-1}{k-1}
++ \binom{n-1}{k} &amp; \qquad \text{para todo }n\geq 0, k &gt; 0 \\
+\end{array}
+\]</span></p>
+</section>
+<section id="versión-recursiva-ineficiente" class="slide level2">
+<h2>Versión recursiva ineficiente</h2>
+<div class="cpp cpp_block">
+<p><span class="type">int</span> comb(<span class="type">int</span> n,
+<span class="type">int</span> k) {<br>  <strong>if</strong> (k == <span
+class="number">0</span>) {<br>    <strong>return</strong> <span
+class="number">1</span>;<br>  } <strong>else</strong>
+<strong>if</strong> (n == <span class="number">0</span>)
+{<br>    <strong>return</strong> <span class="number">0</span>;<br>  }
+<strong>else</strong> {<br>    <strong>return</strong> comb(n - <span
+class="number">1</span>, k - <span class="number">1</span>) + comb(n -
+<span class="number">1</span>, k);<br>  }<br>}</p>
+</div>
+</section>
+<section id="programación-dinámica-descendente-2"
+class="slide level2 subsection center">
+<h2 class="subsection center">Programación dinámica descendente</h2>
+</section>
+<section id="programación-dinámica-descendente-3" class="slide level2">
+<h2>Programación dinámica descendente</h2>
+<ul>
+<li><p>Para poder resolver este problema utilizando programación
+dinámica descendente necesitamos una tabla en la que almacenar los
+resultados de <code>comb(n, k)</code> para cada llamada
+realizada.</p></li>
+<li><p>Al contrario que en el problema anterior, la función
+<code>comb</code> tiene dos parámetros.</p></li>
+</ul>
+<div class="fragment">
+<div class="info_box" style="margin-bottom: 0.5em">
+<p>Necesitamos una <em>matriz</em> en lugar de un vector</p>
+</div>
+</div>
+<div class="fragment">
+<ul>
+<li>Propagaremos una matriz <code>tabla[0..n][0..k]</code> tal que
+<code>tabla[i][j] =</code> <span
+class="math inline">\(\binom{\texttt{i}}{\texttt{j}}\)</span> para todo
+<span class="math inline">\(\texttt{i} \in \{0..n\}\)</span> y <span
+class="math inline">\(\texttt{j} \in \{0..k\}\)</span>.</li>
+</ul>
+</div>
+</section>
+<section id="definición-de-tipo-de-datos-matriz" class="slide level2">
+<h2>Definición de tipo de datos <code>matriz</code></h2>
+<ul>
+<li><p>Representamos una matriz en C++ como un vector de vectores.</p>
+<div class="cpp cpp_block">
+<p><strong>template</strong> &lt;<span class="type">typename</span>
+T&gt;<br><strong>using</strong> matriz = <span
+class="type">vector</span>&lt;<span
+class="type">vector</span>&lt;T&gt;&gt;;</p>
+</div></li>
+<li><p>Utilizamos la notación <code class="color_tema">m[i][j]</code>
+para acceder a la fila <code>i</code>-ésima y columna
+<code>j</code>-ésima de la matriz <code>m</code>.</p></li>
+</ul>
+</section>
+<section id="operaciones-con-matrices-en-c" class="slide level2">
+<h2>Operaciones con matrices en C++</h2>
+<ul>
+<li class="fragment"><p>Crear una nueva matriz:</p>
+<div class="cpp cpp_block">
+<p><strong>template</strong> &lt;<span class="type">typename</span>
+T&gt;<br>matriz&lt;T&gt; crear_matriz(<span class="type">int</span>
+num_filas, <span class="type">int</span> num_columnas, <span
+class="type">const</span> T &amp;valor_inicial)
+{<br>  <strong>return</strong> <span class="type">vector</span>&lt;<span
+class="type">vector</span>&lt;T&gt;&gt;(num_filas, <span
+class="type">vector</span>&lt;T&gt;(num_columnas,
+valor_inicial));<br>}</p>
+</div></li>
+<li class="fragment"><p>Obtener número de filas de una matriz</p>
+<div class="cpp cpp_block">
+<p><strong>template</strong> &lt;<span class="type">typename</span>
+T&gt;<br><span class="type">int</span> num_filas(<span
+class="type">const</span> matriz&lt;T&gt; &amp;m) {
+<strong>return</strong> m.size(); }</p>
+</div></li>
+<li class="fragment"><p>Obtener número de columnas de una matriz</p>
+<div class="cpp cpp_block">
+<p><strong>template</strong> &lt;<span class="type">typename</span>
+T&gt;<br><span class="type">int</span> num_columnas(<span
+class="type">const</span> matriz&lt;T&gt; &amp;m) {
+<strong>return</strong> m[<span class="number">0</span>].size(); }</p>
+</div></li>
+</ul>
+</section>
+<section id="números-combinatorios-programación-dinámica-descendente"
+class="slide level2">
+<h2>Números combinatorios: programación dinámica descendente</h2>
+<div class="cpp cpp_block">
+<p><span class="type">int</span> comb_pd_desc(<span
+class="type">int</span> n, <span class="type">int</span> k,
+matriz&lt;<span class="type">int</span>&gt; &amp;tabla)
+{<br>  <strong>if</strong> (tabla[n][k] == -<span
+class="number">1</span>) {<br>    <strong>if</strong> (k == <span
+class="number">0</span>) {<br>      tabla[n][k] = <span
+class="number">1</span>;<br>    } <strong>else</strong>
+<strong>if</strong> (n == <span class="number">0</span>)
+{<br>      tabla[n][k] = <span class="number">0</span>;<br>    }
+<strong>else</strong> {<br>      tabla[n][k] = comb_pd_desc(n - <span
+class="number">1</span>, k - <span class="number">1</span>, tabla) +
+comb_pd_desc(n - <span class="number">1</span>, k,
+tabla);<br>    }<br>  }<br>  <strong>return</strong>
+tabla[n][k];<br>}</p>
+</div>
+<div class="cpp fragment cpp_block">
+<p><span class="type">int</span> comb_pd_desc(<span
+class="type">int</span> n, <span class="type">int</span> k)
+{<br>  matriz&lt;<span class="type">int</span>&gt; tabla =
+crear_matriz(n + <span class="number">1</span>, k + <span
+class="number">1</span>, -<span class="number">1</span>);    <span
+class="arrow_box_left">Creación de
+<code>tabla[0..n][0..k]</code></span>  <br>  <strong>return</strong>
+comb_pd_desc(n, k, tabla);     <span class="arrow_box_left">Llamada
+inicial</span><br>}</p>
+</div>
+</section>
+<section id="programación-dinámica-ascendente-1"
+class="slide level2 subsection center">
+<h2 class="subsection center">Programación dinámica ascendente</h2>
+</section>
+<section id="números-combinatorios-programación-dinámica-ascendente"
+class="slide level2">
+<h2>Números combinatorios: programación dinámica ascendente</h2>
+<style>
+
+  table.pd {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  table.pd th {
+    border: none;
+    font-size: 60%;
+    text-align: center;
+    font-family: monospace;
+    vertical-align: middle;
+    width: 3em;
+  }
+
+  table.pd td {
+    border: 1px solid black;
+    vertical-align: middle;
+    text-align: center;
+    font-family: monospace;    
+  }
+
+  table.pd > tbody > tr:last-child > td {
+    border-bottom: 3px solid black;
+  }
+
+  table.pd > tbody > tr:nth-child(2) > td {
+    border-top: 3px solid black;
+  }
+
+  table.pd > tbody > tr > td:nth-child(2) {
+    border-left: 3px solid black;
+  }
+
+  table.pd > tbody > tr > td:last-child {
+    border-right: 3px solid black;
+  }
+
+  table.pd td.hl1 {
+    background-color: #FFFFC0;
+  }
+
+  table.pd td.hl2 {
+    background-color: #C0FFFF;
+  }
+
+</style>
+<div class="columns">
+<div class="column" style="width:60%;">
+<ul>
+<li><p>Los casos base se encuentran en la fila <code>0</code> y en la
+columna <code>0</code> de la tabla.</p>
+<p><span class="math display">\[
+\binom{i}{0} = 1 \qquad \text{para todo }i \geq 0 \\
+\]</span></p>
+<p><span class="math display">\[
+\binom{0}{j} = 0 \qquad \text{para todo }j &gt; 0 \\
+\]</span></p></li>
+</ul>
+</div><div class="column" style="width:40%;">
+<table class="pd">
+<tbody>
+<tr>
+<th>
+</th>
+<th>
+0
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+<th>
+3
+</th>
+<th style="width:3em">
+…
+</th>
+<th>
+k
+</th>
+</tr>
+<tr>
+<th>
+0
+</th>
+<td class="hl1">
+1
+</td>
+<td class="hl2">
+0
+</td>
+<td class="hl2">
+0
+</td>
+<td class="hl2">
+0
+</td>
+<td class="hl2">
+…
+</td>
+<td class="hl2">
+0
+</td>
+</tr>
+<tr>
+<th>
+1
+</th>
+<td class="hl1">
+1
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+2
+</th>
+<td class="hl1">
+1
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+3
+</th>
+<td class="hl1">
+1
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr style="height:3em">
+<th>
+⁞
+</th>
+<td class="hl1">
+⁞
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+n
+</th>
+<td class="hl1">
+1
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="números-combinatorios-programación-dinámica-ascendente-1"
+class="slide level2">
+<h2>Números combinatorios: programación dinámica ascendente</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<ul>
+<li><p>El elemento <span class="math inline">\((i, j)\)</span> de la
+matriz (para <span class="math inline">\(i, j \geq 1\)</span>) se
+calcula a partir del elemento que está en la diagonal izquierda superior
+y el que está en la fila superior.</p>
+<p><span class="math display">\[
+\binom{i}{j} = \binom{i - 1}{j - 1} + \binom{i - 1}{j} \\
+\]</span></p></li>
+<li><p>Por tanto, hemos de rellenar la matriz <strong>de arriba a
+abajo</strong>, desde la fila <code>0</code> hasta la fila
+<code>n</code>.</p></li>
+</ul>
+</div><div class="column" style="width:50%;">
+<table class="pd">
+<tbody>
+<tr>
+<th>
+</th>
+<th>
+0
+</th>
+<th>
+1
+</th>
+<th style="width:3em">
+…
+</th>
+<th>
+j-1
+</th>
+<th>
+j
+</th>
+<th style="width:3em">
+…
+</th>
+<th>
+k
+</th>
+</tr>
+<tr>
+<th>
+0
+</th>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+…
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+…
+</td>
+<td>
+0
+</td>
+</tr>
+<tr>
+<th>
+1
+</th>
+<td>
+1
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr style="height:3em">
+<th>
+⁞
+</th>
+<td>
+⁞
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+i-1
+</th>
+<td>
+1
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td class="hl2 fragment">
+<span class="math inline">\(\binom{i-1}{j-1}\)</span>
+</td>
+<td class="hl2 fragment">
+<span class="math inline">\(\binom{i-1}{j}\)</span>
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+i
+</th>
+<td>
+1
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td class="hl1">
+<span class="math inline">\(\binom{i}{j}\)</span>
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr style="height:3em">
+<th>
+⁞
+</th>
+<td>
+⁞
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+n
+</th>
+<td>
+1
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="números-combinatorios-programación-dinámica-ascendente-2"
+class="slide level2">
+<h2>Números combinatorios: programación dinámica ascendente</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<ul>
+<li>Queremos devolver el valor de <span
+class="math inline">\(\binom{n}{k}\)</span>, que es el elemento que
+estará en la esquina <strong>inferior derecha</strong> de la
+matriz.</li>
+</ul>
+</div><div class="column" style="width:50%;">
+<table class="pd">
+<tbody>
+<tr>
+<th>
+</th>
+<th>
+0
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+<th>
+3
+</th>
+<th style="width:3em">
+…
+</th>
+<th>
+k
+</th>
+</tr>
+<tr>
+<th>
+0
+</th>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+…
+</td>
+<td>
+0
+</td>
+</tr>
+<tr>
+<th>
+1
+</th>
+<td>
+1
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+2
+</th>
+<td>
+1
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+3
+</th>
+<td>
+1
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr style="height:3em">
+<th>
+⁞
+</th>
+<td>
+⁞
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+n
+</th>
+<td>
+1
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td class="hl1">
+<span class="math inline">\(\binom{n}{k}\)</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="ejemplo-binom53" class="slide level2"
+data-transition="none-out">
+<h2 data-transition="none-out">Ejemplo: <span
+class="math inline">\(\binom{5}{3}\)</span></h2>
+<p>Comenzamos rellenando los casos base <span
+class="math inline">\(\binom{0}{k}\)</span> y <span
+class="math inline">\(\binom{n}{0}\)</span>:</p>
+<table class="pd">
+<tbody>
+<tr>
+<th>
+</th>
+<th>
+0
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+<th>
+3
+</th>
+</tr>
+<tr>
+<th>
+0
+</th>
+<td class="hl1">
+1
+</td>
+<td class="hl1">
+0
+</td>
+<td class="hl1">
+0
+</td>
+<td class="hl1">
+0
+</td>
+</tr>
+<tr>
+<th>
+1
+</th>
+<td class="hl1">
+1
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+2
+</th>
+<td class="hl1">
+1
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+3
+</th>
+<td class="hl1">
+1
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+4
+</th>
+<td class="hl1">
+1
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+5
+</th>
+<td class="hl1">
+1
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="ejemplo-binom53-1" class="slide level2"
+data-transition="none">
+<h2 data-transition="none">Ejemplo: <span
+class="math inline">\(\binom{5}{3}\)</span></h2>
+<p>Calculamos <span class="math inline">\(\binom{1}{1}\)</span> a partir
+de <span class="math inline">\(\binom{0}{0} + \binom{0}{1}\)</span>:</p>
+<table class="pd">
+<tbody>
+<tr>
+<th>
+</th>
+<th>
+0
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+<th>
+3
+</th>
+</tr>
+<tr>
+<th>
+0
+</th>
+<td class="hl2">
+1
+</td>
+<td class="hl2">
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+</tr>
+<tr>
+<th>
+1
+</th>
+<td>
+1
+</td>
+<td class="hl1">
+1
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+2
+</th>
+<td>
+1
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+3
+</th>
+<td>
+1
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+4
+</th>
+<td>
+1
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+5
+</th>
+<td>
+1
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="ejemplo-binom53-2" class="slide level2"
+data-transition="none">
+<h2 data-transition="none">Ejemplo: <span
+class="math inline">\(\binom{5}{3}\)</span></h2>
+<p>Calculamos <span class="math inline">\(\binom{1}{2}\)</span> a partir
+de <span class="math inline">\(\binom{0}{1} + \binom{0}{2}\)</span>:</p>
+<table class="pd">
+<tbody>
+<tr>
+<th>
+</th>
+<th>
+0
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+<th>
+3
+</th>
+</tr>
+<tr>
+<th>
+0
+</th>
+<td>
+1
+</td>
+<td class="hl2">
+0
+</td>
+<td class="hl2">
+0
+</td>
+<td>
+0
+</td>
+</tr>
+<tr>
+<th>
+1
+</th>
+<td>
+1
+</td>
+<td>
+1
+</td>
+<td class="hl1">
+0
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+2
+</th>
+<td>
+1
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+3
+</th>
+<td>
+1
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+4
+</th>
+<td>
+1
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+5
+</th>
+<td>
+1
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="ejemplo-binom53-3" class="slide level2"
+data-transition="none">
+<h2 data-transition="none">Ejemplo: <span
+class="math inline">\(\binom{5}{3}\)</span></h2>
+<p>Calculamos <span class="math inline">\(\binom{1}{3}\)</span> a partir
+de <span class="math inline">\(\binom{0}{2} + \binom{0}{3}\)</span>:</p>
+<table class="pd">
+<tbody>
+<tr>
+<th>
+</th>
+<th>
+0
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+<th>
+3
+</th>
+</tr>
+<tr>
+<th>
+0
+</th>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td class="hl2">
+0
+</td>
+<td class="hl2">
+0
+</td>
+</tr>
+<tr>
+<th>
+1
+</th>
+<td>
+1
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td class="hl1">
+0
+</td>
+</tr>
+<tr>
+<th>
+2
+</th>
+<td>
+1
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+3
+</th>
+<td>
+1
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+4
+</th>
+<td>
+1
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+5
+</th>
+<td>
+1
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="ejemplo-binom53-4" class="slide level2"
+data-transition="none">
+<h2 data-transition="none">Ejemplo: <span
+class="math inline">\(\binom{5}{3}\)</span></h2>
+<p>Calculamos <span class="math inline">\(\binom{2}{1}\)</span> a partir
+de <span class="math inline">\(\binom{1}{0} + \binom{1}{1}\)</span>:</p>
+<table class="pd">
+<tbody>
+<tr>
+<th>
+</th>
+<th>
+0
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+<th>
+3
+</th>
+</tr>
+<tr>
+<th>
+0
+</th>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+</tr>
+<tr>
+<th>
+1
+</th>
+<td class="hl2">
+1
+</td>
+<td class="hl2">
+1
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+</tr>
+<tr>
+<th>
+2
+</th>
+<td>
+1
+</td>
+<td class="hl1">
+2
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+3
+</th>
+<td>
+1
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+4
+</th>
+<td>
+1
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+5
+</th>
+<td>
+1
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="ejemplo-binom53-5" class="slide level2"
+data-transition="none">
+<h2 data-transition="none">Ejemplo: <span
+class="math inline">\(\binom{5}{3}\)</span></h2>
+<p>Calculamos <span class="math inline">\(\binom{2}{2}\)</span> a partir
+de <span class="math inline">\(\binom{1}{1} + \binom{1}{2}\)</span>:</p>
+<table class="pd">
+<tbody>
+<tr>
+<th>
+</th>
+<th>
+0
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+<th>
+3
+</th>
+</tr>
+<tr>
+<th>
+0
+</th>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+</tr>
+<tr>
+<th>
+1
+</th>
+<td>
+1
+</td>
+<td class="hl2">
+1
+</td>
+<td class="hl2">
+0
+</td>
+<td>
+0
+</td>
+</tr>
+<tr>
+<th>
+2
+</th>
+<td>
+1
+</td>
+<td>
+2
+</td>
+<td class="hl1">
+1
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+3
+</th>
+<td>
+1
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+4
+</th>
+<td>
+1
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+5
+</th>
+<td>
+1
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="ejemplo-binom53-6" class="slide level2"
+data-transition="none">
+<h2 data-transition="none">Ejemplo: <span
+class="math inline">\(\binom{5}{3}\)</span></h2>
+<p>Calculamos <span class="math inline">\(\binom{2}{3}\)</span> a partir
+de <span class="math inline">\(\binom{1}{2} + \binom{1}{3}\)</span>:</p>
+<table class="pd">
+<tbody>
+<tr>
+<th>
+</th>
+<th>
+0
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+<th>
+3
+</th>
+</tr>
+<tr>
+<th>
+0
+</th>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+</tr>
+<tr>
+<th>
+1
+</th>
+<td>
+1
+</td>
+<td>
+1
+</td>
+<td class="hl2">
+0
+</td>
+<td class="hl2">
+0
+</td>
+</tr>
+<tr>
+<th>
+2
+</th>
+<td>
+1
+</td>
+<td>
+2
+</td>
+<td>
+1
+</td>
+<td class="hl1">
+0
+</td>
+</tr>
+<tr>
+<th>
+3
+</th>
+<td>
+1
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+4
+</th>
+<td>
+1
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+5
+</th>
+<td>
+1
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="ejemplo-binom53-7" class="slide level2"
+data-transition="none">
+<h2 data-transition="none">Ejemplo: <span
+class="math inline">\(\binom{5}{3}\)</span></h2>
+<p>Seguimos con fila 3:</p>
+<table class="pd">
+<tbody>
+<tr>
+<th>
+</th>
+<th>
+0
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+<th>
+3
+</th>
+</tr>
+<tr>
+<th>
+0
+</th>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+</tr>
+<tr>
+<th>
+1
+</th>
+<td>
+1
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+</tr>
+<tr>
+<th>
+2
+</th>
+<td>
+1
+</td>
+<td>
+2
+</td>
+<td class="hl2">
+1
+</td>
+<td class="hl2">
+0
+</td>
+</tr>
+<tr>
+<th>
+3
+</th>
+<td>
+1
+</td>
+<td>
+3
+</td>
+<td>
+3
+</td>
+<td class="hl1">
+1
+</td>
+</tr>
+<tr>
+<th>
+4
+</th>
+<td>
+1
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+5
+</th>
+<td>
+1
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="ejemplo-binom53-8" class="slide level2"
+data-transition="none">
+<h2 data-transition="none">Ejemplo: <span
+class="math inline">\(\binom{5}{3}\)</span></h2>
+<p>Seguimos con fila 4:</p>
+<table class="pd">
+<tbody>
+<tr>
+<th>
+</th>
+<th>
+0
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+<th>
+3
+</th>
+</tr>
+<tr>
+<th>
+0
+</th>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+</tr>
+<tr>
+<th>
+1
+</th>
+<td>
+1
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+</tr>
+<tr>
+<th>
+2
+</th>
+<td>
+1
+</td>
+<td>
+2
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+</tr>
+<tr>
+<th>
+3
+</th>
+<td>
+1
+</td>
+<td>
+3
+</td>
+<td class="hl2">
+3
+</td>
+<td class="hl2">
+1
+</td>
+</tr>
+<tr>
+<th>
+4
+</th>
+<td>
+1
+</td>
+<td>
+4
+</td>
+<td>
+6
+</td>
+<td class="hl1">
+4
+</td>
+</tr>
+<tr>
+<th>
+5
+</th>
+<td>
+1
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="ejemplo-binom53-9" class="slide level2"
+data-transition="none-in">
+<h2 data-transition="none-in">Ejemplo: <span
+class="math inline">\(\binom{5}{3}\)</span></h2>
+<p>Seguimos con fila 5:</p>
+<table class="pd">
+<tbody>
+<tr>
+<th>
+</th>
+<th>
+0
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+<th>
+3
+</th>
+</tr>
+<tr>
+<th>
+0
+</th>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+</tr>
+<tr>
+<th>
+1
+</th>
+<td>
+1
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+</tr>
+<tr>
+<th>
+2
+</th>
+<td>
+1
+</td>
+<td>
+2
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+</tr>
+<tr>
+<th>
+3
+</th>
+<td>
+1
+</td>
+<td>
+3
+</td>
+<td>
+3
+</td>
+<td>
+1
+</td>
+</tr>
+<tr>
+<th>
+4
+</th>
+<td>
+1
+</td>
+<td>
+4
+</td>
+<td>
+6
+</td>
+<td>
+4
+</td>
+</tr>
+<tr>
+<th>
+5
+</th>
+<td>
+1
+</td>
+<td>
+5
+</td>
+<td>
+10
+</td>
+<td class="hl1">
+<strong>10</strong>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Devolvemos <span class="color_tema"><strong>10</strong></span> como
+resultado.</p>
+</section>
+<section id="implementación-en-c" class="slide level2">
+<h2>Implementación en C++</h2>
+<div class="cpp cpp_block" style="font-size:65%">
+<p><span class="type">int</span> comb_pd_asc(<span
+class="type">int</span> n, <span class="type">int</span> k)
+{  <br>  matriz&lt;<span class="type">int</span>&gt; tabla =
+crear_matriz(n + <span class="number">1</span>, k + <span
+class="number">1</span>, -<span
+class="number">1</span>);<br>  <br>  tabla[<span
+class="number">0</span>][<span class="number">0</span>] = <span
+class="number">1</span>;                  <br>  <strong>for</strong>
+(<span class="type">int</span> j = <span class="number">1</span>; j
+&lt;= k; j++) {                             <span
+class="arrow_box_left">Rellenamos primera fila</span><br>    tabla[<span
+class="number">0</span>][j] = <span
+class="number">0</span>;<br>  }<br><br>  <strong>for</strong> (<span
+class="type">int</span> i = <span class="number">1</span>; i &lt;= n;
+i++) {                             <span
+class="arrow_box_left">Rellenamos filas
+restantes</span><br>    tabla[i][<span class="number">0</span>] = <span
+class="number">1</span>;                                         <span
+class="arrow_box_left">Primera columna de la
+fila</span><br>    <strong>for</strong> (<span class="type">int</span> j
+= <span class="number">1</span>; j &lt;= k; j++) {<br>      tabla[i][j]
+= tabla[i-<span class="number">1</span>][j-<span
+class="number">1</span>] + tabla[i-<span
+class="number">1</span>][j];         <span
+class="arrow_box_left">Columnas restantes de la
+fila</span><br>    }<br>  }<br><br>  <strong>return</strong>
+tabla[n][k];                                   <span
+class="arrow_box_left">Devolvemos esquina inferior
+derecha</span><br>}<br></p>
+</div>
+<p>Coste en espacio y tiempo: <span class="color_tema"><span
+class="math inline">\(\Theta(nk)\)</span></span></p>
+</section>
+<section id="optimización-de-espacio-2"
+class="slide level2 subsection center">
+<h2 class="subsection center">Optimización de espacio</h2>
+</section>
+<section id="optimización-de-espacio-3" class="slide level2">
+<h2>Optimización de espacio</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p>Hemos visto que cada fila se calcula exclusivamente a partir de la
+anterior:</p>
+<table class="pd">
+<tbody>
+<tr>
+<th>
+</th>
+<th>
+0
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+<th>
+3
+</th>
+</tr>
+<tr>
+<th>
+0
+</th>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+</tr>
+<tr>
+<th>
+1
+</th>
+<td>
+1
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+</tr>
+<tr>
+<th>
+2
+</th>
+<td>
+1
+</td>
+<td>
+2
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+</tr>
+<tr>
+<th>
+3
+</th>
+<td class="hl2">
+1
+</td>
+<td class="hl2">
+3
+</td>
+<td class="hl2">
+3
+</td>
+<td class="hl2">
+1
+</td>
+</tr>
+<tr>
+<th>
+4
+</th>
+<td class="hl1">
+ 
+</td>
+<td class="hl1">
+ 
+</td>
+<td class="hl1">
+ 
+</td>
+<td class="hl1">
+ 
+</td>
+</tr>
+<tr>
+<th>
+5
+</th>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+</tbody>
+</table>
+</div><div class="column fragment" style="width:50%;">
+<p>Podemos sustituir la matriz por <strong>dos vectores</strong>:</p>
+<ul>
+<li class="fragment">Uno que contiene la última fila calculada:
+<table class="pd">
+<tbody>
+<tr>
+<th>
+</th>
+<th>
+0
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+<th>
+3
+</th>
+</tr>
+<tr>
+<th>
+actual:
+</th>
+<td class="hl2" style="border-left: 3px solid black">
+1
+</td>
+<td class="hl2" style="border-left: 1px solid black">
+3
+</td>
+<td class="hl2">
+3
+</td>
+<td class="hl2">
+1
+</td>
+</tr>
+</tbody>
+</table></li>
+<li class="fragment">Y otro que contiene la siguiente fila en la matriz:
+<table class="pd">
+<tbody>
+<tr>
+<th>
+</th>
+<th>
+0
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+<th>
+3
+</th>
+</tr>
+<tr>
+<th>
+siguiente:
+</th>
+<td class="hl1 fragment" style="border-left: 3px solid black">
+1
+</td>
+<td class="hl1 fragment" style="border-left: 1px solid black">
+4
+</td>
+<td class="hl1 fragment">
+6
+</td>
+<td class="hl1 fragment">
+4
+</td>
+</tr>
+</tbody>
+</table></li>
+</ul>
+</div>
+</div>
+</section>
+<section id="optimización-de-espacio-4" class="slide level2">
+<h2>Optimización de espacio</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<table class="pd">
+<tbody>
+<tr>
+<th>
+</th>
+<th>
+0
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+<th>
+3
+</th>
+</tr>
+<tr>
+<th>
+0
+</th>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+</tr>
+<tr>
+<th>
+1
+</th>
+<td>
+1
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+</tr>
+<tr>
+<th>
+2
+</th>
+<td>
+1
+</td>
+<td>
+2
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+</tr>
+<tr>
+<th>
+3
+</th>
+<td>
+1
+</td>
+<td>
+3
+</td>
+<td>
+3
+</td>
+<td>
+1
+</td>
+</tr>
+<tr>
+<th>
+4
+</th>
+<td class="hl2">
+1
+</td>
+<td class="hl2">
+4
+</td>
+<td class="hl2">
+6
+</td>
+<td class="hl2">
+4
+</td>
+</tr>
+<tr>
+<th>
+5
+</th>
+<td data-fragment-index="5" class="fragment hl1">
+1
+</td>
+<td data-fragment-index="5" class="fragment hl1">
+5
+</td>
+<td data-fragment-index="5" class="fragment hl1">
+10
+</td>
+<td data-fragment-index="5" class="fragment hl1">
+10
+</td>
+</tr>
+</tbody>
+</table>
+</div><div class="column" style="width:50%;">
+<p>En la siguiente iteración, la fila <code>siguiente</code> pasa a ser
+la <code>actual</code>:</p>
+<table class="pd">
+<tbody>
+<tr>
+<th>
+</th>
+<th>
+0
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+<th>
+3
+</th>
+</tr>
+<tr>
+<th>
+actual:
+</th>
+<td class="hl2" style="border-left: 3px solid black">
+1
+</td>
+<td class="hl2" style="border-left: 1px solid black">
+4
+</td>
+<td class="hl2">
+6
+</td>
+<td class="hl2">
+4
+</td>
+</tr>
+</tbody>
+</table>
+<p>Y la fila <code>siguiente</code> se calcula a partir de esta:</p>
+<table class="pd">
+<tbody>
+<tr>
+<th>
+</th>
+<th>
+0
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+<th>
+3
+</th>
+</tr>
+<tr>
+<th>
+siguiente:
+</th>
+<td data-fragment-index="1" class="hl1 fragment" style="border-left: 3px solid black">
+1
+</td>
+<td data-fragment-index="2" class="hl1 fragment" style="border-left: 1px solid black">
+5
+</td>
+<td data-fragment-index="3" class="hl1 fragment">
+10
+</td>
+<td data-fragment-index="4" class="hl1 fragment">
+10
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="optimización-de-espacio-5" class="slide level2">
+<h2>Optimización de espacio</h2>
+<ul>
+<li><p>De hecho, con <strong>un solo vector</strong> es
+suficiente.</p></li>
+<li><p>En lugar de calcular el vector <code>siguiente</code> a partir
+del vector <code>actual</code>, tenemos solamente un vector
+<code>actual</code>.</p></li>
+<li><p>Para calcular la siguiente fila, <strong>sobreescribimos</strong>
+el vector <code>actual</code> con los valores de la fila
+siguiente.</p></li>
+</ul>
+<div class="info_box fragment">
+<p>⚠️ Hemos de rellenar cada fila de <strong>derecha a
+izquierda</strong></p>
+</div>
+</section>
+<section id="ejemplo" class="slide level2">
+<h2>Ejemplo</h2>
+<p>Supongamos que hemos calculado la fila 4 en la tabla de <span
+class="math inline">\(\binom{3}{5}\)</span>.</p>
+<table class="pd">
+<tbody>
+<tr>
+<th>
+</th>
+<th>
+0
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+<th>
+3
+</th>
+</tr>
+<tr>
+<th>
+actual:
+</th>
+<td class="hl2" style="border-left: 3px solid black">
+1
+</td>
+<td class="hl2" style="border-left: 1px solid black">
+4
+</td>
+<td class="hl2">
+6
+</td>
+<td class="hl2">
+4
+</td>
+</tr>
+</tbody>
+</table>
+<div class="fragment">
+<p>Sobreescribimos <code>actual[3]</code> sumando
+<code>actual[2] + actual[3]</code>:</p>
+<table class="pd">
+<tbody>
+<tr>
+<th>
+</th>
+<th>
+0
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+<th>
+3
+</th>
+</tr>
+<tr>
+<th>
+actual:
+</th>
+<td class="hl2" style="border-left: 3px solid black">
+1
+</td>
+<td class="hl2" style="border-left: 1px solid black">
+4
+</td>
+<td class="hl2">
+6
+</td>
+<td class="hl1">
+10
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="fragment">
+<p>Sobreescribimos <code>actual[2]</code> sumando
+<code>actual[1] + actual[2]</code>:</p>
+<table class="pd">
+<tbody>
+<tr>
+<th>
+</th>
+<th>
+0
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+<th>
+3
+</th>
+</tr>
+<tr>
+<th>
+actual:
+</th>
+<td class="hl2" style="border-left: 3px solid black">
+1
+</td>
+<td class="hl2" style="border-left: 1px solid black">
+4
+</td>
+<td class="hl1">
+10
+</td>
+<td class="hl1">
+10
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="ejemplo-1" class="slide level2">
+<h2>Ejemplo</h2>
+<table class="pd">
+<tbody>
+<tr>
+<th>
+</th>
+<th>
+0
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+<th>
+3
+</th>
+</tr>
+<tr>
+<th>
+actual:
+</th>
+<td class="hl2" style="border-left: 3px solid black">
+1
+</td>
+<td class="hl2" style="border-left: 1px solid black">
+4
+</td>
+<td class="hl1">
+10
+</td>
+<td class="hl1">
+10
+</td>
+</tr>
+</tbody>
+</table>
+<div class="fragment">
+<p>Sobreescribimos <code>actual[1]</code> sumando
+<code>actual[0] + actual[1]</code>:</p>
+<table class="pd">
+<tbody>
+<tr>
+<th>
+</th>
+<th>
+0
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+<th>
+3
+</th>
+</tr>
+<tr>
+<th>
+actual:
+</th>
+<td class="hl2" style="border-left: 3px solid black">
+1
+</td>
+<td class="hl1" style="border-left: 1px solid black">
+5
+</td>
+<td class="hl1">
+10
+</td>
+<td class="hl1">
+10
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="fragment">
+<p>No hace falta sobreescribir el valor de <code>actual[0]</code>,
+porque es el mismo en todas las filas:</p>
+<table class="pd">
+<tbody>
+<tr>
+<th>
+</th>
+<th>
+0
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+<th>
+3
+</th>
+</tr>
+<tr>
+<th>
+actual:
+</th>
+<td class="hl1" style="border-left: 3px solid black">
+1
+</td>
+<td class="hl1" style="border-left: 1px solid black">
+5
+</td>
+<td class="hl1">
+10
+</td>
+<td class="hl1">
+10
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="implementación-en-c-1" class="slide level2">
+<h2>Implementación en C++</h2>
+<div class="cpp cpp_block">
+<p><span class="type">int</span> comb_pd_asc_optimizacion(<span
+class="type">int</span> n, <span class="type">int</span> k)
+{  <br>  <span class="type">vector</span>&lt;<span
+class="type">int</span>&gt; actual = <span
+class="type">vector</span>&lt;<span class="type">int</span>&gt;(k +
+<span class="number">1</span>, <span class="number">0</span>);     <span
+class="arrow_box_left">Calculamos fila 0 = [1, 0, 0, ...,
+0]</span><br>  actual[<span class="number">0</span>] = <span
+class="number">1</span>;<br><br>  <strong>for</strong> (<span
+class="type">int</span> i = <span class="number">1</span>; i &lt;= n;
+i++) {<br>    <strong>for</strong> (<span class="type">int</span> j = k;
+j &gt;= <span class="number">1</span>; j--) {<br>      actual[j] =
+actual[j-<span class="number">1</span>] + actual[j];   <span
+class="arrow_box_left">Calculamos fila <code>i</code> a partir de
+<code>i-1</code></span><br>    }<br>  }<br>  <span class="comment">//
+Tras el bucle, 'actual' contiene los elementos de la última fila de
+la</span><br>  <span class="comment">// matriz de programación
+dinámica.</span><br>  <strong>return</strong> actual[k];     <br>}</p>
+</div>
+<div class="fragment">
+<p>Coste en espacio: <span class="color_tema"><span
+class="math inline">\(\Theta(k)\)</span></span></p>
+<p>Coste en tiempo: <span class="color_tema"><span
+class="math inline">\(\Theta(nk)\)</span></span></p>
+</div>
+</section></section>
+<section>
+<section id="el-problema-del-cambio-de-monedas"
+class="title-slide slide level1 center"
+data-background-image="img/CyanBackground.png">
+<h1 class="center" data-background-image="img/CyanBackground.png"><span
+class="sc_number">5.3</span>El problema del cambio de monedas</h1>
+
+</section>
+<section id="descripción-del-problema-3" class="slide level2">
+<h2>Descripción del problema</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<ul>
+<li><p>Tenemos varios tipos de moneda, cada uno con un valor.</p></li>
+<li><p>Disponemos de una cantidad ilimitada de monedas de cada
+tipo.</p></li>
+<li><p>Queremos pagar una cantidad <span
+class="math inline">\(c\)</span> utilizando estas monedas.</p></li>
+</ul>
+</div><div class="column" style="width:50%;">
+<p><img data-src="Tema5/Monedas.svg" style="width:100.0%" /></p>
+</div>
+</div>
+<div class="fragment" style="text-align:center">
+<p><span class="color_tema"><em>¿Cómo puedo pagar la cantidad <span
+class="math inline">\(c\)</span> utilizando el <strong>mínimo</strong>
+número de monedas?</em></span></p>
+</div>
+</section>
+<section id="descripción-del-problema-4" class="slide level2">
+<h2>Descripción del problema</h2>
+<ul>
+<li><p>Tenemos <span class="math inline">\(n\)</span> tipos distintos de
+moneda.</p></li>
+<li><p>Tenemos un vector <span class="math inline">\(V[0..n)\)</span>,
+donde <span class="math inline">\(V[i]\)</span> indica el valor de cada
+moneda de tipo <span class="math inline">\(i\)</span>.</p></li>
+<li><p>Tenemos que pagar una cantidad <span
+class="math inline">\(c\)</span>.</p></li>
+</ul>
+<div class="fragment">
+<p>Debemos calcular:</p>
+<ul>
+<li><span class="math inline">\(\mathit{monedas}(c) \equiv\)</span>
+mínimo número de monedas que necesitamos para pagar la cantidad <span
+class="math inline">\(c\)</span>, suponiendo que disponemos de los <span
+class="math inline">\(n\)</span> tipos de moneda.</li>
+</ul>
+</div>
+</section>
+<section id="ejemplo-2" class="slide level2">
+<h2>Ejemplo</h2>
+<p>Suponemos que <span class="math inline">\(V = [1, 4, 6]\)</span>.</p>
+<div style="text-align:center">
+<p><span class="math inline">\(\mathit{monedas}(5) =\)</span> <span
+class="color_tema fragment"><span
+class="math inline">\(2\)</span></span><br/><span
+class="fragment color_tema">(una moneda de valor 1, una moneda de valor
+4)</span></p>
+</div>
+<div style="text-align:center">
+<p><span class="math inline">\(\mathit{monedas}(9) =\)</span> <span
+class="color_tema fragment"><span
+class="math inline">\(3\)</span></span><br/><span
+class="fragment color_tema">(dos monedas de valor 4, una de valor
+1)</span></p>
+</div>
+<div style="text-align:center">
+<p><span class="math inline">\(\mathit{monedas}(12) =\)</span> <span
+class="color_tema fragment"><span
+class="math inline">\(2\)</span></span><br/><span
+class="fragment color_tema">(dos monedas de valor 6)</span></p>
+</div>
+</section>
+<section id="generalización-del-problema" class="slide level2">
+<h2>Generalización del problema</h2>
+<p>Dados <span class="math inline">\(i, j\)</span> tal que <span
+class="math inline">\(0 \leq i \leq c\)</span> y <span
+class="math inline">\(0 \leq j \leq n\)</span>:</p>
+<div style="display:flex;justify-content:center">
+<div style="width:30%">
+<p><span class="color_tema"><span
+class="math inline">\(\mathit{monedasGen}(i, j)\)</span></span>   <span
+class="math inline">\(\equiv\)</span></p>
+</div>
+<div style="width:60%">
+<p>mínimo número de monedas que necesitamos para pagar la cantidad <span
+class="math inline">\(j\)</span>, utilizando solamente las monedas de
+tipos <span class="math inline">\(0, \ldots, i - 1\)</span>.</p>
+</div>
+</div>
+<div class="fragment">
+<p>Si <span class="math inline">\(V[0..n)\)</span> es nuestro vector de
+monedas recibido como entrada:</p>
+<p><span class="math display">\[
+\mathit{monedas}(c) = \mathit{monedasGen}(n, c)
+\]</span></p>
+</div>
+<div class="fragment">
+<div class="info_box">
+<p>Podemos definir <span
+class="math inline">\(\mathit{monedasGen}\)</span> de manera
+recursiva</p>
+</div>
+</div>
+</section>
+<section id="casos-base" class="slide level2">
+<h2>Casos base</h2>
+<div
+style="display:flex;justify-content:center;background-color:#E0F0FF;margin-bottom:1em">
+<div style="width:30%">
+<p><span class="color_tema"><span
+class="math inline">\(\mathit{monedasGen}(i, j)\)</span></span>   <span
+class="math inline">\(\equiv\)</span></p>
+</div>
+<div style="width:60%">
+<p>mínimo número de monedas que necesitamos para pagar la cantidad <span
+class="math inline">\(j\)</span>, utilizando solamente las monedas de
+tipos <span class="math inline">\(0, \ldots, i - 1\)</span>.</p>
+</div>
+</div>
+<div class="fragment">
+<ul>
+<li><strong>Caso base 1.</strong> <span class="math inline">\(j =
+0\)</span>. No necesitamos monedas para pagar la cantidad 0.</li>
+</ul>
+<p><span class="fragment"><span class="math display">\[
+\mathit{monedasGen}(i, 0) = 0
+\]</span></span></p>
+</div>
+<div class="fragment">
+<ul>
+<li><strong>Caso base 2.</strong> <span class="math inline">\(j &gt;
+0\)</span>, <span class="math inline">\(i = 0\)</span>. Tenemos que
+pagar una cantidad positiva, pero no podemos utilizar ninguna
+moneda.</li>
+</ul>
+<p><span class="fragment"><span class="math display">\[
+\mathit{monedasGen}(0, j) = \texttt{IMPOSIBLE} \qquad \text{si } j &gt;
+0
+\]</span></span></p>
+</div>
+</section>
+<section id="caso-recursivo" class="slide level2">
+<h2>Caso recursivo</h2>
+<div
+style="display:flex;justify-content:center;background-color:#E0F0FF;margin-bottom:1em">
+<div style="width:30%">
+<p><span class="color_tema"><span
+class="math inline">\(\mathit{monedasGen}(i, j)\)</span></span>   <span
+class="math inline">\(\equiv\)</span></p>
+</div>
+<div style="width:60%">
+<p>mínimo número de monedas que necesitamos para pagar la cantidad <span
+class="math inline">\(j\)</span>, utilizando solamente las monedas de
+tipos <span class="math inline">\(0, \ldots, i - 1\)</span>.</p>
+</div>
+</div>
+<p>Suponemos <span class="math inline">\(i &gt; 0\)</span>, <span
+class="math inline">\(j &gt; 0\)</span>. Existen dos posibilidades:</p>
+<ul>
+<li class="fragment"><strong>Posibilidad 1</strong>. No utilizar monedas
+de tipo <span class="math inline">\(i - 1\)</span>.
+<ul>
+<li class="fragment">En ese caso tenemos que pagar la cantidad <span
+class="math inline">\(j\)</span> utilizando solamente monedas de tipos
+<span class="math inline">\(0, \ldots, i - 2\)</span>. La cantidad de
+monedas mínima necesaria sería <span class="color_tema"><span
+class="math inline">\(\mathit{monedasGen}(i - 1,
+j)\)</span></span>.</li>
+</ul></li>
+<li class="fragment"><strong>Posibilidad 2</strong>. Utilizar, al menos,
+una moneda de tipo <span class="math inline">\(i - 1\)</span>.
+<ul>
+<li class="fragment">En ese caso, nos queda por pagar la cantidad <span
+class="math inline">\(j - V[i-1]\)</span>, posiblemente utilizando más
+monedas de tipo <span class="math inline">\(i - 1\)</span>. Si para ello
+se requieren <span class="math inline">\(\mathit{monedasGen}(i, j -
+V[i-1])\)</span>, entonces hemos necesitado <span
+class="color_tema"><span class="math inline">\(1 +
+\mathit{monedasGen}(i, j - V[i-1])\)</span></span>.</li>
+</ul></li>
+</ul>
+</section>
+<section id="caso-recursivo-1" class="slide level2">
+<h2>Caso recursivo</h2>
+<div
+style="display:flex;justify-content:center;background-color:#E0F0FF;margin-bottom:1em">
+<div style="width:30%">
+<p><span class="color_tema"><span
+class="math inline">\(\mathit{monedasGen}(i, j)\)</span></span>   <span
+class="math inline">\(\equiv\)</span></p>
+</div>
+<div style="width:60%">
+<p>mínimo número de monedas que necesitamos para pagar la cantidad <span
+class="math inline">\(j\)</span>, utilizando solamente las monedas de
+tipos <span class="math inline">\(0, \ldots, i - 1\)</span>.</p>
+</div>
+</div>
+<p>Entre las dos posibilidades, escogemos aquella con la que obtengamos
+menor número de monedas.</p>
+<p><span class="math display">\[
+\mathit{monedasGen}(i, j) = \min \left\{ \begin{array}{ll}
+\mathit{monedasGen}(i - 1, j), \\
+1 + \mathit{monedasGen}(i, j - V[i-1])
+\end{array}\right\} \qquad \text{si }i, j &gt; 0
+\]</span></p>
+<div class="fragment">
+<p>⚠️ Si <span class="math inline">\(j &lt; V[i-1]\)</span>, entonces
+solo podemos aplicar la Posibilidad 1.</p>
+</div>
+<div class="fragment">
+<p>⚠️ Si alguna de las llamadas recursivas a <span
+class="math inline">\(\mathit{monedasGen}\)</span> devuelve
+<code>IMPOSIBLE</code>, entonces ha de descartarse a la hora de calcular
+el mínimo. Por tanto, reemplazamos el valor <code>IMPOSIBLE</code> por
+<span class="color_tema"><span
+class="math inline">\(+\infty\)</span></span>.</p>
+</div>
+</section>
+<section id="definición-de-mathitmonedasgen" class="slide level2">
+<h2>Definición de <span
+class="math inline">\(\mathit{monedasGen}\)</span></h2>
+<div
+style="display:flex;justify-content:center;background-color:#E0F0FF;margin-bottom:1em">
+<div style="width:30%">
+<p><span class="color_tema"><span
+class="math inline">\(\mathit{monedasGen}(i, j)\)</span></span>   <span
+class="math inline">\(\equiv\)</span></p>
+</div>
+<div style="width:60%">
+<p>mínimo número de monedas que necesitamos para pagar la cantidad <span
+class="math inline">\(j\)</span>, utilizando solamente las monedas de
+tipos <span class="math inline">\(0, \ldots, i - 1\)</span>.</p>
+</div>
+</div>
+<p><span class="math display">\[
+\small\begin{array}{rcll}
+\mathit{monedasGen}(i, 0) &amp; = &amp; 0 \\[0.5em]
+\mathit{monedasGen}(0, j) &amp; = &amp; +\infty \qquad \text{si } j &gt;
+0 \\[0.5em]
+\mathit{monedasGen}(i, j) &amp; = &amp; \mathit{monedasGen}(i - 1, j)
+\quad \text{si } i, j &gt; 0 \wedge j &lt; V[i-1] \\[0.5em]
+\mathit{monedasGen}(i, j) &amp; = &amp; \min \left\{
+\begin{array}{l}
+\mathit{monedasGen}(i - 1, j),\\
+1 + \mathit{monedasGen}(i, j - V[i-1])\\
+\end{array} \right\} \quad \text{ en otro caso } \\
+\end{array}
+\]</span></p>
+</section>
+<section id="programación-dinámica-ascendente-2"
+class="slide level2 subsection center">
+<h2 class="subsection center">Programación dinámica ascendente</h2>
+</section>
+<section id="estructura-de-la-matriz" class="slide level2">
+<h2>Estructura de la matriz</h2>
+<ul>
+<li><p>Tenemos que almacenar los valores parciales de <span
+class="math inline">\(\mathit{monedasGen}(i, j)\)</span> para <span
+class="math inline">\(0 \leq i \leq n\)</span> y <span
+class="math inline">\(0 \leq j \leq c\)</span>.</p></li>
+<li><p>Por tanto, necesitamos una matriz de tamaño <span
+class="math inline">\((n + 1) \times (c + 1)\)</span>.</p></li>
+</ul>
+<table class="pd">
+<tbody>
+<tr>
+<th>
+</th>
+<th>
+0
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+<th style="width:3em">
+…
+</th>
+<th>
+c
+</th>
+</tr>
+<tr>
+<th>
+0
+</th>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+…
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+1
+</th>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+…
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr style="height:3em">
+<th>
+⁞
+</th>
+<td>
+⁞
+</td>
+<td>
+⁞
+</td>
+<td>
+⁞
+</td>
+<td>
+⋱
+</td>
+<td>
+⁞
+</td>
+</tr>
+<tr>
+<th>
+n
+</th>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+…
+</td>
+<td class="hl2">
+ 
+</td>
+</tr>
+</tbody>
+</table>
+<p>La solución al problema es el valor de la celda <span
+class="math inline">\((n, c)\)</span>.</p>
+</section>
+<section id="estructura-de-la-matriz-casos-base" class="slide level2">
+<h2>Estructura de la matriz: casos base</h2>
+<table class="pd">
+<tbody>
+<tr>
+<th>
+</th>
+<th>
+0
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+<th style="width:3em">
+…
+</th>
+<th>
+c
+</th>
+</tr>
+<tr>
+<th>
+0
+</th>
+<td class="hl1">
+0
+</td>
+<td class="hl1">
++∞
+</td>
+<td class="hl1">
++∞
+</td>
+<td class="hl1">
+…
+</td>
+<td class="hl1">
++∞
+</td>
+</tr>
+<tr>
+<th>
+1
+</th>
+<td class="hl1">
+0
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+…
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr style="height:3em">
+<th>
+⁞
+</th>
+<td class="hl1">
+⁞
+</td>
+<td>
+⁞
+</td>
+<td>
+⁞
+</td>
+<td>
+⋱
+</td>
+<td>
+⁞
+</td>
+</tr>
+<tr>
+<th>
+n
+</th>
+<td class="hl1">
+0
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+…
+</td>
+<td>
+ 
+</td>
+</tr>
+</tbody>
+</table>
+<p><span class="math display">\[
+\small\begin{array}{rcll}
+\mathit{monedasGen}(i, 0) &amp; = &amp; 0 \\[0.5em]
+\mathit{monedasGen}(0, j) &amp; = &amp; +\infty \qquad \text{si } j &gt;
+0
+\end{array}
+\]</span></p>
+</section>
+<section id="estructura-de-la-matriz-casos-recursivos"
+class="slide level2">
+<h2>Estructura de la matriz: casos recursivos</h2>
+<table class="pd">
+<tbody>
+<tr>
+<th>
+</th>
+<th>
+0
+</th>
+<th>
+…
+</th>
+<th>
+…
+</th>
+<th>
+…
+</th>
+<th>
+…
+</th>
+<th>
+…
+</th>
+<th>
+c
+</th>
+</tr>
+<tr>
+<th>
+0
+</th>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+⁞
+</th>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+⁞
+</th>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td class="hl2 fragment" style="font-size:70%">
+<span class="math inline">\((i - 1, j)\)</span>
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+⁞
+</th>
+<td>
+ 
+</td>
+<td class="hl2 fragment" style="font-size:70%">
+<span class="math inline">\((i, j - V[i-1])\)</span>
+</td>
+<td>
+…
+</td>
+<td>
+…
+</td>
+<td class="hl1" style="font-size:70%">
+<span class="math inline">\((i, j)\)</span>
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+⁞
+</th>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+n
+</th>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+</tbody>
+</table>
+<p><span class="math display">\[
+\small\begin{array}{rcll}
+\mathit{monedasGen}(i, j) &amp; = &amp; \min \left\{
+\begin{array}{l}
+\mathit{monedasGen}(i - 1, j),\\
+1 + \mathit{monedasGen}(i, j - V[i-1])\\
+\end{array} \right\}\\
+\end{array}
+\]</span></p>
+<div class="fragment">
+<p>Para calcular una celda <span class="math inline">\((i,j)\)</span>,
+debemos haber calculado previamente la celda de la fila superior, y la
+celda <span class="math inline">\((i, j - V[i-1])\)</span> situada a su
+izquierda.</p>
+</div>
+</section>
+<section id="rellenado-de-la-matriz" class="slide level2">
+<h2>Rellenado de la matriz</h2>
+<table class="pd">
+<tbody>
+<tr>
+<th>
+</th>
+<th>
+0
+</th>
+<th>
+…
+</th>
+<th>
+…
+</th>
+<th>
+…
+</th>
+<th>
+…
+</th>
+<th>
+…
+</th>
+<th>
+c
+</th>
+</tr>
+<tr>
+<th>
+0
+</th>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+⁞
+</th>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+⁞
+</th>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td class="hl1" style="font-size:70%">
+<span class="math inline">\((i - 1, j)\)</span>
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+⁞
+</th>
+<td>
+ 
+</td>
+<td class="hl1" style="font-size:70%">
+<span class="math inline">\((i, j - V[i-1])\)</span>
+</td>
+<td>
+…
+</td>
+<td>
+…
+</td>
+<td class="hl2" style="font-size:70%">
+<span class="math inline">\((i, j)\)</span>
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+⁞
+</th>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+n
+</th>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+</tbody>
+</table>
+<p> </p>
+<div class="info_box">
+<p>Hemos de rellenar la matriz por filas, desde la fila <code>0</code>
+hasta la fila <code>n</code>. Cada fila se rellena de izquierda a
+derecha.</p>
+</div>
+</section>
+<section id="ejemplo-3" class="slide level2"
+data-transition="slide-in none-out">
+<h2 data-transition="slide-in none-out">Ejemplo</h2>
+<p>Supongamos que <span class="math inline">\(V = [1, 4, 6]\)</span> y
+que <span class="math inline">\(c = 9\)</span>:</p>
+<table class="pd">
+<tbody>
+<tr>
+<th>
+</th>
+<th>
+0
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+<th>
+3
+</th>
+<th>
+4
+</th>
+<th>
+5
+</th>
+<th>
+6
+</th>
+<th>
+7
+</th>
+<th>
+8
+</th>
+<th>
+9
+</th>
+</tr>
+<tr>
+<th>
+0
+</th>
+<td class="hl1">
+0
+</td>
+<td class="hl1">
++∞
+</td>
+<td class="hl1">
++∞
+</td>
+<td class="hl1">
++∞
+</td>
+<td class="hl1">
++∞
+</td>
+<td class="hl1">
++∞
+</td>
+<td class="hl1">
++∞
+</td>
+<td class="hl1">
++∞
+</td>
+<td class="hl1">
++∞
+</td>
+<td class="hl1">
++∞
+</td>
+</tr>
+<tr>
+<th>
+1
+</th>
+<td class="hl1">
+0
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+2
+</th>
+<td class="hl1">
+0
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+3
+</th>
+<td class="hl1">
+0
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="ejemplo-4" class="slide level2" data-transition="none">
+<h2 data-transition="none">Ejemplo</h2>
+<p>Supongamos que <span class="math inline">\(V = [1, 4, 6]\)</span> y
+que <span class="math inline">\(c = 9\)</span>:</p>
+<table class="pd">
+<tbody>
+<tr>
+<th>
+</th>
+<th>
+0
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+<th>
+3
+</th>
+<th>
+4
+</th>
+<th>
+5
+</th>
+<th>
+6
+</th>
+<th>
+7
+</th>
+<th>
+8
+</th>
+<th>
+9
+</th>
+</tr>
+<tr>
+<th>
+0
+</th>
+<td>
+0
+</td>
+<td class="hl1">
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+</tr>
+<tr>
+<th>
+1
+</th>
+<td class="hl1">
+0
+</td>
+<td class="hl2 fragment">
+1
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+2
+</th>
+<td>
+0
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+3
+</th>
+<td>
+0
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+</tbody>
+</table>
+<p><span class="math display">\[
+\mathit{monedasGen}(0, 1) = \min \{ \mathit{monedasGen}(0, 1), 1 +
+\mathit{monedasGen}(1, 0) \}
+\]</span></p>
+</section>
+<section id="ejemplo-5" class="slide level2" data-transition="none">
+<h2 data-transition="none">Ejemplo</h2>
+<p>Supongamos que <span class="math inline">\(V = [1, 4, 6]\)</span> y
+que <span class="math inline">\(c = 9\)</span>:</p>
+<table class="pd">
+<tbody>
+<tr>
+<th>
+</th>
+<th>
+0
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+<th>
+3
+</th>
+<th>
+4
+</th>
+<th>
+5
+</th>
+<th>
+6
+</th>
+<th>
+7
+</th>
+<th>
+8
+</th>
+<th>
+9
+</th>
+</tr>
+<tr>
+<th>
+0
+</th>
+<td>
+0
+</td>
+<td>
++∞
+</td>
+<td class="hl1">
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+</tr>
+<tr>
+<th>
+1
+</th>
+<td>
+0
+</td>
+<td class="hl1">
+1
+</td>
+<td class="hl2 fragment">
+2
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+2
+</th>
+<td>
+0
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+3
+</th>
+<td>
+0
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+</tbody>
+</table>
+<p><span class="math display">\[
+\mathit{monedasGen}(1, 2) = \min \{ \mathit{monedasGen}(0, 2), 1 +
+\mathit{monedasGen}(1, 1) \}
+\]</span></p>
+</section>
+<section id="ejemplo-6" class="slide level2" data-transition="none">
+<h2 data-transition="none">Ejemplo</h2>
+<p>Supongamos que <span class="math inline">\(V = [1, 4, 6]\)</span> y
+que <span class="math inline">\(c = 9\)</span>:</p>
+<table class="pd">
+<tbody>
+<tr>
+<th>
+</th>
+<th>
+0
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+<th>
+3
+</th>
+<th>
+4
+</th>
+<th>
+5
+</th>
+<th>
+6
+</th>
+<th>
+7
+</th>
+<th>
+8
+</th>
+<th>
+9
+</th>
+</tr>
+<tr>
+<th>
+0
+</th>
+<td>
+0
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td class="hl1">
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+</tr>
+<tr>
+<th>
+1
+</th>
+<td>
+0
+</td>
+<td>
+1
+</td>
+<td class="hl1">
+2
+</td>
+<td class="hl2 fragment">
+3
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+2
+</th>
+<td>
+0
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+3
+</th>
+<td>
+0
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+</tbody>
+</table>
+<p><span class="math display">\[
+\mathit{monedasGen}(1, 3) = \min \{ \mathit{monedasGen}(0, 3), 1 +
+\mathit{monedasGen}(1, 2) \}
+\]</span></p>
+</section>
+<section id="ejemplo-7" class="slide level2" data-transition="none">
+<h2 data-transition="none">Ejemplo</h2>
+<p>Supongamos que <span class="math inline">\(V = [1, 4, 6]\)</span> y
+que <span class="math inline">\(c = 9\)</span>:</p>
+<table class="pd">
+<tbody>
+<tr>
+<th>
+</th>
+<th>
+0
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+<th>
+3
+</th>
+<th>
+4
+</th>
+<th>
+5
+</th>
+<th>
+6
+</th>
+<th>
+7
+</th>
+<th>
+8
+</th>
+<th>
+9
+</th>
+</tr>
+<tr>
+<th>
+0
+</th>
+<td>
+0
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td class="hl1">
++∞
+</td>
+</tr>
+<tr>
+<th>
+1
+</th>
+<td>
+0
+</td>
+<td>
+1
+</td>
+<td>
+2
+</td>
+<td>
+3
+</td>
+<td>
+4
+</td>
+<td>
+5
+</td>
+<td>
+6
+</td>
+<td>
+7
+</td>
+<td class="hl1">
+8
+</td>
+<td class="hl2 fragment">
+9
+</td>
+</tr>
+<tr>
+<th>
+2
+</th>
+<td>
+0
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+3
+</th>
+<td>
+0
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+</tbody>
+</table>
+<p><span class="math display">\[
+\mathit{monedasGen}(1, 9) = \min \{ \mathit{monedasGen}(0, 9), 1 +
+\mathit{monedasGen}(1, 8) \}
+\]</span></p>
+</section>
+<section id="ejemplo-8" class="slide level2" data-transition="none">
+<h2 data-transition="none">Ejemplo</h2>
+<p>Supongamos que <span class="math inline">\(V = [1, 4, 6]\)</span> y
+que <span class="math inline">\(c = 9\)</span>:</p>
+<table class="pd">
+<tbody>
+<tr>
+<th>
+</th>
+<th>
+0
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+<th>
+3
+</th>
+<th>
+4
+</th>
+<th>
+5
+</th>
+<th>
+6
+</th>
+<th>
+7
+</th>
+<th>
+8
+</th>
+<th>
+9
+</th>
+</tr>
+<tr>
+<th>
+0
+</th>
+<td>
+0
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+</tr>
+<tr>
+<th>
+1
+</th>
+<td>
+0
+</td>
+<td class="hl1">
+1
+</td>
+<td class="hl1">
+2
+</td>
+<td class="hl1">
+3
+</td>
+<td>
+4
+</td>
+<td>
+5
+</td>
+<td>
+6
+</td>
+<td>
+7
+</td>
+<td>
+8
+</td>
+<td>
+9
+</td>
+</tr>
+<tr>
+<th>
+2
+</th>
+<td>
+0
+</td>
+<td class="hl2 fragment">
+1
+</td>
+<td class="hl2 fragment">
+2
+</td>
+<td class="hl2 fragment">
+3
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+3
+</th>
+<td>
+0
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+</tbody>
+</table>
+<p><span class="math display">\[
+\mathit{monedasGen}(2, j) = \mathit{monedasGen}(1, j) \text{ para } j
+&lt; 4
+\]</span></p>
+</section>
+<section id="ejemplo-9" class="slide level2" data-transition="none">
+<h2 data-transition="none">Ejemplo</h2>
+<p>Supongamos que <span class="math inline">\(V = [1, 4, 6]\)</span> y
+que <span class="math inline">\(c = 9\)</span>:</p>
+<table class="pd">
+<tbody>
+<tr>
+<th>
+</th>
+<th>
+0
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+<th>
+3
+</th>
+<th>
+4
+</th>
+<th>
+5
+</th>
+<th>
+6
+</th>
+<th>
+7
+</th>
+<th>
+8
+</th>
+<th>
+9
+</th>
+</tr>
+<tr>
+<th>
+0
+</th>
+<td>
+0
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+</tr>
+<tr>
+<th>
+1
+</th>
+<td>
+0
+</td>
+<td>
+1
+</td>
+<td>
+2
+</td>
+<td>
+3
+</td>
+<td class="hl1">
+4
+</td>
+<td>
+5
+</td>
+<td>
+6
+</td>
+<td>
+7
+</td>
+<td>
+8
+</td>
+<td>
+9
+</td>
+</tr>
+<tr>
+<th>
+2
+</th>
+<td class="hl1">
+0
+</td>
+<td>
+1
+</td>
+<td>
+2
+</td>
+<td>
+3
+</td>
+<td class="hl2 fragment">
+1
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+3
+</th>
+<td>
+0
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+</tbody>
+</table>
+<p><span class="math display">\[
+\mathit{monedasGen}(2, 4) = \min \{ \mathit{monedasGen}(1, 4), 1 +
+\mathit{monedasGen}(2, 0) \}
+\]</span></p>
+</section>
+<section id="ejemplo-10" class="slide level2" data-transition="none">
+<h2 data-transition="none">Ejemplo</h2>
+<p>Supongamos que <span class="math inline">\(V = [1, 4, 6]\)</span> y
+que <span class="math inline">\(c = 9\)</span>:</p>
+<table class="pd">
+<tbody>
+<tr>
+<th>
+</th>
+<th>
+0
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+<th>
+3
+</th>
+<th>
+4
+</th>
+<th>
+5
+</th>
+<th>
+6
+</th>
+<th>
+7
+</th>
+<th>
+8
+</th>
+<th>
+9
+</th>
+</tr>
+<tr>
+<th>
+0
+</th>
+<td>
+0
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+</tr>
+<tr>
+<th>
+1
+</th>
+<td>
+0
+</td>
+<td>
+1
+</td>
+<td>
+2
+</td>
+<td>
+3
+</td>
+<td>
+4
+</td>
+<td class="hl1">
+5
+</td>
+<td>
+6
+</td>
+<td>
+7
+</td>
+<td>
+8
+</td>
+<td>
+9
+</td>
+</tr>
+<tr>
+<th>
+2
+</th>
+<td>
+0
+</td>
+<td class="hl1">
+1
+</td>
+<td>
+2
+</td>
+<td>
+3
+</td>
+<td>
+1
+</td>
+<td class="hl2 fragment">
+2
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+3
+</th>
+<td>
+0
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+</tbody>
+</table>
+<p><span class="math display">\[
+\mathit{monedasGen}(2, 5) = \min \{ \mathit{monedasGen}(1, 5), 1 +
+\mathit{monedasGen}(2, 1) \}
+\]</span></p>
+</section>
+<section id="ejemplo-11" class="slide level2" data-transition="none">
+<h2 data-transition="none">Ejemplo</h2>
+<p>Supongamos que <span class="math inline">\(V = [1, 4, 6]\)</span> y
+que <span class="math inline">\(c = 9\)</span>:</p>
+<table class="pd">
+<tbody>
+<tr>
+<th>
+</th>
+<th>
+0
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+<th>
+3
+</th>
+<th>
+4
+</th>
+<th>
+5
+</th>
+<th>
+6
+</th>
+<th>
+7
+</th>
+<th>
+8
+</th>
+<th>
+9
+</th>
+</tr>
+<tr>
+<th>
+0
+</th>
+<td>
+0
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+</tr>
+<tr>
+<th>
+1
+</th>
+<td>
+0
+</td>
+<td>
+1
+</td>
+<td>
+2
+</td>
+<td>
+3
+</td>
+<td>
+4
+</td>
+<td>
+5
+</td>
+<td>
+6
+</td>
+<td>
+7
+</td>
+<td>
+8
+</td>
+<td class="hl1">
+9
+</td>
+</tr>
+<tr>
+<th>
+2
+</th>
+<td>
+0
+</td>
+<td>
+1
+</td>
+<td>
+2
+</td>
+<td>
+3
+</td>
+<td>
+1
+</td>
+<td class="hl1">
+2
+</td>
+<td>
+3
+</td>
+<td>
+4
+</td>
+<td>
+2
+</td>
+<td class="hl2 fragment">
+3
+</td>
+</tr>
+<tr>
+<th>
+3
+</th>
+<td>
+0
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+</tbody>
+</table>
+<p><span class="math display">\[
+\mathit{monedasGen}(2, 9) = \min \{ \mathit{monedasGen}(1, 9), 1 +
+\mathit{monedasGen}(2, 5) \}
+\]</span></p>
+</section>
+<section id="ejemplo-12" class="slide level2" data-transition="none">
+<h2 data-transition="none">Ejemplo</h2>
+<p>Supongamos que <span class="math inline">\(V = [1, 4, 6]\)</span> y
+que <span class="math inline">\(c = 9\)</span>:</p>
+<table class="pd">
+<tbody>
+<tr>
+<th>
+</th>
+<th>
+0
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+<th>
+3
+</th>
+<th>
+4
+</th>
+<th>
+5
+</th>
+<th>
+6
+</th>
+<th>
+7
+</th>
+<th>
+8
+</th>
+<th>
+9
+</th>
+</tr>
+<tr>
+<th>
+0
+</th>
+<td>
+0
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+</tr>
+<tr>
+<th>
+1
+</th>
+<td>
+0
+</td>
+<td>
+1
+</td>
+<td>
+2
+</td>
+<td>
+3
+</td>
+<td>
+4
+</td>
+<td>
+5
+</td>
+<td>
+6
+</td>
+<td>
+7
+</td>
+<td>
+8
+</td>
+<td>
+9
+</td>
+</tr>
+<tr>
+<th>
+2
+</th>
+<td>
+0
+</td>
+<td class="hl1">
+1
+</td>
+<td class="hl1">
+2
+</td>
+<td class="hl1">
+3
+</td>
+<td class="hl1">
+1
+</td>
+<td class="hl1">
+2
+</td>
+<td>
+3
+</td>
+<td>
+4
+</td>
+<td>
+2
+</td>
+<td>
+3
+</td>
+</tr>
+<tr>
+<th>
+3
+</th>
+<td>
+0
+</td>
+<td class="hl2 fragment">
+1
+</td>
+<td class="hl2 fragment">
+2
+</td>
+<td class="hl2 fragment">
+3
+</td>
+<td class="hl2 fragment">
+1
+</td>
+<td class="hl2 fragment">
+2
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+</tbody>
+</table>
+<p><span class="math display">\[
+\mathit{monedasGen}(3, j) = \mathit{monedasGen}(2, j) \text{ para } j
+&lt; 6
+\]</span></p>
+</section>
+<section id="ejemplo-13" class="slide level2" data-transition="none">
+<h2 data-transition="none">Ejemplo</h2>
+<p>Supongamos que <span class="math inline">\(V = [1, 4, 6]\)</span> y
+que <span class="math inline">\(c = 9\)</span>:</p>
+<table class="pd">
+<tbody>
+<tr>
+<th>
+</th>
+<th>
+0
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+<th>
+3
+</th>
+<th>
+4
+</th>
+<th>
+5
+</th>
+<th>
+6
+</th>
+<th>
+7
+</th>
+<th>
+8
+</th>
+<th>
+9
+</th>
+</tr>
+<tr>
+<th>
+0
+</th>
+<td>
+0
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+</tr>
+<tr>
+<th>
+1
+</th>
+<td>
+0
+</td>
+<td>
+1
+</td>
+<td>
+2
+</td>
+<td>
+3
+</td>
+<td>
+4
+</td>
+<td>
+5
+</td>
+<td>
+6
+</td>
+<td>
+7
+</td>
+<td>
+8
+</td>
+<td>
+9
+</td>
+</tr>
+<tr>
+<th>
+2
+</th>
+<td>
+0
+</td>
+<td>
+1
+</td>
+<td>
+2
+</td>
+<td>
+3
+</td>
+<td>
+1
+</td>
+<td>
+2
+</td>
+<td class="hl1">
+3
+</td>
+<td>
+4
+</td>
+<td>
+2
+</td>
+<td>
+3
+</td>
+</tr>
+<tr>
+<th>
+3
+</th>
+<td class="hl1">
+0
+</td>
+<td>
+1
+</td>
+<td>
+2
+</td>
+<td>
+3
+</td>
+<td>
+1
+</td>
+<td>
+2
+</td>
+<td class="hl2 .fragment">
+1
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+</tbody>
+</table>
+<p><span class="math display">\[
+\mathit{monedasGen}(3, 6) = \min \{ \mathit{monedasGen}(2, 6), 1 +
+\mathit{monedasGen}(3, 0) \}
+\]</span></p>
+</section>
+<section id="ejemplo-14" class="slide level2" data-transition="none">
+<h2 data-transition="none">Ejemplo</h2>
+<p>Supongamos que <span class="math inline">\(V = [1, 4, 6]\)</span> y
+que <span class="math inline">\(c = 9\)</span>:</p>
+<table class="pd">
+<tbody>
+<tr>
+<th>
+</th>
+<th>
+0
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+<th>
+3
+</th>
+<th>
+4
+</th>
+<th>
+5
+</th>
+<th>
+6
+</th>
+<th>
+7
+</th>
+<th>
+8
+</th>
+<th>
+9
+</th>
+</tr>
+<tr>
+<th>
+0
+</th>
+<td>
+0
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+</tr>
+<tr>
+<th>
+1
+</th>
+<td>
+0
+</td>
+<td>
+1
+</td>
+<td>
+2
+</td>
+<td>
+3
+</td>
+<td>
+4
+</td>
+<td>
+5
+</td>
+<td>
+6
+</td>
+<td>
+7
+</td>
+<td>
+8
+</td>
+<td>
+9
+</td>
+</tr>
+<tr>
+<th>
+2
+</th>
+<td>
+0
+</td>
+<td>
+1
+</td>
+<td>
+2
+</td>
+<td>
+3
+</td>
+<td>
+1
+</td>
+<td>
+2
+</td>
+<td>
+3
+</td>
+<td class="hl1">
+4
+</td>
+<td>
+2
+</td>
+<td>
+3
+</td>
+</tr>
+<tr>
+<th>
+3
+</th>
+<td>
+0
+</td>
+<td class="hl1">
+1
+</td>
+<td>
+2
+</td>
+<td>
+3
+</td>
+<td>
+1
+</td>
+<td>
+2
+</td>
+<td>
+1
+</td>
+<td class="hl2 .fragment">
+2
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+</tbody>
+</table>
+<p><span class="math display">\[
+\mathit{monedasGen}(3, 7) = \min \{ \mathit{monedasGen}(2, 7), 1 +
+\mathit{monedasGen}(3, 1) \}
+\]</span></p>
+</section>
+<section id="ejemplo-15" class="slide level2" data-transition="none">
+<h2 data-transition="none">Ejemplo</h2>
+<p>Supongamos que <span class="math inline">\(V = [1, 4, 6]\)</span> y
+que <span class="math inline">\(c = 9\)</span>:</p>
+<table class="pd">
+<tbody>
+<tr>
+<th>
+</th>
+<th>
+0
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+<th>
+3
+</th>
+<th>
+4
+</th>
+<th>
+5
+</th>
+<th>
+6
+</th>
+<th>
+7
+</th>
+<th>
+8
+</th>
+<th>
+9
+</th>
+</tr>
+<tr>
+<th>
+0
+</th>
+<td>
+0
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+</tr>
+<tr>
+<th>
+1
+</th>
+<td>
+0
+</td>
+<td>
+1
+</td>
+<td>
+2
+</td>
+<td>
+3
+</td>
+<td>
+4
+</td>
+<td>
+5
+</td>
+<td>
+6
+</td>
+<td>
+7
+</td>
+<td>
+8
+</td>
+<td>
+9
+</td>
+</tr>
+<tr>
+<th>
+2
+</th>
+<td>
+0
+</td>
+<td>
+1
+</td>
+<td>
+2
+</td>
+<td>
+3
+</td>
+<td>
+1
+</td>
+<td>
+2
+</td>
+<td>
+3
+</td>
+<td>
+4
+</td>
+<td class="hl1">
+2
+</td>
+<td>
+3
+</td>
+</tr>
+<tr>
+<th>
+3
+</th>
+<td>
+0
+</td>
+<td>
+1
+</td>
+<td class="hl1">
+2
+</td>
+<td>
+3
+</td>
+<td>
+1
+</td>
+<td>
+2
+</td>
+<td>
+1
+</td>
+<td>
+2
+</td>
+<td class="hl2 .fragment">
+2
+</td>
+<td>
+</td>
+</tr>
+</tbody>
+</table>
+<p><span class="math display">\[
+\mathit{monedasGen}(3, 8) = \min \{ \mathit{monedasGen}(2, 8), 1 +
+\mathit{monedasGen}(3, 2) \}
+\]</span></p>
+</section>
+<section id="ejemplo-16" class="slide level2" data-transition="none-in">
+<h2 data-transition="none-in">Ejemplo</h2>
+<p>Supongamos que <span class="math inline">\(V = [1, 4, 6]\)</span> y
+que <span class="math inline">\(c = 9\)</span>:</p>
+<table class="pd">
+<tbody>
+<tr>
+<th>
+</th>
+<th>
+0
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+<th>
+3
+</th>
+<th>
+4
+</th>
+<th>
+5
+</th>
+<th>
+6
+</th>
+<th>
+7
+</th>
+<th>
+8
+</th>
+<th>
+9
+</th>
+</tr>
+<tr>
+<th>
+0
+</th>
+<td>
+0
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+</tr>
+<tr>
+<th>
+1
+</th>
+<td>
+0
+</td>
+<td>
+1
+</td>
+<td>
+2
+</td>
+<td>
+3
+</td>
+<td>
+4
+</td>
+<td>
+5
+</td>
+<td>
+6
+</td>
+<td>
+7
+</td>
+<td>
+8
+</td>
+<td>
+9
+</td>
+</tr>
+<tr>
+<th>
+2
+</th>
+<td>
+0
+</td>
+<td>
+1
+</td>
+<td>
+2
+</td>
+<td>
+3
+</td>
+<td>
+1
+</td>
+<td>
+2
+</td>
+<td>
+3
+</td>
+<td>
+4
+</td>
+<td>
+2
+</td>
+<td class="hl1">
+3
+</td>
+</tr>
+<tr>
+<th>
+3
+</th>
+<td>
+0
+</td>
+<td>
+1
+</td>
+<td>
+2
+</td>
+<td class="hl1">
+3
+</td>
+<td>
+1
+</td>
+<td>
+2
+</td>
+<td>
+1
+</td>
+<td>
+2
+</td>
+<td>
+2
+</td>
+<td class="hl2 .fragment">
+3
+</td>
+</tr>
+</tbody>
+</table>
+<p><span class="math display">\[
+\mathit{monedasGen}(3, 9) = \min \{ \mathit{monedasGen}(2, 9), 1 +
+\mathit{monedasGen}(3, 3) \}
+\]</span></p>
+</section>
+<section id="implementación-en-c-2" class="slide level2">
+<h2>Implementación en C++</h2>
+<ul>
+<li>Suponemos un tipo de datos <code>int_inf</code> cuyos valores
+incluyen números enteros y el valor especial <span
+class="math inline">\(+\infty\)</span>, representado por
+<code>Infinito</code> (<em>ver Campus Virtual</em>).</li>
+</ul>
+<div class="cpp cpp_block" style="font-size:60%">
+<p><span class="type"><span class="type">int</span>_inf</span>
+cambio_monedas(<span class="type">const</span> <span
+class="type">vector</span>&lt;<span class="type">int</span>&gt; &amp;v,
+<span class="type">int</span> c) {<br>  <span class="type">int</span> n
+= v.size();<br>  matriz&lt;<span class="type"><span
+class="type">int</span>_inf</span>&gt; tabla = crear_matriz&lt;<span
+class="type"><span class="type">int</span>_inf</span>&gt;(n + <span
+class="number">1</span>, c + <span class="number">1</span>, <span
+class="number">0</span>);<br><br>  <strong>for</strong> (<span
+class="type">int</span> j = <span class="number">1</span>; j &lt;= c;
+j++) { tabla[<span class="number">0</span>][j] = Infinito;
+}<br><br>  <strong>for</strong> (<span class="type">int</span> i = <span
+class="number">1</span>; i &lt;= n; i++) {<br>    <strong>for</strong>
+(<span class="type">int</span> j = <span class="number">1</span>; j
+&lt;= c; j++) {<br>      tabla[i][j] = j &lt; v[i-<span
+class="number">1</span>] ? tabla[i - <span class="number">1</span>][j] :
+min(tabla[i - <span class="number">1</span>][j], tabla[i][j - v[i-<span
+class="number">1</span>]] + <span
+class="number">1</span>);<br>    }<br>  }<br><br>  <strong>return</strong>
+tabla[n][c];<br>}</p>
+</div>
+<p>Coste en espacio y tiempo: <span class="color_tema"><span
+class="math inline">\(\Theta(nc)\)</span></span> donde <span
+class="math inline">\(n =\)</span> <code>v.size()</code>.</p>
+</section>
+<section id="reconstrucción-de-la-solución"
+class="slide level2 subsection center">
+<h2 class="subsection center">Reconstrucción de la solución</h2>
+</section>
+<section id="reconstruir-la-solución-óptima" class="slide level2">
+<h2>Reconstruir la solución óptima</h2>
+<ul>
+<li><p>La función <span
+class="math inline">\(\mathit{monedasGen}\)</span> determina cuántas
+monedas necesitamos, como mínimo, para pagar una determinada cantidad,
+pero no nos dice <strong>qué</strong> monedas tenemos que
+utilizar.</p></li>
+<li><p>No obstante, a partir de la tabla de programación dinámica
+podemos calcular, a partir de la cantidad óptima de monedas, la
+selección de monedas que lleva a esa solución óptima.</p></li>
+<li><p>El algoritmo de reconstrucción de solución óptima consiste en
+navegar por la tabla de programación dinámica, empezando por la casilla
+<span class="math inline">\((n, c)\)</span>, hasta llegar a un caso
+base.</p></li>
+</ul>
+</section>
+<section id="reconstruir-la-solución-óptima-1" class="slide level2">
+<h2>Reconstruir la solución óptima</h2>
+<ul>
+<li class="fragment"><p>Sabemos que:</p>
+<p><span class="math display">\[
+  \texttt{tabla}[n][c] = \min \{ \texttt{tabla}[n-1][c], 1 +
+\texttt{tabla}[n][c-V[n-1]] \}
+  \]</span></p></li>
+<li class="fragment"><p>Si <span
+class="math inline">\(\texttt{tabla}[n][c] =
+\texttt{tabla}[n-1][c]\)</span>, entonces la solución óptima se alcanza
+decidiendo <strong>no</strong> utilizar monedas de tipo <span
+class="math inline">\(n - 1\)</span>.</p>
+<ul>
+<li class="fragment">Continuamos reconstruyendo la solución a partir de
+la celda <span class="math inline">\((n-1,c)\)</span>.</li>
+</ul></li>
+<li class="fragment"><p>Si <span
+class="math inline">\(\texttt{tabla}[n][c] = 1 + \texttt{tabla}[n][c -
+V[n-1]]\)</span>, entonces la solución óptima contempla la utilización
+de, al menos, una moneda de tipo <span
+class="math inline">\(n-1\)</span>.</p>
+<ul>
+<li class="fragment">Continuamos reconstruyendo la solución a partir de
+la celda <span class="math inline">\((n,c - V[n-1])\)</span>.</li>
+</ul></li>
+<li class="fragment"><p>El proceso finaliza cuando llegamos a la columna
+0 de la matriz.</p></li>
+</ul>
+</section>
+<section id="ejemplo-17" class="slide level2"
+data-transition="slide-in none-out">
+<h2 data-transition="slide-in none-out">Ejemplo</h2>
+<p>Supongamos que <span class="math inline">\(V = [1, 4, 6]\)</span> y
+que <span class="math inline">\(c = 9\)</span>:</p>
+<table class="pd">
+<tbody>
+<tr>
+<th>
+</th>
+<th>
+0
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+<th>
+3
+</th>
+<th>
+4
+</th>
+<th>
+5
+</th>
+<th>
+6
+</th>
+<th>
+7
+</th>
+<th>
+8
+</th>
+<th>
+9
+</th>
+</tr>
+<tr>
+<th>
+0
+</th>
+<td>
+0
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+</tr>
+<tr>
+<th>
+1
+</th>
+<td>
+0
+</td>
+<td>
+1
+</td>
+<td>
+2
+</td>
+<td>
+3
+</td>
+<td>
+4
+</td>
+<td>
+5
+</td>
+<td>
+6
+</td>
+<td>
+7
+</td>
+<td>
+8
+</td>
+<td>
+9
+</td>
+</tr>
+<tr>
+<th>
+2
+</th>
+<td>
+0
+</td>
+<td>
+1
+</td>
+<td>
+2
+</td>
+<td>
+3
+</td>
+<td>
+1
+</td>
+<td>
+2
+</td>
+<td>
+3
+</td>
+<td>
+4
+</td>
+<td>
+2
+</td>
+<td class="hl1">
+<strong>3</strong>
+</td>
+</tr>
+<tr>
+<th>
+3
+</th>
+<td>
+0
+</td>
+<td>
+1
+</td>
+<td>
+2
+</td>
+<td class="hl1">
+3
+</td>
+<td>
+1
+</td>
+<td>
+2
+</td>
+<td>
+1
+</td>
+<td>
+2
+</td>
+<td>
+2
+</td>
+<td class="hl2">
+<strong>3</strong>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Como <code>tabla[3][9] = tabla[2][9]</code>, no hemos utilizado
+monedas de valor 6 en la solución óptima.</p>
+<div class="color_tema" style="text-align:center">
+<p><code>monedas = []</code></p>
+</div>
+</section>
+<section id="ejemplo-18" class="slide level2" data-transition="none">
+<h2 data-transition="none">Ejemplo</h2>
+<p>Supongamos que <span class="math inline">\(V = [1, 4, 6]\)</span> y
+que <span class="math inline">\(c = 9\)</span>:</p>
+<table class="pd">
+<tbody>
+<tr>
+<th>
+</th>
+<th>
+0
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+<th>
+3
+</th>
+<th>
+4
+</th>
+<th>
+5
+</th>
+<th>
+6
+</th>
+<th>
+7
+</th>
+<th>
+8
+</th>
+<th>
+9
+</th>
+</tr>
+<tr>
+<th>
+0
+</th>
+<td>
+0
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+</tr>
+<tr>
+<th>
+1
+</th>
+<td>
+0
+</td>
+<td>
+1
+</td>
+<td>
+2
+</td>
+<td>
+3
+</td>
+<td>
+4
+</td>
+<td>
+5
+</td>
+<td>
+6
+</td>
+<td>
+7
+</td>
+<td>
+8
+</td>
+<td class="hl1">
+9
+</td>
+</tr>
+<tr>
+<th>
+2
+</th>
+<td>
+0
+</td>
+<td>
+1
+</td>
+<td>
+2
+</td>
+<td>
+3
+</td>
+<td>
+1
+</td>
+<td class="hl1">
+<strong>2</strong>
+</td>
+<td>
+3
+</td>
+<td>
+4
+</td>
+<td>
+2
+</td>
+<td class="hl2">
+<strong>3</strong>
+</td>
+</tr>
+<tr>
+<th>
+3
+</th>
+<td>
+0
+</td>
+<td>
+1
+</td>
+<td>
+2
+</td>
+<td>
+3
+</td>
+<td>
+1
+</td>
+<td>
+2
+</td>
+<td>
+1
+</td>
+<td>
+2
+</td>
+<td>
+2
+</td>
+<td>
+3
+</td>
+</tr>
+</tbody>
+</table>
+<p>Como <code>tabla[2][9] = 1 + tabla[2][5]</code>, la solución óptima
+se obtiene utilizado, al menos, una moneda de valor 4.</p>
+<div class="color_tema" style="text-align:center">
+<p><code>monedas = [4]</code></p>
+</div>
+</section>
+<section id="ejemplo-19" class="slide level2" data-transition="none">
+<h2 data-transition="none">Ejemplo</h2>
+<p>Supongamos que <span class="math inline">\(V = [1, 4, 6]\)</span> y
+que <span class="math inline">\(c = 9\)</span>:</p>
+<table class="pd">
+<tbody>
+<tr>
+<th>
+</th>
+<th>
+0
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+<th>
+3
+</th>
+<th>
+4
+</th>
+<th>
+5
+</th>
+<th>
+6
+</th>
+<th>
+7
+</th>
+<th>
+8
+</th>
+<th>
+9
+</th>
+</tr>
+<tr>
+<th>
+0
+</th>
+<td>
+0
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+</tr>
+<tr>
+<th>
+1
+</th>
+<td>
+0
+</td>
+<td>
+1
+</td>
+<td>
+2
+</td>
+<td>
+3
+</td>
+<td>
+4
+</td>
+<td class="hl1">
+5
+</td>
+<td>
+6
+</td>
+<td>
+7
+</td>
+<td>
+8
+</td>
+<td>
+9
+</td>
+</tr>
+<tr>
+<th>
+2
+</th>
+<td>
+0
+</td>
+<td class="hl1">
+<strong>1</strong>
+</td>
+<td>
+2
+</td>
+<td>
+3
+</td>
+<td>
+1
+</td>
+<td class="hl2">
+<strong>2</strong>
+</td>
+<td>
+3
+</td>
+<td>
+4
+</td>
+<td>
+2
+</td>
+<td>
+3
+</td>
+</tr>
+<tr>
+<th>
+3
+</th>
+<td>
+0
+</td>
+<td>
+1
+</td>
+<td>
+2
+</td>
+<td>
+3
+</td>
+<td>
+1
+</td>
+<td>
+2
+</td>
+<td>
+1
+</td>
+<td>
+2
+</td>
+<td>
+2
+</td>
+<td>
+3
+</td>
+</tr>
+</tbody>
+</table>
+<p>Como <code>tabla[2][5] = 1 + tabla[2][1]</code>, la solución óptima
+se obtiene utilizado otra moneda de valor 4.</p>
+<div class="color_tema" style="text-align:center">
+<p><code>monedas = [4, 4]</code></p>
+</div>
+</section>
+<section id="ejemplo-20" class="slide level2" data-transition="none">
+<h2 data-transition="none">Ejemplo</h2>
+<p>Supongamos que <span class="math inline">\(V = [1, 4, 6]\)</span> y
+que <span class="math inline">\(c = 9\)</span>:</p>
+<table class="pd">
+<tbody>
+<tr>
+<th>
+</th>
+<th>
+0
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+<th>
+3
+</th>
+<th>
+4
+</th>
+<th>
+5
+</th>
+<th>
+6
+</th>
+<th>
+7
+</th>
+<th>
+8
+</th>
+<th>
+9
+</th>
+</tr>
+<tr>
+<th>
+0
+</th>
+<td>
+0
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+</tr>
+<tr>
+<th>
+1
+</th>
+<td>
+0
+</td>
+<td class="hl1">
+<strong>1</strong>
+</td>
+<td>
+2
+</td>
+<td>
+3
+</td>
+<td>
+4
+</td>
+<td>
+5
+</td>
+<td>
+6
+</td>
+<td>
+7
+</td>
+<td>
+8
+</td>
+<td>
+9
+</td>
+</tr>
+<tr>
+<th>
+2
+</th>
+<td>
+0
+</td>
+<td class="hl2">
+<strong>1</strong>
+</td>
+<td>
+2
+</td>
+<td>
+3
+</td>
+<td>
+1
+</td>
+<td>
+2
+</td>
+<td>
+3
+</td>
+<td>
+4
+</td>
+<td>
+2
+</td>
+<td>
+3
+</td>
+</tr>
+<tr>
+<th>
+3
+</th>
+<td>
+0
+</td>
+<td>
+1
+</td>
+<td>
+2
+</td>
+<td>
+3
+</td>
+<td>
+1
+</td>
+<td>
+2
+</td>
+<td>
+1
+</td>
+<td>
+2
+</td>
+<td>
+2
+</td>
+<td>
+3
+</td>
+</tr>
+</tbody>
+</table>
+<p>En este caso, ya no podemos seguir utilizando monedas de valor 4 para
+pagar la cantidad 1. La única posibilidad es no coger más monedas de
+valor 4.</p>
+<div class="color_tema" style="text-align:center">
+<p><code>monedas = [4, 4]</code></p>
+</div>
+</section>
+<section id="ejemplo-21" class="slide level2" data-transition="none">
+<h2 data-transition="none">Ejemplo</h2>
+<p>Supongamos que <span class="math inline">\(V = [1, 4, 6]\)</span> y
+que <span class="math inline">\(c = 9\)</span>:</p>
+<table class="pd">
+<tbody>
+<tr>
+<th>
+</th>
+<th>
+0
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+<th>
+3
+</th>
+<th>
+4
+</th>
+<th>
+5
+</th>
+<th>
+6
+</th>
+<th>
+7
+</th>
+<th>
+8
+</th>
+<th>
+9
+</th>
+</tr>
+<tr>
+<th>
+0
+</th>
+<td>
+0
+</td>
+<td class="hl1">
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+</tr>
+<tr>
+<th>
+1
+</th>
+<td class="hl1">
+<strong>0</strong>
+</td>
+<td class="hl2">
+<strong>1</strong>
+</td>
+<td>
+2
+</td>
+<td>
+3
+</td>
+<td>
+4
+</td>
+<td>
+5
+</td>
+<td>
+6
+</td>
+<td>
+7
+</td>
+<td>
+8
+</td>
+<td>
+9
+</td>
+</tr>
+<tr>
+<th>
+2
+</th>
+<td>
+0
+</td>
+<td>
+1
+</td>
+<td>
+2
+</td>
+<td>
+3
+</td>
+<td>
+1
+</td>
+<td>
+2
+</td>
+<td>
+3
+</td>
+<td>
+4
+</td>
+<td>
+2
+</td>
+<td>
+3
+</td>
+</tr>
+<tr>
+<th>
+3
+</th>
+<td>
+0
+</td>
+<td>
+1
+</td>
+<td>
+2
+</td>
+<td>
+3
+</td>
+<td>
+1
+</td>
+<td>
+2
+</td>
+<td>
+1
+</td>
+<td>
+2
+</td>
+<td>
+2
+</td>
+<td>
+3
+</td>
+</tr>
+</tbody>
+</table>
+<p>Como <code>tabla[1][1] = 1 + tabla[1][0]</code>, la solución óptima
+incluye una moneda de valor 1.</p>
+<div class="color_tema" style="text-align:center">
+<p><code>monedas = [4, 4, 1]</code></p>
+</div>
+</section>
+<section id="ejemplo-22" class="slide level2"
+data-transition="slide-out none-in">
+<h2 data-transition="slide-out none-in">Ejemplo</h2>
+<p>Supongamos que <span class="math inline">\(V = [1, 4, 6]\)</span> y
+que <span class="math inline">\(c = 9\)</span>:</p>
+<table class="pd">
+<tbody>
+<tr>
+<th>
+</th>
+<th>
+0
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+<th>
+3
+</th>
+<th>
+4
+</th>
+<th>
+5
+</th>
+<th>
+6
+</th>
+<th>
+7
+</th>
+<th>
+8
+</th>
+<th>
+9
+</th>
+</tr>
+<tr>
+<th>
+0
+</th>
+<td>
+0
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+</tr>
+<tr>
+<th>
+1
+</th>
+<td class="hl2">
+<strong>0</strong>
+</td>
+<td>
+1
+</td>
+<td>
+2
+</td>
+<td>
+3
+</td>
+<td>
+4
+</td>
+<td>
+5
+</td>
+<td>
+6
+</td>
+<td>
+7
+</td>
+<td>
+8
+</td>
+<td>
+9
+</td>
+</tr>
+<tr>
+<th>
+2
+</th>
+<td>
+0
+</td>
+<td>
+1
+</td>
+<td>
+2
+</td>
+<td>
+3
+</td>
+<td>
+1
+</td>
+<td>
+2
+</td>
+<td>
+3
+</td>
+<td>
+4
+</td>
+<td>
+2
+</td>
+<td>
+3
+</td>
+</tr>
+<tr>
+<th>
+3
+</th>
+<td>
+0
+</td>
+<td>
+1
+</td>
+<td>
+2
+</td>
+<td>
+3
+</td>
+<td>
+1
+</td>
+<td>
+2
+</td>
+<td>
+1
+</td>
+<td>
+2
+</td>
+<td>
+2
+</td>
+<td>
+3
+</td>
+</tr>
+</tbody>
+</table>
+<p>Hemos llegado a la columna 0. Por tanto, ya hemos finalizado. Para
+pagar la cantidad 9 de manera óptima, utilizamos dos monedas de valor 4
+y una moneda de valor 1.</p>
+<div class="color_tema" style="text-align:center">
+<p><code>monedas = [4, 4, 1]</code></p>
+</div>
+</section>
+<section id="implementación-en-c-3" class="slide level2">
+<h2>Implementación en C++</h2>
+<div class="cpp cpp_block">
+<p><span class="type">vector</span>&lt;<span class="type">int</span>&gt;
+reconstruir(<span class="type">const</span> matriz&lt;<span
+class="type"><span class="type">int</span>_inf</span>&gt; &amp;tabla,
+<span class="type">const</span> <span
+class="type">vector</span>&lt;<span class="type">int</span>&gt; &amp;v,
+<span class="type">int</span> c) {<br>  <span class="type">int</span> n
+= v.size();<br>  <span class="type">vector</span>&lt;<span
+class="type">int</span>&gt; monedas;<br><br>  <span
+class="type">int</span> i = n, j = c;<br>  <strong>while</strong> (j
+&gt; <span class="number">0</span>) {<br>    <strong>if</strong>
+(tabla[i][j] == tabla[i-<span class="number">1</span>][j])
+{<br>      i--;<br>    } <strong>else</strong>
+{<br>      monedas.push_back(v[i-<span
+class="number">1</span>]);<br>      j -= v[i-<span
+class="number">1</span>];<br>    }<br>  }<br><br>  <strong>return</strong>
+monedas;<br>}</p>
+</div>
+</section>
+<section id="optimización-de-espacio-6"
+class="slide level2 subsection center">
+<h2 class="subsection center">Optimización de espacio</h2>
+</section>
+<section id="optimización-de-espacio-7" class="slide level2">
+<h2>Optimización de espacio</h2>
+<ul>
+<li><p>En el algoritmo anterior, el cálculo de una fila de la matriz
+depende exclusivamente de la fila anterior.</p></li>
+<li><p>Por tanto, podemos reemplazar la matriz por <strong>un único
+vector</strong>, cuyo valor inicial es:</p></li>
+</ul>
+<table class="pd">
+<tbody>
+<tr>
+<th>
+</th>
+<th>
+0
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+<th>
+3
+</th>
+<th>
+4
+</th>
+<th>
+5
+</th>
+<th>
+6
+</th>
+<th>
+7
+</th>
+<th>
+8
+</th>
+<th>
+9
+</th>
+</tr>
+<tr>
+<th>
+</th>
+<td>
+0
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li class="fragment"><p>Al rellenar el vector con el contenido de la
+fila <span class="math inline">\(i\)</span>, sobreescribimos el
+contenido de la fila <span class="math inline">\(i-1\)</span>.</p></li>
+<li class="fragment"><p>Como en el cálculo de la celda <span
+class="math inline">\((i, j)\)</span> puede ser necesario consultar una
+celda situada a la izquierda, hemos de tener disponibles los valores
+<span class="math inline">\((i, j&#39;)\)</span> para <span
+class="math inline">\(j&#39; &lt; j\)</span>.</p></li>
+<li class="fragment"><p>Por tanto, hemos de sobreescribir el vector
+<strong>de izquierda a derecha</strong>.</p></li>
+</ul>
+</section>
+<section id="implementación-en-c-4" class="slide level2">
+<h2>Implementación en C++</h2>
+<div class="cpp cpp_block" style="font-size:60%">
+<p><span class="type"><span class="type">int</span>_inf</span>
+cambio_pd_asc_optimizado(<span class="type">const</span> <span
+class="type">vector</span>&lt;<span class="type">int</span>&gt; &amp;v,
+<span class="type">int</span> c) {<br>  <span
+class="type">vector</span>&lt;<span class="type"><span
+class="type">int</span>_inf</span>&gt; actual(c + <span
+class="number">1</span>, <span
+class="number">0</span>);<br>  <strong>for</strong> (<span
+class="type">int</span> j = <span class="number">1</span>; j &lt;= c;
+j++) { fila_actual[j] = Infinito; }<br><br>  <strong>for</strong> (<span
+class="type">int</span> i = <span class="number">1</span>; i &lt;=
+v.size(); i++) {<br>    <strong>for</strong> (<span
+class="type">int</span> j = <span class="number">1</span>; j &lt;= c;
+j++) {<br>      actual[j] = j &lt; v[i-<span class="number">1</span>] ?
+actual[j] : min(actual[j], actual[j - v[i-<span
+class="number">1</span>]] + <span
+class="number">1</span>);<br>    }<br>  }<br><br>  <strong>return</strong>
+actual[c];<br>}</p>
+</div>
+<p>Coste: <span class="math inline">\(\Theta(nc)\)</span> en tiempo,
+<span class="math inline">\(\Theta(c)\)</span> en espacio, donde <span
+class="math inline">\(n =\)</span> <code>v.size()</code>.</p>
+</section>
+<section id="optimización-en-memoria-vs-reconstrucción-de-la-solución"
+class="slide level2">
+<h2>Optimización en memoria vs reconstrucción de la solución</h2>
+<ul>
+<li><p>Hemos visto que el algoritmo que reconstruye la solución óptima a
+partir del valor obtenido consiste en navegar por las celdas de la
+matriz, hasta llegar al caso base.</p></li>
+<li><p>Si sustituimos la matriz por un vector, en general, <strong>no es
+posible la reconstrucción de la solución</strong>.</p>
+<ul>
+<li><em>En el caso del problema del cambio de monedas, sí es posible
+reconstruir la solución incluso tras la optimización en espacio, pero
+esto no suele ser lo habitual en otros problemas.</em></li>
+</ul></li>
+</ul>
+</section></section>
+<section>
+<section id="el-problema-de-la-mochila"
+class="title-slide slide level1 center"
+data-background-image="img/CyanBackground.png">
+<h1 class="center" data-background-image="img/CyanBackground.png"><span
+class="sc_number">5.4</span>El problema de la mochila</h1>
+
+</section>
+<section id="descripción-del-problema-5" class="slide level2">
+<h2>Descripción del problema</h2>
+<ul>
+<li>Queremos realizar una expedición a hacer fotografías y solo podemos
+llevar una mochila con <strong>5 kg.</strong> de capacidad.</li>
+<li>Tenemos varios equipos tecnológicos, cada uno con su peso y su valor
+(precio).</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Nombre</th>
+<th>Peso</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>Cámara reflex</td>
+<td>2 kg.</td>
+<td>60 €</td>
+</tr>
+<tr>
+<td>1</td>
+<td>Tablet</td>
+<td>1 kg.</td>
+<td>50 €</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Portátil</td>
+<td>3 kg.</td>
+<td>70 €</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Dron</td>
+<td>4 kg.</td>
+<td>80 €</td>
+</tr>
+</tbody>
+</table>
+<div class="fragment">
+<div class="color_tema" style="text-align:center">
+<p><em>¿Qué objetos debemos tomar para maximizar el valor total de lo
+que llevamos sin exceder la capacidad de la mochila?</em></p>
+</div>
+</div>
+</section>
+<section id="descripción-del-problema-6" class="slide level2">
+<h2>Descripción del problema</h2>
+<ul>
+<li class="fragment"><p>Supongamos dos vectores <span
+class="math inline">\(P[0..n)\)</span> y <span
+class="math inline">\(V[0..n)\)</span>, tales que, para todo <span
+class="math inline">\(i \in \{0..n-1\}\)</span>:</p>
+<ul>
+<li class="fragment"><span class="math inline">\(P[i]\)</span> es el
+peso del objeto <span class="math inline">\(i\)</span>-ésimo.</li>
+<li class="fragment"><span class="math inline">\(V[i]\)</span> es el
+valor del objeto <span class="math inline">\(i\)</span>-ésimo.</li>
+</ul></li>
+<li class="fragment"><p>Suponemos que la mochila tiene capacidad <span
+class="math inline">\(m\)</span>.</p></li>
+<li class="fragment"><p>Queremos encontrar un subconjunto <span
+class="math inline">\(S \subseteq \{0,\dots,n-1\}\)</span> que maximiza
+<span class="math inline">\(\sum_{i \in S} V[i]\)</span> sujeto a la
+restricción <span class="math inline">\(\sum_{i \in S} P[i] \leq
+m\)</span>.</p></li>
+<li class="fragment"><p>Definimos <span
+class="math inline">\(\mathit{mochila}(m)\)</span> como el máximo valor
+que podemos obtener suponiendo que la capacidad de la mochila es <span
+class="math inline">\(m\)</span>.</p></li>
+</ul>
+</section>
+<section id="generalización-del-problema-1" class="slide level2">
+<h2>Generalización del problema</h2>
+<p>Si <span class="math inline">\(0 \leq i \leq n\)</span> y <span
+class="math inline">\(0 \leq j \leq m\)</span>, definimos <span
+class="math inline">\(\mathit{mochilaGen}\)</span> del siguiente
+modo:</p>
+<div
+style="display:flex;justify-content:center;background-color:#E0F0FF;margin-bottom:1em">
+<div style="width:30%">
+<p><span class="color_tema"><span
+class="math inline">\(\mathit{mochilaGen}(i, j)\)</span></span>   <span
+class="math inline">\(\equiv\)</span></p>
+</div>
+<div style="width:60%">
+<p>máximo valor que podemos acumular, suponiendo que la capacidad de la
+mochila es <span class="math inline">\(j\)</span> y que solamente
+podemos meter los objetos <span class="math inline">\(0, \ldots,
+i-1\)</span>.</p>
+</div>
+</div>
+</section>
+<section id="casos-base-1" class="slide level2">
+<h2>Casos base</h2>
+<div
+style="display:flex;justify-content:center;background-color:#E0F0FF;margin-bottom:1em">
+<div style="width:30%">
+<p><span class="color_tema"><span
+class="math inline">\(\mathit{mochilaGen}(i, j)\)</span></span>   <span
+class="math inline">\(\equiv\)</span></p>
+</div>
+<div style="width:60%">
+<p>máximo valor que podemos acumular, suponiendo que la capacidad de la
+mochila es <span class="math inline">\(j\)</span> y que solamente
+podemos meter los objetos <span class="math inline">\(0, \ldots,
+i-1\)</span>.</p>
+</div>
+</div>
+<ul>
+<li class="fragment"><p><strong>Caso base 1.</strong> <span
+class="math inline">\(i = 0\)</span>. No tenemos objetos que meter en la
+mochila.</p>
+<p><span class="math display">\[
+  \mathit{mochilaGen}(0, j) = 0
+  \]</span></p></li>
+<li class="fragment"><p><strong>Caso base 2.</strong> <span
+class="math inline">\(j = 0\)</span>. No queda sitio en la mochila.</p>
+<p><span class="math display">\[
+  \mathit{mochilaGen}(i, 0) = 0
+  \]</span></p></li>
+</ul>
+</section>
+<section id="caso-recursivo-2" class="slide level2">
+<h2>Caso recursivo</h2>
+<div
+style="display:flex;justify-content:center;background-color:#E0F0FF;margin-bottom:1em">
+<div style="width:30%">
+<p><span class="color_tema"><span
+class="math inline">\(\mathit{mochilaGen}(i, j)\)</span></span>   <span
+class="math inline">\(\equiv\)</span></p>
+</div>
+<div style="width:60%">
+<p>máximo valor que podemos acumular, suponiendo que la capacidad de la
+mochila es <span class="math inline">\(j\)</span> y que solamente
+podemos meter los objetos <span class="math inline">\(0, \ldots,
+i-1\)</span>.</p>
+</div>
+</div>
+<p>Suponemos <span class="math inline">\(i &gt; 0\)</span>, <span
+class="math inline">\(j &gt; 0\)</span>. Existen dos posibilidades:</p>
+<ul>
+<li class="fragment"><strong>Posibilidad 1</strong>. No meter el objeto
+<span class="math inline">\(i-1\)</span> en la mochila.
+<ul>
+<li class="fragment">En ese caso, tenemos que maximizar el valor
+obtenible con los objetos <span class="math inline">\(0, \ldots, i -
+2\)</span>, es decir, <span class="color_tema"><span
+class="math inline">\(\mathit{mochilaGen}(i - 1,
+j)\)</span></span>.</li>
+</ul></li>
+<li class="fragment"><strong>Posibilidad 2</strong>. Meter el objeto
+<span class="math inline">\(i-1\)</span> en la mochila.
+<ul>
+<li class="fragment">La capacidad restante en la mochila sería <span
+class="math inline">\(j - P[i-1]\)</span>. Tenemos que maximizar el
+valor obtenible con la capacidad restante y con los objetos restantes
+(hasta el <span class="math inline">\(i-2\)</span>). A esto le sumamos
+el valor del objeto que hemos introducido. Es decir, <span
+class="color_tema"><span class="math inline">\(\mathit{mochilaGen}(i -
+1, j - P[i-1]) + V[i-1]\)</span></span>.</li>
+</ul></li>
+</ul>
+</section>
+<section id="caso-recursivo-3" class="slide level2">
+<h2>Caso recursivo</h2>
+<div
+style="display:flex;justify-content:center;background-color:#E0F0FF;margin-bottom:1em">
+<div style="width:30%">
+<p><span class="color_tema"><span
+class="math inline">\(\mathit{mochilaGen}(i, j)\)</span></span>   <span
+class="math inline">\(\equiv\)</span></p>
+</div>
+<div style="width:60%">
+<p>máximo valor que podemos acumular, suponiendo que la capacidad de la
+mochila es <span class="math inline">\(j\)</span> y que solamente
+podemos meter los objetos <span class="math inline">\(0, \ldots,
+i-1\)</span>.</p>
+</div>
+</div>
+<p>Entre las dos posibilidades, escogemos aquella con la que maximicemos
+el valor.</p>
+<p><span class="math display">\[
+\mathit{mochilaGen}(i, j) = \max \left\{ \begin{array}{ll}
+\mathit{mochilaGen}(i - 1, j), \\
+\mathit{mochilaGen}(i - 1, j - P[i-1]) + V[i-1]
+\end{array}\right\}
+\]</span></p>
+<div class="fragment">
+<p>⚠️ Si <span class="math inline">\(j &lt; P[i-1]\)</span>, no podemos
+aplicar la Posibilidad 2, porque el objeto <span
+class="math inline">\(i-1\)</span> no cabe en la mochila.</p>
+</div>
+</section>
+<section id="definición-de-mathitmochilagen" class="slide level2">
+<h2>Definición de <span
+class="math inline">\(\mathit{mochilaGen}\)</span></h2>
+<p>Dados <span class="math inline">\(i, j\)</span> tales que <span
+class="math inline">\(0 \leq i \leq n\)</span> y <span
+class="math inline">\(0 \leq j \leq m\)</span>.</p>
+<p><span class="math display">\[
+\small\begin{array}{rcll}
+\mathit{mochilaGen}(i, 0) &amp; = &amp; 0 \\[0.5em]
+\mathit{mochilaGen}(0, j) &amp; = &amp; 0 \\[0.5em]
+\mathit{mochilaGen}(i, j) &amp; = &amp; \mathit{mochilaGen}(i - 1, j)
+\quad \text{si } i, j &gt; 0 \wedge j &lt; P[i-1] \\[0.5em]
+\mathit{mochilaGen}(i, j) &amp; = &amp; \max \left\{
+\begin{array}{l}
+\mathit{mochilaGen}(i - 1, j),\\
+\mathit{mochilaGen}(i - 1, j - P[i-1]) + V[i-1]\\
+\end{array} \right\} \quad \text{ en otro caso } \\
+\end{array}
+\]</span></p>
+<p>Llamada inicial: <span class="math inline">\(\mathit{mochilaGen}(n,
+m)\)</span>.</p>
+</section>
+<section id="programación-dinámica-ascendente-3"
+class="slide level2 subsection center">
+<h2 class="subsection center">Programación dinámica ascendente</h2>
+</section>
+<section id="rellenado-de-la-matriz-1" class="slide level2">
+<h2>Rellenado de la matriz</h2>
+<table class="pd">
+<tbody>
+<tr>
+<th>
+</th>
+<th>
+0
+</th>
+<th>
+…
+</th>
+<th>
+…
+</th>
+<th>
+…
+</th>
+<th>
+…
+</th>
+<th>
+…
+</th>
+<th>
+m
+</th>
+</tr>
+<tr>
+<th>
+0
+</th>
+<td class="hl1">
+0
+</td>
+<td class="hl1">
+0
+</td>
+<td class="hl1">
+0
+</td>
+<td class="hl1">
+0
+</td>
+<td class="hl1">
+0
+</td>
+<td class="hl1">
+0
+</td>
+<td class="hl1">
+0
+</td>
+</tr>
+<tr>
+<th>
+⁞
+</th>
+<td class="hl1">
+0
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+⁞
+</th>
+<td class="hl1">
+0
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+⁞
+</th>
+<td class="hl1">
+0
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+n
+</th>
+<td class="hl1">
+0
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td class="hl2" style="font-size:50%">
+<span class="math inline">\((n, m)\)</span>
+</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><p>Tenemos una matriz de <span class="math inline">\((n +
+1)\)</span> filas y <span class="math inline">\((m + 1)\)</span>
+columnas.</p></li>
+<li><p>Los casos base están en la fila <span
+class="math inline">\(0\)</span> y la columna <span
+class="math inline">\(0\)</span>.</p></li>
+<li><p>Queremos obtener el valor situado en la celda <span
+class="math inline">\((n, m)\)</span>.</p></li>
+</ul>
+</section>
+<section id="rellenado-de-la-matriz-2" class="slide level2">
+<h2>Rellenado de la matriz</h2>
+<table class="pd">
+<tbody>
+<tr>
+<th>
+</th>
+<th>
+0
+</th>
+<th>
+…
+</th>
+<th>
+…
+</th>
+<th>
+…
+</th>
+<th>
+…
+</th>
+<th>
+…
+</th>
+<th>
+m
+</th>
+</tr>
+<tr>
+<th>
+0
+</th>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+⁞
+</th>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+⁞
+</th>
+<td>
+ 
+</td>
+<td class="hl1 fragment" style="font-size:60%">
+<span class="math inline">\((i - 1, j - P[i-1])\)</span>
+</td>
+<td>
+…
+</td>
+<td>
+…
+</td>
+<td class="hl1 fragment" style="font-size:60%">
+<span class="math inline">\((i - 1, j)\)</span>
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+⁞
+</th>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td class="hl2" style="font-size:60%">
+<span class="math inline">\((i, j)\)</span>
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+n
+</th>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><p>En los casos recursivos, calculamos el valor de la celda <span
+class="math inline">\((i, j)\)</span> a partir de la celda
+inmediatamente superior <span class="math inline">\((i-1, j)\)</span> y
+de otra celda situada a izquierda de esta última.</p></li>
+<li><p>Hemos de rellenar la matriz <strong>por filas</strong> de arriba
+a abajo, desde la fila <code>0</code> hasta la fila <code>n</code>.</p>
+<ul>
+<li>Podemos rellenar cada fila de izquierda a derecha o viceversa.</li>
+</ul></li>
+</ul>
+</section>
+<section id="implementación-en-c-5" class="slide level2">
+<h2>Implementación en C++</h2>
+<div class="cpp cpp_block" style="font-size:60%">
+<p><span class="type">int</span> mochila_pd_asc(<span
+class="type">const</span> <span class="type">vector</span>&lt;<span
+class="type">int</span>&gt; &amp;p, <span class="type">const</span>
+<span class="type">vector</span>&lt;<span class="type">int</span>&gt;
+&amp;v, <span class="type">int</span> m) {<br>  <span
+class="type">int</span> n = p.size();<br>  matriz&lt;<span
+class="type">int</span>&gt; tabla = crear_matriz(n + <span
+class="number">1</span>, m + <span class="number">1</span>, <span
+class="number">0</span>);<br><br>  <strong>for</strong> (<span
+class="type">int</span> i = <span class="number">1</span>; i &lt;= n;
+i++) {<br>    <strong>for</strong> (<span class="type">int</span> j =
+<span class="number">1</span>; j &lt;= m; j++)
+{<br>      <strong>if</strong> (j &lt; p[i-<span
+class="number">1</span>]) {<br>        tabla[i][j] = tabla[i-<span
+class="number">1</span>][j];<br>      } <strong>else</strong>
+{<br>        tabla[i][j] = max(tabla[i - <span
+class="number">1</span>][j], tabla[i - <span class="number">1</span>][j
+- p[i-<span class="number">1</span>]] + v[i-<span
+class="number">1</span>]);<br>      }<br>    }<br>  }<br><br>  <strong>return</strong>
+tabla[n][m];<br>}</p>
+</div>
+<p>Coste en espacio y en tiempo: <span class="color_tema"><span
+class="math inline">\(\Theta(nm)\)</span></span>, donde <span
+class="math inline">\(n =\)</span> <code>v.size()</code>.</p>
+</section>
+<section id="reconstrucción-de-la-solución-1"
+class="slide level2 subsection center">
+<h2 class="subsection center">Reconstrucción de la solución</h2>
+</section>
+<section id="reconstrucción-de-la-solución-2" class="slide level2">
+<h2>Reconstrucción de la solución</h2>
+<ul>
+<li><p>Sabemos cómo calcular el valor máximo obtenible en el problema de
+la mochila.</p></li>
+<li><p><strong>¿Cómo determinamos qué objetos meter en la mochila para
+obtener ese valor?</strong></p></li>
+</ul>
+<ul>
+<li class="fragment"><p>Comenzamos en la casilla
+<code>tabla[n][m]</code> de la matriz.</p>
+<ul>
+<li class="fragment"><p>Si <code>tabla[n][m]</code> coincide con
+<code>tabla[n-1][m]</code> entonces la solución óptima implica
+<strong>no meter</strong> el objeto <span
+class="math inline">\(n-1\)</span> en la mochila. Seguimos
+reconstruyendo a partir de la celda <code>tabla[n-1][m]</code>.</p></li>
+<li class="fragment"><p>Si <code>tabla[n][m]</code> coincide con
+<code>tabla[n-1][m-p[i-1]] + v[i-1]</code> entonces la solución óptima
+implica <strong>meter</strong> el objeto <span
+class="math inline">\(n-1\)</span> en la mochila. Seguimos
+reconstruyendo a partir de la celda
+<code>tabla[n-1][m - p[i-1]]</code>.</p></li>
+</ul></li>
+<li class="fragment"><p>El proceso finaliza cuando llegamos a la fila 0
+o a la columna 0 (casos base).</p></li>
+</ul>
+</section>
+<section id="ejemplo-23" class="slide level2"
+data-transition="slide-in none-out">
+<h2 data-transition="slide-in none-out">Ejemplo</h2>
+<p>Sean <span class="math inline">\(P = [2, 1, 3, 4]\)</span>, <span
+class="math inline">\(V = [60, 50, 70, 80]\)</span> y <span
+class="math inline">\(m = 5\)</span>.</p>
+<table class="pd" style="margin-bottom:0.5em">
+<tr>
+<th>
+ 
+</th>
+<th>
+0
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+<th>
+3
+</th>
+<th>
+4
+</th>
+<th>
+5
+</th>
+</tr>
+<tr>
+<th>
+0
+</th>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+</tr>
+<tr>
+<th>
+1
+</th>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+60
+</td>
+<td>
+60
+</td>
+<td>
+60
+</td>
+<td>
+60
+</td>
+</tr>
+<tr>
+<th>
+2
+</th>
+<td>
+0
+</td>
+<td>
+50
+</td>
+<td>
+60
+</td>
+<td>
+110
+</td>
+<td>
+110
+</td>
+<td>
+110
+</td>
+</tr>
+<tr>
+<th>
+3
+</th>
+<td>
+0
+</td>
+<td class="hl1">
+50
+</td>
+<td>
+60
+</td>
+<td>
+110
+</td>
+<td>
+120
+</td>
+<td class="hl1">
+<strong>130</strong>
+</td>
+</tr>
+<tr>
+<th>
+4
+</th>
+<td>
+0
+</td>
+<td>
+50
+</td>
+<td>
+60
+</td>
+<td>
+110
+</td>
+<td>
+120
+</td>
+<td class="hl2">
+<strong>130</strong>
+</td>
+</tr>
+</table>
+<ul>
+<li><p>Sabemos que
+<code>tabla[4][5] = max(tabla[3][5], tabla[3][1] + 80)</code>.</p></li>
+<li><p>Hay empate. Cualquiera de las dos decisiones lleva al
+óptimo.</p></li>
+<li><p>Decidimos <strong>no</strong> meter el objeto 3.</p></li>
+</ul>
+</section>
+<section id="ejemplo-24" class="slide level2" data-transition="none">
+<h2 data-transition="none">Ejemplo</h2>
+<p>Sean <span class="math inline">\(P = [2, 1, 3, 4]\)</span>, <span
+class="math inline">\(V = [60, 50, 70, 80]\)</span> y <span
+class="math inline">\(m = 5\)</span>.</p>
+<table class="pd" style="margin-bottom:0.5em">
+<tr>
+<th>
+ 
+</th>
+<th>
+0
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+<th>
+3
+</th>
+<th>
+4
+</th>
+<th>
+5
+</th>
+</tr>
+<tr>
+<th>
+0
+</th>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+</tr>
+<tr>
+<th>
+1
+</th>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+60
+</td>
+<td>
+60
+</td>
+<td>
+60
+</td>
+<td>
+60
+</td>
+</tr>
+<tr>
+<th>
+2
+</th>
+<td>
+0
+</td>
+<td>
+50
+</td>
+<td class="hl1">
+<strong>60</strong>
+</td>
+<td>
+110
+</td>
+<td>
+110
+</td>
+<td class="hl1">
+110
+</td>
+</tr>
+<tr>
+<th>
+3
+</th>
+<td>
+0
+</td>
+<td>
+50
+</td>
+<td>
+60
+</td>
+<td>
+110
+</td>
+<td>
+120
+</td>
+<td class="hl2">
+<strong>130</strong>
+</td>
+</tr>
+<tr>
+<th>
+4
+</th>
+<td>
+0
+</td>
+<td>
+50
+</td>
+<td>
+60
+</td>
+<td>
+110
+</td>
+<td>
+120
+</td>
+<td>
+130
+</td>
+</tr>
+</table>
+<ul>
+<li><p>Sabemos que
+<code>tabla[3][5] = max(tabla[2][5], tabla[2][2] + 70)</code>.</p></li>
+<li><p>Como <code>tabla[3][5] == tabla[2][2] + 70</code>,
+<strong>sí</strong> metemos el objeto 2.</p></li>
+</ul>
+</section>
+<section id="ejemplo-25" class="slide level2" data-transition="none">
+<h2 data-transition="none">Ejemplo</h2>
+<p>Sean <span class="math inline">\(P = [2, 1, 3, 4]\)</span>, <span
+class="math inline">\(V = [60, 50, 70, 80]\)</span> y <span
+class="math inline">\(m = 5\)</span>.</p>
+<table class="pd" style="margin-bottom:0.5em">
+<tr>
+<th>
+ 
+</th>
+<th>
+0
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+<th>
+3
+</th>
+<th>
+4
+</th>
+<th>
+5
+</th>
+</tr>
+<tr>
+<th>
+0
+</th>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+</tr>
+<tr>
+<th>
+1
+</th>
+<td>
+0
+</td>
+<td class="hl1">
+0
+</td>
+<td class="hl1">
+<strong>60</strong>
+</td>
+<td>
+60
+</td>
+<td>
+60
+</td>
+<td>
+60
+</td>
+</tr>
+<tr>
+<th>
+2
+</th>
+<td>
+0
+</td>
+<td>
+50
+</td>
+<td class="hl2">
+<strong>60</strong>
+</td>
+<td>
+110
+</td>
+<td>
+110
+</td>
+<td>
+110
+</td>
+</tr>
+<tr>
+<th>
+3
+</th>
+<td>
+0
+</td>
+<td>
+50
+</td>
+<td>
+60
+</td>
+<td>
+110
+</td>
+<td>
+120
+</td>
+<td>
+130
+</td>
+</tr>
+<tr>
+<th>
+4
+</th>
+<td>
+0
+</td>
+<td>
+50
+</td>
+<td>
+60
+</td>
+<td>
+110
+</td>
+<td>
+120
+</td>
+<td>
+130
+</td>
+</tr>
+</table>
+<ul>
+<li><p>Sabemos que
+<code>tabla[2][2] = max(tabla[1][2], tabla[1][1] + 50)</code>.</p></li>
+<li><p>Como <code>tabla[2][2] == tabla[1][2]</code>, <strong>no</strong>
+metemos el objeto 1.</p></li>
+</ul>
+</section>
+<section id="ejemplo-26" class="slide level2" data-transition="none">
+<h2 data-transition="none">Ejemplo</h2>
+<p>Sean <span class="math inline">\(P = [2, 1, 3, 4]\)</span>, <span
+class="math inline">\(V = [60, 50, 70, 80]\)</span> y <span
+class="math inline">\(m = 5\)</span>.</p>
+<table class="pd" style="margin-bottom:0.5em">
+<tr>
+<th>
+ 
+</th>
+<th>
+0
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+<th>
+3
+</th>
+<th>
+4
+</th>
+<th>
+5
+</th>
+</tr>
+<tr>
+<th>
+0
+</th>
+<td class="hl1">
+<strong>0</strong>
+</td>
+<td>
+0
+</td>
+<td class="hl1">
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+</tr>
+<tr>
+<th>
+1
+</th>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td class="hl2">
+<strong>60</strong>
+</td>
+<td>
+60
+</td>
+<td>
+60
+</td>
+<td>
+60
+</td>
+</tr>
+<tr>
+<th>
+2
+</th>
+<td>
+0
+</td>
+<td>
+50
+</td>
+<td>
+60
+</td>
+<td>
+110
+</td>
+<td>
+110
+</td>
+<td>
+110
+</td>
+</tr>
+<tr>
+<th>
+3
+</th>
+<td>
+0
+</td>
+<td>
+50
+</td>
+<td>
+60
+</td>
+<td>
+110
+</td>
+<td>
+120
+</td>
+<td>
+130
+</td>
+</tr>
+<tr>
+<th>
+4
+</th>
+<td>
+0
+</td>
+<td>
+50
+</td>
+<td>
+60
+</td>
+<td>
+110
+</td>
+<td>
+120
+</td>
+<td>
+130
+</td>
+</tr>
+</table>
+<ul>
+<li><p>Sabemos que
+<code>tabla[1][2] = max(tabla[0][2], tabla[0][0] + 60)</code>.</p></li>
+<li><p>Como <code>tabla[1][2] == tabla[0][0] + 60</code>,
+<strong>sí</strong> metemos el objeto 0.</p></li>
+</ul>
+</section>
+<section id="ejemplo-27" class="slide level2" data-transition="none">
+<h2 data-transition="none">Ejemplo</h2>
+<p>Sean <span class="math inline">\(P = [2, 1, 3, 4]\)</span>, <span
+class="math inline">\(V = [60, 50, 70, 80]\)</span> y <span
+class="math inline">\(m = 5\)</span>.</p>
+<table class="pd" style="margin-bottom:0.5em">
+<tr>
+<th>
+ 
+</th>
+<th>
+0
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+<th>
+3
+</th>
+<th>
+4
+</th>
+<th>
+5
+</th>
+</tr>
+<tr>
+<th>
+0
+</th>
+<td class="hl2">
+<strong>0</strong>
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+</tr>
+<tr>
+<th>
+1
+</th>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+60
+</td>
+<td>
+60
+</td>
+<td>
+60
+</td>
+<td>
+60
+</td>
+</tr>
+<tr>
+<th>
+2
+</th>
+<td>
+0
+</td>
+<td>
+50
+</td>
+<td>
+60
+</td>
+<td>
+110
+</td>
+<td>
+110
+</td>
+<td>
+110
+</td>
+</tr>
+<tr>
+<th>
+3
+</th>
+<td>
+0
+</td>
+<td>
+50
+</td>
+<td>
+60
+</td>
+<td>
+110
+</td>
+<td>
+120
+</td>
+<td>
+130
+</td>
+</tr>
+<tr>
+<th>
+4
+</th>
+<td>
+0
+</td>
+<td>
+50
+</td>
+<td>
+60
+</td>
+<td>
+110
+</td>
+<td>
+120
+</td>
+<td>
+130
+</td>
+</tr>
+</table>
+<ul>
+<li><p>Hemos llegado al caso base.</p></li>
+<li><p>Objetos seleccionados: <code>0</code> y <code>2</code>.</p>
+<ul>
+<li>Valor total de los objetos: <code>60 + 70 = 130</code>.</li>
+<li>Peso total de los objetos: <code>2 + 3 = 5</code>.</li>
+</ul></li>
+</ul>
+</section>
+<section id="solución-alternativa" class="slide level2">
+<h2>Solución alternativa</h2>
+<p>Sean <span class="math inline">\(P = [2, 1, 3, 4]\)</span>, <span
+class="math inline">\(V = [60, 50, 70, 80]\)</span> y <span
+class="math inline">\(m = 5\)</span>.</p>
+<table class="pd" style="margin-bottom:0.5em">
+<tr>
+<th>
+ 
+</th>
+<th>
+0
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+<th>
+3
+</th>
+<th>
+4
+</th>
+<th>
+5
+</th>
+</tr>
+<tr>
+<th>
+0
+</th>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+</tr>
+<tr>
+<th>
+1
+</th>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+60
+</td>
+<td>
+60
+</td>
+<td>
+60
+</td>
+<td>
+60
+</td>
+</tr>
+<tr>
+<th>
+2
+</th>
+<td>
+0
+</td>
+<td>
+50
+</td>
+<td>
+60
+</td>
+<td>
+110
+</td>
+<td>
+110
+</td>
+<td>
+110
+</td>
+</tr>
+<tr>
+<th>
+3
+</th>
+<td>
+0
+</td>
+<td class="hl1">
+<strong>50</strong>
+</td>
+<td>
+60
+</td>
+<td>
+110
+</td>
+<td>
+120
+</td>
+<td class="hl1">
+130
+</td>
+</tr>
+<tr>
+<th>
+4
+</th>
+<td>
+0
+</td>
+<td>
+50
+</td>
+<td>
+60
+</td>
+<td>
+110
+</td>
+<td>
+120
+</td>
+<td class="hl2">
+<strong>130</strong>
+</td>
+</tr>
+</table>
+<ul>
+<li><p>Si al inicio del proceso hubiéramos decidido meter el objeto 3,
+hubiéramos acabado llegando a otra solución distinta, pero igual de
+óptima:</p></li>
+<li><p>Objetos seleccionados: <code>1</code> y <code>3</code>. Valor
+total: <code>50 + 80 = 130</code>. Peso total:
+<code>1 + 4 = 5</code>.</p></li>
+</ul>
+</section>
+<section id="implementación-en-c-6" class="slide level2">
+<h2>Implementación en C++</h2>
+<div class="cpp cpp_block">
+<p><span class="type">vector</span>&lt;<span class="type">int</span>&gt;
+objetos_seleccionados;<br><span class="type">int</span> i = n, j =
+m;<br><strong>while</strong> (i &gt; <span class="number">0</span>
+&amp;&amp; j &gt; <span class="number">0</span>)
+{<br>  <strong>if</strong> (tabla[i][j] == tabla[i-<span
+class="number">1</span>][j]) {<br>    i--;<br>  } <strong>else</strong>
+{<br>    objetos_seleccionados.push_back(i-<span
+class="number">1</span>);<br>    j -= p[i-<span
+class="number">1</span>];<br>    i--;<br>  }<br>}</p>
+</div>
+</section></section>
+<section>
+<section id="algoritmo-de-floyd" class="title-slide slide level1 center"
+data-background-image="img/CyanBackground.png">
+<h1 class="center" data-background-image="img/CyanBackground.png"><span
+class="sc_number">5.5</span>Algoritmo de Floyd</h1>
+
+</section>
+<section id="descripción-del-problema-7" class="slide level2">
+<h2>Descripción del problema</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<ul>
+<li class="fragment"><p>Un <strong>grafo</strong> es un conjunto de
+vértices conectados por aristas.</p></li>
+<li class="fragment"><p>Cuando las aristas solamente pueden recorrerse
+en un sentido, decimos que es un grafo
+<strong>dirigido</strong>.</p></li>
+<li class="fragment"><p>Si cada arista posee un <em>valor</em> o
+<em>coste</em> asociado, decimos que el grafo es
+<strong>valorado</strong>.</p></li>
+</ul>
+</div><div class="column" style="width:50%;">
+<p><img data-src="Tema5/graph.png" style="border:1px solid black" /></p>
+</div>
+</div>
+</section>
+<section id="descripción-del-problema-8" class="slide level2">
+<h2>Descripción del problema</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<ul>
+<li class="fragment"><p>Un <strong>camino</strong> es una secuencia de
+vértices, de modo que existe una arista que conecta un vértice con el
+siguiente en la secuencia.</p></li>
+<li class="fragment"><p>El <strong>coste</strong> de un camino es la
+suma de los costes de las aristas que lo componen.</p></li>
+<li class="fragment"><p>Queremos resolver el siguiente
+problema:</p></li>
+</ul>
+</div><div class="column" style="width:50%;">
+<p><img data-src="Tema5/graph.png" style="border:1px solid black" /></p>
+</div>
+</div>
+<div class="fragment" style="text-align:center">
+<p><span class="color_tema"><em>Para cualquier par de vértices (i,
+j),<br/><strong>¿cuál es el camino de menor coste que conecta i con
+j?</strong> </em></span></p>
+<p><em>Suponemos que el grafo no contiene ciclos de coste
+negativo.</em></p>
+</div>
+</section>
+<section id="representación-de-un-grafo" class="slide level2">
+<h2>Representación de un grafo</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<ul>
+<li class="fragment"><p>Representamos un grafo de <span
+class="math inline">\(n\)</span> vértices mediante una matriz <span
+class="math inline">\(G\)</span> de tamaño <span class="math inline">\(n
+\times n\)</span>.</p>
+<ul>
+<li class="fragment">Se le llama <strong>matriz de
+adyacencia</strong>.</li>
+</ul></li>
+<li class="fragment"><p>Dados dos vértices <span
+class="math inline">\(i\)</span> y <span
+class="math inline">\(j\)</span>, el elemento <span
+class="math inline">\(G[i][j]\)</span> contiene el coste de la arista
+que une <span class="math inline">\(i\)</span> con <span
+class="math inline">\(j\)</span>.</p>
+<ul>
+<li class="fragment"><p>Si no existe arista, <span
+class="math inline">\(G[i][j] = +\infty\)</span>.</p></li>
+<li class="fragment"><p>Suponemos <span class="math inline">\(G[i][i] =
+0\)</span> para todo <span class="math inline">\(i\)</span>.</p></li>
+</ul></li>
+</ul>
+</div><div class="column" style="text-align:center">
+<p><img data-src="Tema5/graph.png" style="width:60.0%" /></p>
+<table class="pd fragment">
+<tr>
+<th>
+</th>
+<th>
+0
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+<th>
+3
+</th>
+<th>
+4
+</th>
+</tr>
+<tr>
+<th>
+0
+</th>
+<td>
+0
+</td>
+<td>
++∞
+</td>
+<td>
+1
+</td>
+<td>
+7
+</td>
+<td>
++∞
+</td>
+</tr>
+<tr>
+<th>
+1
+</th>
+<td>
++∞
+</td>
+<td>
+0
+</td>
+<td>
++∞
+</td>
+<td>
+4
+</td>
+<td>
+4
+</td>
+</tr>
+<tr>
+<th>
+2
+</th>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
+0
+</td>
+<td>
++∞
+</td>
+<td>
+4
+</td>
+</tr>
+<tr>
+<th>
+3
+</th>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
+0
+</td>
+<td>
+-1
+</td>
+</tr>
+<tr>
+<th>
+4
+</th>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
++∞
+</td>
+<td>
+0
+</td>
+</tr>
+</table>
+</div>
+</div>
+</section>
+<section id="definición-de-función" class="slide level2">
+<h2>Definición de función</h2>
+<p>Para todo <span class="math inline">\(i\)</span>, <span
+class="math inline">\(j\)</span> tal que <span class="math inline">\(0
+\leq i, j &lt; n\)</span>.</p>
+<div
+style="display:flex;justify-content:center;background-color:#E0F0FF;margin-bottom:1em">
+<div style="width:25%">
+<p><span class="color_tema"><span
+class="math inline">\(\mathit{costeMin}(i, j)\)</span></span>   <span
+class="math inline">\(\equiv\)</span></p>
+</div>
+<div style="width:70%">
+<p>coste del camíno mínimo que hay desde el vértice <span
+class="math inline">\(i\)</span> hasta el vértice <span
+class="math inline">\(j\)</span>.</p>
+</div>
+</div>
+<div class="fragment">
+<p>Generalizamos la función añadiendo un <span
+class="math inline">\(k\)</span> tal que <span class="math inline">\(0
+\leq k \leq n\)</span>.</p>
+<div
+style="display:flex;justify-content:center;background-color:#E0F0FF;margin-bottom:1em">
+<div style="width:30%">
+<p><span class="color_tema"><span
+class="math inline">\(\mathit{costeGen}(i, j, k)\)</span></span>   <span
+class="math inline">\(\equiv\)</span></p>
+</div>
+<div style="width:60%">
+<p>coste del camíno mínimo que hay desde el vértice <span
+class="math inline">\(i\)</span> hasta el vértice <span
+class="math inline">\(j\)</span>, pudiendo solamente utilizar los
+vértices <span class="math inline">\(0, \dots, k - 1\)</span> como
+vértices intermedios.</p>
+</div>
+</div>
+</div>
+<div class="fragment">
+<p>Se tiene que: <span class="color_tema"><span
+class="math inline">\(\mathit{costeMin}(i, j) = \mathit{costeGen}(i, j,
+n)\)</span></span>, ya que cuando <span class="math inline">\(k =
+n\)</span> podemos pasar por cualquier vértice del grafo para obtener el
+camino mínimo.</p>
+</div>
+</section>
+<section id="caso-base" class="slide level2">
+<h2>Caso base</h2>
+<div
+style="display:flex;justify-content:center;background-color:#E0F0FF;margin-bottom:1em">
+<div style="width:30%">
+<p><span class="color_tema"><span
+class="math inline">\(\mathit{costeGen}(i, j, k)\)</span></span>   <span
+class="math inline">\(\equiv\)</span></p>
+</div>
+<div style="width:60%">
+<p>coste del camíno mínimo que hay desde el vértice <span
+class="math inline">\(i\)</span> hasta el vértice <span
+class="math inline">\(j\)</span>, pudiendo solamente utilizar los
+vértices <span class="math inline">\(0, \dots, k - 1\)</span> como
+vértices intermedios.</p>
+</div>
+</div>
+<ul>
+<li class="fragment"><p>Si <span class="math inline">\(k = 0\)</span>,
+entonces ningún camino puede tener vértices intermedios.</p>
+<ul>
+<li class="fragment"><p>Si los vértices <span
+class="math inline">\(i\)</span> y <span
+class="math inline">\(j\)</span> están conectados por una arista,
+entonces existe un camino que no tiene vértices intermedios. En caso
+contrario, no.</p></li>
+<li class="fragment"><p>Por tanto, <span
+class="math inline">\(\mathit{costeGen}(i, j, 0)\)</span> es,
+precisamente, la matriz de adyacencia:</p></li>
+</ul></li>
+</ul>
+<p><span class="color_tema fragment"><span class="math display">\[
+\mathit{costeGen}(i, j, 0) = G[i][j]
+\]</span></span></p>
+</section>
+<section id="caso-recursivo-4" class="slide level2">
+<h2>Caso recursivo</h2>
+<div
+style="display:flex;justify-content:center;background-color:#E0F0FF;margin-bottom:1em">
+<div style="width:30%">
+<p><span class="color_tema"><span
+class="math inline">\(\mathit{costeGen}(i, j, k)\)</span></span>   <span
+class="math inline">\(\equiv\)</span></p>
+</div>
+<div style="width:60%">
+<p>coste del camíno mínimo que hay desde el vértice <span
+class="math inline">\(i\)</span> hasta el vértice <span
+class="math inline">\(j\)</span>, pudiendo solamente utilizar los
+vértices <span class="math inline">\(0, \dots, k - 1\)</span> como
+vértices intermedios.</p>
+</div>
+</div>
+<ul>
+<li>Suponemos <span class="math inline">\(k &gt; 0\)</span>. El conjunto
+de caminos que van de <span class="math inline">\(i\)</span> a <span
+class="math inline">\(j\)</span> utilizando solamente vértices
+intermedios hasta <span class="math inline">\(k - 1\)</span> puede
+dividirse en dos subconjuntos:
+<ul>
+<li class="fragment">
+El subconjunto de caminos que <strong>no</strong> pasan por <span
+class="math inline">\(k - 1\)</span>.
+</li>
+<li class="fragment">
+El subconjunto de caminos que <strong>sí</strong> pasan por <span
+class="math inline">\(k - 1\)</span>.
+</li>
+</ul></li>
+</ul>
+<div style="text-align:center">
+<p><img data-src="Tema5/Floyd.svg" /></p>
+</div>
+</section>
+<section id="caso-recursivo-5" class="slide level2">
+<h2>Caso recursivo</h2>
+<div
+style="display:flex;justify-content:center;background-color:#E0F0FF;margin-bottom:1em">
+<div style="width:30%">
+<p><span class="color_tema"><span
+class="math inline">\(\mathit{costeGen}(i, j, k)\)</span></span>   <span
+class="math inline">\(\equiv\)</span></p>
+</div>
+<div style="width:60%">
+<p>coste del camíno mínimo que hay desde el vértice <span
+class="math inline">\(i\)</span> hasta el vértice <span
+class="math inline">\(j\)</span>, pudiendo solamente utilizar los
+vértices <span class="math inline">\(0, \dots, k - 1\)</span> como
+vértices intermedios.</p>
+</div>
+</div>
+<ul>
+<li>De entre todos aquellos caminos que <strong>no</strong> pasan por
+<span class="math inline">\(k - 1\)</span>, el mínimo tiene coste <span
+class="color_tema"><span class="math inline">\(\mathit{costeGen}(i, j, k
+- 1)\)</span></span>.</li>
+</ul>
+<div style="text-align:center">
+<p><img data-src="Tema5/Floyd2.svg" /></p>
+</div>
+</section>
+<section id="caso-recursivo-6" class="slide level2">
+<h2>Caso recursivo</h2>
+<div
+style="display:flex;justify-content:center;background-color:#E0F0FF;margin-bottom:1em">
+<div style="width:30%">
+<p><span class="color_tema"><span
+class="math inline">\(\mathit{costeGen}(i, j, k)\)</span></span>   <span
+class="math inline">\(\equiv\)</span></p>
+</div>
+<div style="width:60%">
+<p>coste del camíno mínimo que hay desde el vértice <span
+class="math inline">\(i\)</span> hasta el vértice <span
+class="math inline">\(j\)</span>, pudiendo solamente utilizar los
+vértices <span class="math inline">\(0, \dots, k - 1\)</span> como
+vértices intermedios.</p>
+</div>
+</div>
+<ul>
+<li>De entre todos los que <strong>sí</strong> pasan por <span
+class="math inline">\(k - 1\)</span>, el mínimo puede construirse
+concatenando el camino mínimo que une <span
+class="math inline">\(i\)</span> con <span class="math inline">\(k -
+1\)</span>, y el camino mínimo que une <span class="math inline">\(k -
+1\)</span> con <span class="math inline">\(j\)</span>. Su coste es:
+<span class="color_tema"><span
+class="math display">\[\mathit{costeGen}(i, k-1, k-1) +
+\mathit{costeGen}(k-1, j, k -1)\]</span></span></li>
+</ul>
+<div style="text-align:center; margin-top:-2em">
+<p><img data-src="Tema5/Floyd3.svg" /></p>
+</div>
+</section>
+<section id="definición-de-mathitcostegen" class="slide level2">
+<h2>Definición de <span
+class="math inline">\(\mathit{costeGen}\)</span></h2>
+<div
+style="display:flex;justify-content:center;background-color:#E0F0FF;margin-bottom:1em">
+<div style="width:30%">
+<p><span class="color_tema"><span
+class="math inline">\(\mathit{costeGen}(i, j, k)\)</span></span>   <span
+class="math inline">\(\equiv\)</span></p>
+</div>
+<div style="width:60%">
+<p>coste del camíno mínimo que hay desde el vértice <span
+class="math inline">\(i\)</span> hasta el vértice <span
+class="math inline">\(j\)</span>, pudiendo solamente utilizar los
+vértices <span class="math inline">\(0, \dots, k - 1\)</span> como
+vértices intermedios.</p>
+</div>
+</div>
+<p>Dados <span class="math inline">\(i, j, k\)</span> tales que <span
+class="math inline">\(0 \leq i, j &lt; n\)</span>, <span
+class="math inline">\(0 \leq k \leq n\)</span>:</p>
+<p><span class="math display">\[\small
+\begin{array}{l}
+\mathit{costeGen}(i, j, 0)  =  G[i][j] \\
+\mathit{costeGen}(i, j, k)  =  \min \left\{
+\begin{array}{l}
+    \mathit{costeGen}(i, j, k - 1),\\
+    \mathit{costeGen}(i, k - 1, k - 1) + \mathit{costeGen}(k - 1, j, k -
+1)\\
+\end{array}
+\right\} \text{ si }k &gt; 0
+\end{array}
+\]</span></p>
+</section>
+<section id="programación-dinámica-ascendente-4"
+class="slide level2 subsection center">
+<h2 class="subsection center">Programación dinámica ascendente</h2>
+</section>
+<section id="programación-dinámica-ascendente-5" class="slide level2">
+<h2>Programación dinámica ascendente</h2>
+<ul>
+<li class="fragment"><p>Necesitamos una tabla donde almacenar los
+resultados de <span class="math inline">\(\mathit{costeGen}(i, j,
+k)\)</span>, donde <span class="math inline">\(0 \leq i, j &lt;
+n\)</span> y <span class="math inline">\(0 \leq k \leq
+n\)</span>.</p></li>
+<li class="fragment"><p>La función tiene <strong>tres
+parámetros</strong>, por lo que necesitaríamos un array tridimensional
+de tamaño <span class="math inline">\(n \times n \times (n +
+1)\)</span>, o bien <span class="math inline">\(n + 1\)</span> matrices
+bidimensionales de tamaño <span class="math inline">\(n \times
+n\)</span>.</p></li>
+</ul>
+<div class="fragment" style="display:flex;justify-content:space-around">
+<div style="text-align:center">
+<p><span class="color_tema"><code>k = 0</code></span></p>
+<table class="pd" style="font-size:80%">
+<tr>
+<th>
+</th>
+<th>
+0
+</th>
+<th style="width:6em">
+…
+</th>
+<th>
+n-1
+</th>
+</tr>
+<tr>
+<th>
+0
+</th>
+<td>
+ 
+</td>
+<td>
+…
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+⁞
+</th>
+<td>
+⁞
+</td>
+<td>
+⋱
+</td>
+<td>
+⁞
+</td>
+</tr>
+<tr>
+<th>
+n-1
+</th>
+<td>
+ 
+</td>
+<td>
+…
+</td>
+<td>
+ 
+</td>
+</tr>
+</table>
+</div>
+<div style="text-align:center">
+<p><span class="color_tema"><code>k = 1</code></span></p>
+<table class="pd" style="font-size:80%">
+<tr>
+<th>
+</th>
+<th>
+0
+</th>
+<th style="width:6em">
+…
+</th>
+<th>
+n-1
+</th>
+</tr>
+<tr>
+<th>
+0
+</th>
+<td>
+ 
+</td>
+<td>
+…
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+⁞
+</th>
+<td>
+⁞
+</td>
+<td>
+⋱
+</td>
+<td>
+⁞
+</td>
+</tr>
+<tr>
+<th>
+n-1
+</th>
+<td>
+ 
+</td>
+<td>
+…
+</td>
+<td>
+ 
+</td>
+</tr>
+</table>
+</div>
+<div style="text-align:center;align-self:center">
+<p>    <strong>. . .</strong>   </p>
+</div>
+<div style="text-align:center">
+<p><span class="color_tema"><code>k = n</code></span></p>
+<table class="pd" style="font-size:80%">
+<tr>
+<th>
+</th>
+<th>
+0
+</th>
+<th style="width:6em">
+…
+</th>
+<th>
+n-1
+</th>
+</tr>
+<tr>
+<th>
+0
+</th>
+<td>
+ 
+</td>
+<td>
+…
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+⁞
+</th>
+<td>
+⁞
+</td>
+<td>
+⋱
+</td>
+<td>
+⁞
+</td>
+</tr>
+<tr>
+<th>
+n-1
+</th>
+<td>
+ 
+</td>
+<td>
+…
+</td>
+<td>
+ 
+</td>
+</tr>
+</table>
+</div>
+</div>
+</section>
+<section id="rellenado-de-las-matrices-caso-base" class="slide level2">
+<h2>Rellenado de las matrices: caso base</h2>
+<ul>
+<li class="fragment"><p>En el caso <span class="math inline">\(k =
+0\)</span>, tenemos <span class="math inline">\(\mathit{costeGen}(i, j,
+0)  =  G[i][j]\)</span>.</p></li>
+<li class="fragment"><p>Por tanto, la matriz <span
+class="math inline">\(k = 0\)</span> es la <strong>matriz de
+adyacencia</strong> del grafo de entrada.</p></li>
+</ul>
+<div style="display:flex;justify-content:space-around">
+<div style="text-align:center">
+<p><span class="color_tema"><code>k = 0</code></span></p>
+<table class="pd" style="font-size:80%">
+<tr>
+<th>
+</th>
+<th>
+0
+</th>
+<th style="width:6em">
+…
+</th>
+<th>
+n-1
+</th>
+</tr>
+<tr>
+<th>
+0
+</th>
+<td class="hl1">
+ 
+</td>
+<td class="hl1">
+…
+</td>
+<td class="hl1">
+ 
+</td>
+</tr>
+<tr>
+<th>
+⁞
+</th>
+<td class="hl1">
+⁞
+</td>
+<td class="hl1">
+⋱
+</td>
+<td class="hl1">
+⁞
+</td>
+</tr>
+<tr>
+<th>
+n-1
+</th>
+<td class="hl1">
+ 
+</td>
+<td class="hl1">
+…
+</td>
+<td class="hl1">
+ 
+</td>
+</tr>
+</table>
+</div>
+<div style="text-align:center">
+<p><span class="color_tema"><code>k = 1</code></span></p>
+<table class="pd" style="font-size:80%">
+<tr>
+<th>
+</th>
+<th>
+0
+</th>
+<th style="width:6em">
+…
+</th>
+<th>
+n-1
+</th>
+</tr>
+<tr>
+<th>
+0
+</th>
+<td>
+ 
+</td>
+<td>
+…
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+⁞
+</th>
+<td>
+⁞
+</td>
+<td>
+⋱
+</td>
+<td>
+⁞
+</td>
+</tr>
+<tr>
+<th>
+n-1
+</th>
+<td>
+ 
+</td>
+<td>
+…
+</td>
+<td>
+ 
+</td>
+</tr>
+</table>
+</div>
+<div style="text-align:center;align-self:center">
+<p>    <strong>. . .</strong>   </p>
+</div>
+<div style="text-align:center">
+<p><span class="color_tema"><code>k = n</code></span></p>
+<table class="pd" style="font-size:80%">
+<tr>
+<th>
+</th>
+<th>
+0
+</th>
+<th style="width:6em">
+…
+</th>
+<th>
+n-1
+</th>
+</tr>
+<tr>
+<th>
+0
+</th>
+<td>
+ 
+</td>
+<td>
+…
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+⁞
+</th>
+<td>
+⁞
+</td>
+<td>
+⋱
+</td>
+<td>
+⁞
+</td>
+</tr>
+<tr>
+<th>
+n-1
+</th>
+<td>
+ 
+</td>
+<td>
+…
+</td>
+<td>
+ 
+</td>
+</tr>
+</table>
+</div>
+</div>
+</section>
+<section id="rellenado-de-las-matrices-caso-recursivo"
+class="slide level2">
+<h2>Rellenado de las matrices: caso recursivo</h2>
+<ul>
+<li>Cuando <span class="math inline">\(k &gt; 0\)</span>:</li>
+</ul>
+<p><span class="math display">\[\small
+\mathit{costeGen}(i, j, k)  =  \min \left\{
+\begin{array}{l}
+    \mathit{costeGen}(i, j, k - 1),\\
+    \mathit{costeGen}(i, k - 1, k - 1) + \mathit{costeGen}(k - 1, j, k -
+1)\\
+\end{array}
+\right\}
+\]</span></p>
+<ul>
+<li><p>La matriz <span class="math inline">\(k\)</span>-ésima depende
+exclusivamente de la matriz <span
+class="math inline">\((k-1)\)</span>-ésima.</p></li>
+<li><p>Por tanto, solo es necesario mantener dos matrices en memoria: la
+que se está rellenando actualmente y la anterior.</p></li>
+</ul>
+<div style="display:flex;justify-content:space-around">
+<div style="text-align:center;align-self:center">
+<p>    <strong>. . .</strong>   </p>
+</div>
+<div style="text-align:center">
+<p><span class="color_tema"><code>k - 1</code></span></p>
+<table class="pd" style="font-size:80%">
+<tr>
+<th>
+</th>
+<th>
+0
+</th>
+<th style="width:6em">
+…
+</th>
+<th>
+n-1
+</th>
+</tr>
+<tr>
+<th>
+0
+</th>
+<td class="hl1">
+ 
+</td>
+<td class="hl1">
+…
+</td>
+<td class="hl1">
+ 
+</td>
+</tr>
+<tr>
+<th>
+⁞
+</th>
+<td class="hl1">
+⁞
+</td>
+<td class="hl1">
+⋱
+</td>
+<td class="hl1">
+⁞
+</td>
+</tr>
+<tr>
+<th>
+n-1
+</th>
+<td class="hl1">
+ 
+</td>
+<td class="hl1">
+…
+</td>
+<td class="hl1">
+ 
+</td>
+</tr>
+</table>
+</div>
+<div style="text-align:center">
+<p><span class="color_tema"><code>k</code></span></p>
+<table class="pd" style="font-size:80%">
+<tr>
+<th>
+</th>
+<th>
+0
+</th>
+<th style="width:6em">
+…
+</th>
+<th>
+n-1
+</th>
+</tr>
+<tr>
+<th>
+0
+</th>
+<td class="hl2">
+ 
+</td>
+<td class="hl2">
+…
+</td>
+<td class="hl2">
+ 
+</td>
+</tr>
+<tr>
+<th>
+⁞
+</th>
+<td class="hl2">
+⁞
+</td>
+<td class="hl2">
+⋱
+</td>
+<td class="hl2">
+⁞
+</td>
+</tr>
+<tr>
+<th>
+n-1
+</th>
+<td class="hl2">
+ 
+</td>
+<td class="hl2">
+…
+</td>
+<td class="hl2">
+ 
+</td>
+</tr>
+</table>
+</div>
+<div style="text-align:center;align-self:center">
+<p>    <strong>. . .</strong>   </p>
+</div>
+</div>
+</section>
+<section id="implementación-en-c-7" class="slide level2">
+<h2>Implementación en C++</h2>
+<div class="cpp cpp_block">
+<p><strong>using</strong> grafo = matriz&lt;<span class="type"><span
+class="type">int</span>_inf</span>&gt;;<br><br>matriz&lt;<span
+class="type"><span class="type">int</span>_inf</span>&gt;
+caminos_minimos(<span class="type">const</span> grafo &amp;g)
+{<br>  <span class="type">int</span> n =
+num_filas(g);<br>  matriz&lt;<span class="type"><span
+class="type">int</span>_inf</span>&gt; actual =
+g;<br><br>  <strong>for</strong> (<span class="type">int</span> k =
+<span class="number">1</span>; k &lt;= n; k++) {<br>    matriz&lt;<span
+class="type"><span class="type">int</span>_inf</span>&gt; siguiente =
+crear_matriz&lt;<span class="type"><span
+class="type">int</span>_inf</span>&gt;(n, n, <span
+class="number">0</span>);<br>    <strong>for</strong> (<span
+class="type">int</span> i = <span class="number">0</span>; i &lt; n;
+i++) {<br>      <strong>for</strong> (<span class="type">int</span> j =
+<span class="number">0</span>; j &lt; n; j++)
+{<br>        siguiente[i][j] = min(actual[i][j], actual[i][k-<span
+class="number">1</span>] + actual[k-<span
+class="number">1</span>][j]);<br>      }<br>    }<br>    actual =
+siguiente;<br>  }<br>  <strong>return</strong> actual;<br>}</p>
+</div>
+</section>
+<section id="optimización-de-espacio-8"
+class="slide level2 subsection center">
+<h2 class="subsection center">Optimización de espacio</h2>
+</section>
+<section id="optimización-de-espacio-9" class="slide level2">
+<h2>Optimización de espacio</h2>
+<ul>
+<li><p>Hemos visto que necesitamos dos matrices de tamaño <span
+class="math inline">\(n \times n\)</span>:</p>
+<ul>
+<li>La matriz <code>actual</code> contiene la matriz <span
+class="math inline">\((k-1)\)</span>-ésima.</li>
+<li>La matriz <code>siguiente</code> se va rellenando con los elementos
+de la matriz <span class="math inline">\(k\)</span>-ésima.</li>
+</ul></li>
+</ul>
+<div class="info_box fragment">
+<p>🤔 ¿Podemos hacer lo mismo con una única matriz, cuyo contenido se
+vaya sobreescribiendo?</p>
+</div>
+</section>
+<section id="el-problema" class="slide level2">
+<h2>El problema</h2>
+<div class="cpp cpp_block">
+<p>siguiente[i][j] = min(actual[i][j], actual[i][k-<span
+class="number">1</span>] + actual[k-<span
+class="number">1</span>][j]);</p>
+</div>
+<div style="display:flex;justify-content:space-around">
+<div style="text-align:center">
+<p><span class="color_tema"><code>actual</code></span></p>
+<table class="pd" style="font-size:80%">
+<tr>
+<th>
+</th>
+<th>
+0
+</th>
+<th>
+…
+</th>
+<th>
+k-1
+</th>
+<th>
+…
+</th>
+<th>
+j
+</th>
+<th>
+…
+</th>
+<th>
+n-1
+</th>
+</tr>
+<tr>
+<th>
+0
+</th>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+⋮
+</th>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+k-1
+</th>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td class="hl1 fragment" data-fragment-index="3" style="font-size:70%">
+<span class="math inline">\((k-1,j)\)</span>
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+⋮
+</th>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+i
+</th>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td class="hl1 fragment" data-fragment-index="2" style="font-size:70%">
+<span class="math inline">\((i, k-1)\)</span>
+</td>
+<td>
+ 
+</td>
+<td class="hl1 fragment" data-fragment-index="1" style="font-size:70%">
+<span class="math inline">\((i,j)\)</span>
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+⋮
+</th>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+n-1
+</th>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+</table>
+</div>
+<div style="text-align:center">
+<p><span class="color_tema"><code>siguiente</code></span></p>
+<table class="pd" style="font-size:80%">
+<tr>
+<th>
+</th>
+<th>
+0
+</th>
+<th>
+…
+</th>
+<th>
+k-1
+</th>
+<th>
+…
+</th>
+<th>
+j
+</th>
+<th>
+…
+</th>
+<th>
+n-1
+</th>
+</tr>
+<tr>
+<th>
+0
+</th>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+⋮
+</th>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+k-1
+</th>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+⋮
+</th>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+i
+</th>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td class="hl2" style="font-size:70%">
+<span class="math inline">\((i,j)\)</span>
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+⋮
+</th>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+n-1
+</th>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+</table>
+</div>
+</div>
+<p><span class="fragment" style="font-size:80%">Cuando <span
+class="math inline">\(i &gt; k-1\)</span> y <span
+class="math inline">\(j &gt; k-1\)</span>, necesitamos acceder los
+elementos situados arriba a la izquierda en la matriz actual. Esto
+sugiere sobreescribir la matriz de abajo a arriba y de derecha a
+izquierda.</span></p>
+</section>
+<section id="el-problema-1" class="slide level2">
+<h2>El problema</h2>
+<div class="cpp cpp_block">
+<p>siguiente[i][j] = min(actual[i][j], actual[i][k-<span
+class="number">1</span>] + actual[k-<span
+class="number">1</span>][j]);</p>
+</div>
+<div style="display:flex;justify-content:space-around">
+<div style="text-align:center">
+<p><span class="color_tema"><code>actual</code></span></p>
+<table class="pd" style="font-size:80%">
+<tr>
+<th>
+</th>
+<th>
+0
+</th>
+<th>
+…
+</th>
+<th>
+j
+</th>
+<th>
+…
+</th>
+<th>
+k-1
+</th>
+<th>
+…
+</th>
+<th>
+n-1
+</th>
+</tr>
+<tr>
+<th>
+0
+</th>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+⋮
+</th>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+i
+</th>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td class="hl1" style="font-size:70%">
+<span class="math inline">\((i,j)\)</span>
+</td>
+<td>
+ 
+</td>
+<td class="hl1" style="font-size:70%">
+<span class="math inline">\((i,k-1)\)</span>
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+⋮
+</th>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+k-1
+</th>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td class="hl1" style="font-size:70%">
+<span class="math inline">\((k-1,j)\)</span>
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+⋮
+</th>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+n-1
+</th>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+</table>
+</div>
+<div style="text-align:center">
+<p><span class="color_tema"><code>siguiente</code></span></p>
+<table class="pd" style="font-size:80%">
+<tr>
+<th>
+</th>
+<th>
+0
+</th>
+<th>
+…
+</th>
+<th>
+j
+</th>
+<th>
+…
+</th>
+<th>
+k-1
+</th>
+<th>
+…
+</th>
+<th>
+n-1
+</th>
+</tr>
+<tr>
+<th>
+0
+</th>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+⋮
+</th>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+i
+</th>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td class="hl2" style="font-size:70%">
+<span class="math inline">\((i,j)\)</span>
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+⋮
+</th>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+k-1
+</th>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+⋮
+</th>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+n-1
+</th>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+</table>
+</div>
+</div>
+<p><span style="font-size:80%">Sin embargo, cuando <span
+class="math inline">\(i &lt; k-1\)</span> y <span
+class="math inline">\(j &lt; k-1\)</span>, necesitamos acceder los
+elementos situados abajo a la derecha en la matriz actual. Esto nos
+obligaría a sobreescribirla de abajo a arriba y de izquierda a derecha,
+contradiciendo lo anterior.</span></p>
+</section>
+<section id="proposición" class="slide level2">
+<h2>Proposición</h2>
+<ul>
+<li class="fragment"><p>Para todo <span class="math inline">\(i, j,
+k\)</span> tal que <span class="math inline">\(0 \leq i,j &lt;
+n\)</span> y <span class="math inline">\(0 &lt; k \leq n\)</span>: <span
+class="math display">\[
+  \begin{array}{rcl}
+  \mathit{costeGen}(i, k - 1, k) &amp; = &amp; \mathit{costeGen}(i, k -
+1, k - 1) \\
+  \mathit{costeGen}(k - 1, j, k) &amp; = &amp; \mathit{costeGen}(k - 1,
+j, k - 1) \\
+  \end{array}
+  \]</span></p></li>
+<li class="fragment"><p>Es decir, a la hora de construir la matriz
+<code>siguiente</code>, el contenido de la fila <span
+class="math inline">\((k-1)\)</span>-ésima y la columna <span
+class="math inline">\((k-1)\)</span>-ésima coincide con los de la
+<code>actual</code>.</p></li>
+</ul>
+<div class="fragment" style="display:flex;justify-content:space-around">
+<div style="text-align:center">
+<p><span class="color_tema"><code>actual</code></span></p>
+<table class="pd" style="font-size:50%">
+<tr>
+<th>
+</th>
+<th>
+0
+</th>
+<th>
+…
+</th>
+<th>
+k-1
+</th>
+<th>
+…
+</th>
+<th>
+j
+</th>
+<th>
+…
+</th>
+<th>
+n-1
+</th>
+</tr>
+<tr>
+<th>
+0
+</th>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td class="hl1">
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+⋮
+</th>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td class="hl1">
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+k-1
+</th>
+<td class="hl1">
+ 
+</td>
+<td class="hl1">
+ 
+</td>
+<td class="hl1">
+ 
+</td>
+<td class="hl1">
+ 
+</td>
+<td class="hl1" style="font-size:70%">
+<span class="math inline">\((k-1,j)\)</span>
+</td>
+<td class="hl1">
+ 
+</td>
+<td class="hl1">
+ 
+</td>
+</tr>
+<tr>
+<th>
+⋮
+</th>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td class="hl1">
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+i
+</th>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td class="hl1" style="font-size:70%">
+<span class="math inline">\((i, k-1)\)</span>
+</td>
+<td>
+ 
+</td>
+<td class="hl1" style="font-size:70%">
+<span class="math inline">\((i,j)\)</span>
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+⋮
+</th>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td class="hl1">
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+n-1
+</th>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td class="hl1">
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+</table>
+</div>
+<div style="text-align:center">
+<p><span class="color_tema"><code>siguiente</code></span></p>
+<table class="pd" style="font-size:50%">
+<tr>
+<th>
+</th>
+<th>
+0
+</th>
+<th>
+…
+</th>
+<th>
+k-1
+</th>
+<th>
+…
+</th>
+<th>
+j
+</th>
+<th>
+…
+</th>
+<th>
+n-1
+</th>
+</tr>
+<tr>
+<th>
+0
+</th>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td class="hl1">
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+⋮
+</th>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td class="hl1">
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+k-1
+</th>
+<td class="hl1">
+ 
+</td>
+<td class="hl1">
+ 
+</td>
+<td class="hl1">
+ 
+</td>
+<td class="hl1">
+ 
+</td>
+<td class="hl1">
+ 
+</td>
+<td class="hl1">
+ 
+</td>
+<td class="hl1">
+ 
+</td>
+</tr>
+<tr>
+<th>
+⋮
+</th>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td class="hl1">
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+i
+</th>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td class="hl1">
+ 
+</td>
+<td>
+ 
+</td>
+<td class="hl2" style="font-size:70%">
+<span class="math inline">\((i,j)\)</span>
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+⋮
+</th>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td class="hl1">
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+n-1
+</th>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td class="hl1">
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+</table>
+</div>
+</div>
+</section>
+<section id="section" class="slide level2">
+<h2></h2>
+<p>Por tanto, los valores de las celdas <span
+class="math inline">\((k-1, j)\)</span> y <span
+class="math inline">\((i,k-1)\)</span> que necesitamos de la matriz
+<code>actual</code> para calcular el elemento <span
+class="math inline">\((i,j)\)</span> de la matriz
+<code>siguiente</code>, <strong>también están en la matriz
+<code>siguiente</code></strong>.</p>
+<div style="display:flex;justify-content:space-around">
+<div style="text-align:center">
+<p><span class="color_tema"><code>actual</code></span></p>
+<table class="pd" style="font-size:70%">
+<tr>
+<th>
+</th>
+<th>
+0
+</th>
+<th>
+…
+</th>
+<th>
+k-1
+</th>
+<th>
+…
+</th>
+<th>
+j
+</th>
+<th>
+…
+</th>
+<th>
+n-1
+</th>
+</tr>
+<tr>
+<th>
+0
+</th>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td class="hl1">
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+⋮
+</th>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td class="hl1">
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+k-1
+</th>
+<td class="hl1">
+ 
+</td>
+<td class="hl1">
+ 
+</td>
+<td class="hl1">
+ 
+</td>
+<td class="hl1">
+ 
+</td>
+<td class="hl1" style="font-size:70%">
+<span class="math inline">\((k-1,j)\)</span>
+</td>
+<td class="hl1">
+ 
+</td>
+<td class="hl1">
+ 
+</td>
+</tr>
+<tr>
+<th>
+⋮
+</th>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td class="hl1">
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+i
+</th>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td class="hl1" style="font-size:70%">
+<span class="math inline">\((i, k-1)\)</span>
+</td>
+<td>
+ 
+</td>
+<td class="hl1" style="font-size:70%">
+<span class="math inline">\((i,j)\)</span>
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+⋮
+</th>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td class="hl1">
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+n-1
+</th>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td class="hl1">
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+</table>
+</div>
+<div style="text-align:center">
+<p><span class="color_tema"><code>siguiente</code></span></p>
+<table class="pd" style="font-size:70%">
+<tr>
+<th>
+</th>
+<th>
+0
+</th>
+<th>
+…
+</th>
+<th>
+k-1
+</th>
+<th>
+…
+</th>
+<th>
+j
+</th>
+<th>
+…
+</th>
+<th>
+n-1
+</th>
+</tr>
+<tr>
+<th>
+0
+</th>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td class="hl1">
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+⋮
+</th>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td class="hl1">
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+k-1
+</th>
+<td class="hl1">
+ 
+</td>
+<td class="hl1">
+ 
+</td>
+<td class="hl1">
+ 
+</td>
+<td class="hl1">
+ 
+</td>
+<td class="hl1" style="font-size:70%">
+<span class="math inline">\((k-1,j)\)</span>
+</td>
+<td class="hl1">
+ 
+</td>
+<td class="hl1">
+ 
+</td>
+</tr>
+<tr>
+<th>
+⋮
+</th>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td class="hl1">
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+i
+</th>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td class="hl1" style="font-size:70%">
+<span class="math inline">\((i,k-1)\)</span>
+</td>
+<td>
+ 
+</td>
+<td class="hl2" style="font-size:70%">
+<span class="math inline">\((i,j)\)</span>
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+⋮
+</th>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td class="hl1">
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+<tr>
+<th>
+n-1
+</th>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td class="hl1">
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+<td>
+ 
+</td>
+</tr>
+</table>
+</div>
+</div>
+<p>En consecuencia, podemos construir <code>siguiente</code>
+sobreescribiendo la matriz <code>actual</code>, sin importar la
+dirección en la que sobreescribamos.</p>
+</section>
+<section id="demostración" class="slide level2">
+<h2>Demostración</h2>
+<p><span class="math display">\[\small
+\begin{array}{rcl}
+\mathit{costeGen}(i, k - 1, k) &amp; = &amp;  \min \left\{
+    \begin{array}{l}
+    \mathit{costeGen}(i, k - 1, k - 1),\\
+    \mathit{costeGen}(i, k - 1, k - 1) + \mathit{costeGen}(k - 1, k - 1,
+k - 1)
+    \end{array}
+\right\}
+\\
+&amp; = &amp;  \min \left\{
+    \begin{array}{l}
+    \mathit{costeGen}(i, k - 1, k - 1),\\
+    \mathit{costeGen}(i, k - 1, k - 1) + 0
+\end{array}
+\right\}
+\\
+&amp; = &amp; \mathit{costeGen}(i, k - 1, k - 1)
+\end{array}
+\]</span></p>
+<p><span class="math display">\[\small
+\begin{array}{rcl}
+\mathit{costeGen}(k - 1, j, k) &amp; = &amp;  \min \left\{
+    \begin{array}{l}
+    \mathit{costeGen}(k - 1, j, k - 1),\\
+    \mathit{costeGen}(k - 1, k - 1, k - 1) + \mathit{costeGen}(k - 1, j,
+k - 1)
+    \end{array}
+\right\}
+\\
+&amp; = &amp;  \min \left\{
+    \begin{array}{l}
+    \mathit{costeGen}(k - 1, j, k - 1),\\
+    0 + \mathit{costeGen}(k - 1, j, k - 1)
+\end{array}
+\right\}
+\\
+&amp; = &amp; \mathit{costeGen}(k - 1, j, k - 1)
+\end{array}
+\]</span></p>
+</section>
+<section id="implementación-en-c-8" class="slide level2">
+<h2>Implementación en C++</h2>
+<div class="cpp cpp_block">
+<p>matriz&lt;<span class="type"><span
+class="type">int</span>_inf</span>&gt; caminos_minimos(<span
+class="type">const</span> grafo &amp;g) {<br>  <span
+class="type">int</span> n = num_filas(g);<br>  matriz&lt;<span
+class="type"><span class="type">int</span>_inf</span>&gt; actual =
+g;<br><br>  <strong>for</strong> (<span class="type">int</span> k =
+<span class="number">1</span>; k &lt;= n; k++)
+{<br>    <strong>for</strong> (<span class="type">int</span> i = <span
+class="number">0</span>; i &lt; n; i++) {<br>      <strong>for</strong>
+(<span class="type">int</span> j = <span class="number">0</span>; j &lt;
+n; j++) {<br>        <span class="hl">actual[i][j]</span> =
+min(actual[i][j], actual[i][k-<span class="number">1</span>] +
+actual[k-<span
+class="number">1</span>][j]);<br>      }<br>    }<br>  }<br><br>  <strong>return</strong>
+actual;<br>}</p>
+</div>
+<p>Coste: <span class="color_tema"><span
+class="math inline">\(\Theta(n^2)\)</span></span> en espacio y <span
+class="color_tema"><span
+class="math inline">\(\Theta(n^3)\)</span></span> en tiempo.</p>
+</section>
+<section id="reconstrucción-del-camino-mínimo" class="slide level2">
+<h2>Reconstrucción del camino mínimo</h2>
+<ul>
+<li><p>La función <span class="math inline">\(\mathit{costeGen}\)</span>
+nos permite conocer el <strong>coste</strong> del camino mínimo entre
+dos vértices cualesquiera del grafo.</p></li>
+<li><p>Pero, ¿cuál es <strong>el camino</strong> que lleva a ese coste
+mínimo?</p></li>
+</ul>
+<div class="fragment">
+<ul>
+<li>Nos basta con calcular la siguiente función:</li>
+</ul>
+<div
+style="display:flex;justify-content:center;background-color:#E0F0FF;margin-bottom:1em">
+<div style="width:25%">
+<p><span class="color_tema"><span
+class="math inline">\(\mathit{anterior}(i, j)\)</span></span>   <span
+class="math inline">\(\equiv\)</span></p>
+</div>
+<div style="width:70%">
+<p>vértice anterior a <span class="math inline">\(j\)</span> en el
+camino mínimo que hay desde <span class="math inline">\(i\)</span> hasta
+<span class="math inline">\(j\)</span>.</p>
+</div>
+</div>
+</div>
+<div class="fragment">
+<ul>
+<li>De este modo:
+<ul>
+<li>Si <span class="math inline">\(\mathit{anterior}(i, j) =
+j&#39;\)</span>, podemos obtener el vértice anterior a <span
+class="math inline">\(j&#39;\)</span> en el camino mínimo mediante <span
+class="math inline">\(\mathit{anterior}(i, j&#39;)\)</span>.</li>
+<li>Si <span class="math inline">\(\mathit{anterior}(i, j&#39;) =
+j&#39;&#39;\)</span>, podemos obtener el vértice anterior a <span
+class="math inline">\(j&#39;&#39;\)</span> en el camino mínimo mediante
+<span class="math inline">\(\mathit{anterior}(i, j&#39;&#39;)\)</span>,
+y así sucesivamente hasta llegar a <span
+class="math inline">\(i\)</span>.</li>
+</ul></li>
+</ul>
+</div>
+</section>
+<section id="generalización-de-mathitanterior" class="slide level2">
+<h2>Generalización de <span
+class="math inline">\(\mathit{anterior}\)</span></h2>
+<div
+style="display:flex;justify-content:center;background-color:#E0F0FF;margin-bottom:1em">
+<div style="width:30%">
+<p><span class="color_tema"><span
+class="math inline">\(\mathit{anteriorGen}(i, j, k)\)</span></span>  
+<span class="math inline">\(\equiv\)</span></p>
+</div>
+<div style="width:60%">
+<p>vértice anterior a <span class="math inline">\(j\)</span> en el
+camino mínimo que hay desde <span class="math inline">\(i\)</span> hasta
+<span class="math inline">\(j\)</span>, pudiendo solamente utilizar los
+vértices <span class="math inline">\(0, \dots, k - 1\)</span> como
+vértices intermedios.</p>
+</div>
+</div>
+<ul>
+<li><strong>Caso base:</strong> <span class="math inline">\(k =
+0\)</span></li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{rcll}
+\mathit{anteriorGen}(i, j, 0) &amp; = &amp; i  &amp; \text{si } G[i][j]
+\neq +\infty \wedge i \neq j \\
+\mathit{anteriorGen}(i, j, 0) &amp; = &amp; -1 &amp; \text{en otro
+caso}\\
+\end{array}
+\]</span></p>
+</section>
+<section id="generalización-de-mathitanterior-1" class="slide level2">
+<h2>Generalización de <span
+class="math inline">\(\mathit{anterior}\)</span></h2>
+<div
+style="display:flex;justify-content:center;background-color:#E0F0FF;margin-bottom:1em">
+<div style="width:30%">
+<p><span class="color_tema"><span
+class="math inline">\(\mathit{anteriorGen}(i, j, k)\)</span></span>  
+<span class="math inline">\(\equiv\)</span></p>
+</div>
+<div style="width:60%">
+<p>vértice anterior a <span class="math inline">\(j\)</span> en el
+camino mínimo que hay desde <span class="math inline">\(i\)</span> hasta
+<span class="math inline">\(j\)</span>, pudiendo solamente utilizar los
+vértices <span class="math inline">\(0, \dots, k - 1\)</span> como
+vértices intermedios.</p>
+</div>
+</div>
+<ul>
+<li><p><strong>Caso recursivo:</strong> <span class="math inline">\(k
+&gt; 0\)</span></p>
+<p>Habíamos visto que <span
+class="math inline">\(\mathit{costeGen}\)</span> es el mínimo de dos
+términos. Dependiendo de cuál de esos dos términos «gane» en el mínimo,
+el vértice anterior será uno u otro.</p></li>
+</ul>
+<p><span class="math display">\[\small
+\begin{array}{l}
+\mathit{anteriorGen}(i, j, k) = \mathit{anteriorGen}(i, j, k - 1)  \\
+\qquad \qquad \text{si } \mathit{costeGen}(i, j, k) =
+\mathit{costeGen}(i, j, k - 1) \\
+\mathit{anteriorGen}(i, j, k) = \mathit{anteriorGen}(k - 1, j, k -
+1)  \\
+\qquad \qquad   \text{si } \mathit{costeGen}(i, j, k) =
+\mathit{costeGen}(i, k - 1, k - 1) + \mathit{costeGen}(k - 1, j, k - 1)
+\\
+\end{array}
+\]</span></p>
+</section>
+<section id="implementación-en-c-9" class="slide level2">
+<h2>Implementación en C++</h2>
+<p>Calculamos simultáneamente los valores de <span
+class="math inline">\(\mathit{costeGen}\)</span> y <span
+class="math inline">\(\mathit{anteriorGen}\)</span>.</p>
+<div class="cpp cpp_block">
+<p><span class="type">pair</span>&lt;matriz&lt;<span class="type"><span
+class="type">int</span>_inf</span>&gt;, matriz&lt;<span
+class="type">int</span>&gt;&gt; caminos_minimos_reconstruir(<span
+class="type">const</span> grafo &amp;g) {<br>  <span
+class="type">int</span> n = num_filas(g);<br><br>  <span
+class="comment">// Calculamos matrices cuando k =
+0</span><br>  matriz&lt;<span class="type"><span
+class="type">int</span>_inf</span>&gt; coste = g;      <span
+class="arrow_box_left">Utilizamos '<code>coste</code>' en lugar de
+'<code>actual</code>' para evitar
+confusiones</span><br>  matriz&lt;<span class="type">int</span>&gt;
+anterior = crear_matriz(n, n, -<span
+class="number">1</span>);<br>  <strong>for</strong> (<span
+class="type">int</span> i = <span class="number">0</span>; i &lt; n;
+i++) {<br>    <strong>for</strong> (<span class="type">int</span> j =
+<span class="number">0</span>; j &lt; n; j++)
+{<br>      <strong>if</strong> (i != j &amp;&amp; g[i][j] != Infinito)
+{<br>        anterior[i][j] =
+i;<br>      }<br>    }<br>  }<br><br>  ...<br></p>
+</div>
+</section>
+<section id="section-1" class="slide level2">
+<h2></h2>
+<div class="cpp cpp_block">
+<p>  ...<br><br>  <span class="comment">// Ahora calculamos las matrices
+para k &gt; <span
+class="number">0</span></span><br>  <strong>for</strong> (<span
+class="type">int</span> k = <span class="number">1</span>; k &lt;= n;
+k++) {<br>    <strong>for</strong> (<span class="type">int</span> i =
+<span class="number">0</span>; i &lt; n; i++)
+{<br>      <strong>for</strong> (<span class="type">int</span> j = <span
+class="number">0</span>; j &lt; n; j++) {<br>        <strong>if</strong>
+(coste[i][j] &gt; coste[i][k-<span class="number">1</span>] +
+coste[k-<span class="number">1</span>][j]) {<br>          coste[i][j] =
+coste[i][k-<span class="number">1</span>] + coste[k-<span
+class="number">1</span>][j];<br>          anterior[i][j] =
+anterior[k-<span
+class="number">1</span>][j];<br>        }<br>      }<br>    }<br>  }<br><br>  <strong>return</strong>
+{actual, anterior};<br>}<br></p>
+</div>
+<p>Coste: <span class="color_tema"><span
+class="math inline">\(\Theta(n^2)\)</span></span> en espacio y <span
+class="color_tema"><span
+class="math inline">\(\Theta(n^3)\)</span></span> en tiempo, donde <span
+class="math inline">\(n\)</span> es el número de vértices del grafo.</p>
+</section>
+<section id="obtención-de-camino-a-partir-de-la-matriz-anterior"
+class="slide level2">
+<h2>Obtención de camino a partir de la matriz <code>anterior</code></h2>
+<div class="cpp cpp_block">
+<p><span class="type">vector</span>&lt;<span class="type">int</span>&gt;
+reconstruir_camino(<span class="type">int</span> i, <span
+class="type">int</span> j, <span class="type">const</span>
+matriz&lt;<span class="type">int</span>&gt; &amp;anterior) {<br>  <span
+class="type">vector</span>&lt;<span class="type">int</span>&gt;
+result;<br>  result.push_back(j);<br>  <strong>while</strong> (j != i)
+{<br>    j =
+anterior[i][j];<br>    result.push_back(j);<br>  }<br>  reverse(result.begin(),
+result.end());<br>  <strong>return</strong> result;<br>}</p>
+</div>
+<p>Coste: <span class="color_tema"><span
+class="math inline">\(\Theta(m)\)</span></span>, donde <span
+class="math inline">\(m\)</span> es la longitud del camino (<span
+class="math inline">\(m = n\)</span> en el caso peor).</p>
+</section></section>
+    </div>
+  </div>
+
+  <script src="dist/reveal.js"></script>
+
+  <!-- reveal.js plugins -->
+  <script src="plugin/notes/notes.js"></script>
+  <script src="plugin/search/search.js"></script>
+  <script src="plugin/zoom/zoom.js"></script>
+  <script src="plugin/highlight/highlight.js"></script>
+  <script src="plugin/math/math.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+        // Display controls in the bottom right corner
+        controls: false,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: true,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'bottom-right',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: false,
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: false,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: false,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'default',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Prints all fragments in their visible states on the same slide 
+        pdfSeparateFragments: false,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: true,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'slide',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'fade',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1600,
+
+        height: 900,
+
+        math: {
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom,
+          // RevealHighlight          
+        ]
+      });
+    </script>
+    </body>
+</html>
