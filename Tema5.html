@@ -173,7 +173,7 @@ class="math inline">\(f_i\)</span>, guardamos el resultado en
 <li><p>Cuando se hace una llamada a <code>fib(n)</code>:</p>
 <ul>
 <li><p>Si <code>tabla[n] == -1</code>, se calcula <span
-class="math inline">\(f_i\)</span> y se actualiza <code>tabla[n]</code>
+class="math inline">\(f_n\)</span> y se actualiza <code>tabla[n]</code>
 con el resultado.</p></li>
 <li><p>En caso contrario, se devuelve directamente
 <code>tabla[n]</code>.</p></li>
@@ -186,7 +186,7 @@ con el resultado.</p></li>
 recursivas mediante un parámetro de entrada/salida:</p>
 <div class="cpp cpp_block">
 <p><span class="type">long</span> <span class="type">long</span>
-fib_pd(<span class="type">int</span> n, <span class="hl"><span
+fib_desc(<span class="type">int</span> n, <span class="hl"><span
 class="type">vector</span>&lt;<span class="type">long</span> <span
 class="type">long</span>&gt; &amp;tabla</span>) { ... }</p>
 </div></li>
@@ -298,7 +298,7 @@ style="width: 2em; text-align: center; border: 1px solid black; font-family: mon
 </div>
 <div class="fragment">
 <ul>
-<li>Al finalizar la llamada <code>fib_pd(5)</code>, <strong>todos los
+<li>Al finalizar la llamada <code>fib_desc(7)</code>, <strong>todos los
 elementos</strong> de la tabla han sido inicializados con el valor
 correspondiente:</li>
 </ul>
@@ -368,8 +368,8 @@ style="width: 2em; text-align: center; border: 1px solid black; font-family: mon
 class="slide level2">
 <h2>Uso de la tabla de programación dinámica</h2>
 <ul>
-<li>En general, tras la llamada a <code>fib_pd(n)</code>, todo el array
-<code>tabla[0..n]</code> ha sido rellenado con los valores
+<li>En general, tras la llamada a <code>fib_desc(n)</code>, todo el
+array <code>tabla[0..n]</code> ha sido rellenado con los valores
 correspondientes a la sucesión de Fibonacci.</li>
 </ul>
 <div style="display:flex;justify-content: center; margin-top: 1em">
