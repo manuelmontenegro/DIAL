@@ -675,7 +675,7 @@ class="number">1</span>;    <span class="arrow_box_left"><span
 class="math inline">\(f_1\)</span></span><br>  <span
 class="type">long</span> <span class="type">long</span> c = <span
 class="number">1</span>;    <span class="arrow_box_left"><span
-class="math inline">\(f_2\)</span></span><br>  <br>  <strong>for</strong>
+class="math inline">\(f_2\)</span></span><br><br>  <strong>for</strong>
 (<span class="type">int</span> i = <span class="number">3</span>; i
 &lt;= n; i++) {    <span class="arrow_box_left">Invariante: a = <span
 class="math inline">\(f_{i-3}\)</span> <span
@@ -10091,7 +10091,7 @@ class="math inline">\(G[i][j] = +\infty\)</span>.</p></li>
 7
 </td>
 <td>
-+∞
+4
 </td>
 </tr>
 <tr>
@@ -10811,14 +10811,14 @@ class="slide level2">
 exclusivamente de la matriz <span
 class="math inline">\((k-1)\)</span>-ésima.</p></li>
 <li><p>Por tanto, solo es necesario mantener dos matrices en memoria: la
-que se está rellenando actualmente y la anterior.</p></li>
+actual y la siguiente en ser rellenada a partir de esta.</p></li>
 </ul>
 <div style="display:flex;justify-content:space-around">
 <div style="text-align:center;align-self:center">
 <p>    <strong>. . .</strong>   </p>
 </div>
 <div style="text-align:center">
-<p><span class="color_tema"><code>k - 1</code></span></p>
+<p><span class="color_tema"><code>actual</code></span></p>
 <table class="pd" style="font-size:80%">
 <tr>
 <th>
@@ -10878,7 +10878,7 @@ n-1
 </table>
 </div>
 <div style="text-align:center">
-<p><span class="color_tema"><code>k</code></span></p>
+<p><span class="color_tema"><code>siguiente</code></span></p>
 <table class="pd" style="font-size:80%">
 <tr>
 <th>
@@ -12819,7 +12819,8 @@ actual;<br>}</p>
 <p>Coste: <span class="color_tema"><span
 class="math inline">\(\Theta(n^2)\)</span></span> en espacio y <span
 class="color_tema"><span
-class="math inline">\(\Theta(n^3)\)</span></span> en tiempo.</p>
+class="math inline">\(\Theta(n^3)\)</span></span> en tiempo, donde <span
+class="math inline">\(n\)</span> es el número de vértices del grafo.</p>
 </section>
 <section id="reconstrucción-del-camino-mínimo" class="slide level2">
 <h2>Reconstrucción del camino mínimo</h2>

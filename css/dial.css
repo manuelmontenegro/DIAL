@@ -366,7 +366,7 @@ pre.sourceCode {
 .cpp_block {
   font-family: var(--r-code-font);
   font-size: 70%;
-  background-color: rgb(245, 245, 255, 0.5);
+  background-color: rgb(250, 250, 255, 0.5);
   margin: 10px 0px;
   padding: 10px 20px;
   filter: drop-shadow(0.25rem 0.25rem 0.75rem rgb(190,190,250));
