@@ -1,0 +1,5765 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Manuel Montenegro Montes Dpto. de Sistemas Informáticos y Computación Facultad de Informática Universidad Complutense de Madrid">
+  <title>Algoritmos voraces</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="dist/reset.css">
+  <link rel="stylesheet" href="dist/reveal.css">
+  <link rel="stylesheet" href="css/nnfx-light.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <style>
+    .reveal .sourceCode {  /* see #7635 */
+      overflow: visible;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <link rel="stylesheet" href="css/dial.css" id="theme">
+    <style>
+  :root {
+    --color-tema: #BE579A;
+  }
+    </style>
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide" data-background-image="img/PinkBackground.jpg" class="center">
+  <p class="subtitle">Tema 6</p>
+  <h1 class="title">Algoritmos voraces</h1>
+<div id="author-container">
+<div class="author">
+<strong>Manuel Montenegro Montes</strong><br>Dpto. de Sistemas
+Informáticos y Computación<br>Facultad de Informática<br>Universidad
+Complutense de Madrid
+</div>
+</div>
+</section>
+
+<section>
+<section id="introducción-problema-de-los-ficheros"
+class="title-slide slide level1 center"
+data-background-image="img/PinkBackground.jpg">
+<h1 class="center" data-background-image="img/PinkBackground.jpg"><span
+class="sc_number">6.1</span>Introducción: problema de los ficheros</h1>
+
+</section>
+<section id="el-problema-de-los-ficheros" class="slide level2">
+<h2>El problema de los ficheros</h2>
+<div class="columns">
+<div class="column" style="width:75%">
+<ul>
+<li><p>Tenemos <span class="math inline">\(n\)</span> ficheros y un
+disco duro de capacidad <span class="math inline">\(d\)</span>.</p></li>
+<li><p>Conocemos cuánto espacio ocupa cada fichero.</p></li>
+</ul>
+</div><div class="column" style="width:25%;text-align:right">
+<p><img data-src="Tema6/Fichero.png" style="width:20.0%" /> <img
+data-src="Tema6/Fichero.png" style="width:20.0%" /> <img
+data-src="Tema6/Fichero.png" style="width:20.0%" /> <img
+data-src="Tema6/document-save-as.svg" style="width:25.0%" /></p>
+</div>
+</div>
+<div class="color_tema fragment" style="text-align:center">
+<p><em>¿Cuál es el número máximo de ficheros que podemos almacenar en el
+disco, de modo que la suma de los tamaños de los ficheros almacenados no
+exceda la capacidad máxima <span class="math inline">\(d\)</span> del
+disco duro?</em></p>
+</div>
+</section>
+<section id="solución-mediante-programación-dinámica"
+class="slide level2 subsection center">
+<h2 class="subsection center">Solución mediante programación
+dinámica</h2>
+</section>
+<section id="definición-de-la-recurrencia" class="slide level2">
+<h2>Definición de la recurrencia</h2>
+<p>Suponemos que <span class="math inline">\(S[0..n)\)</span> es un
+vector que contiene el tamaño de cada fichero.</p>
+<div
+style="display:flex;justify-content:center;background-color:#E0F0FF;margin-bottom:1em">
+<div style="width:30%">
+<p><span class="color_tema"><span
+class="math inline">\(\mathit{ficherosGen}(i, j)\)</span></span>   <span
+class="math inline">\(\equiv\)</span></p>
+</div>
+<div style="width:60%">
+<p>máximo número de ficheros que podemos guardar en un disco de
+capacidad <span class="math inline">\(j\)</span> escogiendo solamente
+entre los ficheros <span class="math inline">\([0..i)\)</span>.</p>
+</div>
+</div>
+<p><span class="math display">\[\small
+\begin{array}{lll}
+\mathit{ficherosGen}(0, j) &amp; = &amp; 0 \\
+\mathit{ficherosGen}(i, 0) &amp; = &amp; 0 \\
+\mathit{ficherosGen}(i, j) &amp; = &amp; \mathit{ficherosGen}(i-1, j)
+\quad \text{si } i,j &gt; 0 \wedge S[i-1] &gt; j\\
+\mathit{ficherosGen}(i, j) &amp; = &amp; \max \{
+\mathit{ficherosGen}(i-1, j), 1 + \mathit{ficherosGen}(i-1, j - S[i-1])
+\} \: \text{e.o.c.}
+\end{array}
+\]</span></p>
+<p>Llamada inicial: <span class="color_tema"><span
+class="math inline">\(\mathit{ficherosGen}(n, d)\)</span></span></p>
+</section>
+<section id="implementación" class="slide level2">
+<h2>Implementación</h2>
+<div class="cpp cpp_block">
+<p><span class="type">int</span> ficheros(<span
+class="type">const</span> <span class="type">vector</span>&lt;<span
+class="type">int</span>&gt; &amp;s, <span class="type">int</span> d)
+{<br>  <span class="type">int</span> n = s.size();<br>  matriz&lt;<span
+class="type">int</span>&gt; tabla = crear_matriz(n + <span
+class="number">1</span>, d + <span class="number">1</span>, <span
+class="number">0</span>);<br><br>  <strong>for</strong> (<span
+class="type">int</span> i = <span class="number">1</span>; i &lt;= n;
+i++) {<br>    <strong>for</strong> (<span class="type">int</span> j =
+<span class="number">1</span>; j &lt;= d; j++)
+{<br>      <strong>if</strong> (s[i-<span class="number">1</span>] &gt;
+j) {<br>        tabla[i][j] = tabla[i-<span
+class="number">1</span>][j];<br>      } <strong>else</strong>
+{<br>        tabla[i][j] = max(tabla[i-<span
+class="number">1</span>][j], <span class="number">1</span> +
+tabla[i-<span class="number">1</span>][j - s[i-<span
+class="number">1</span>]]);<br>      }<br>    }<br>  }<br><br>  <strong>return</strong>
+tabla[n][d];<br>}</p>
+</div>
+<p>Coste en espacio y tiempo: <span class="color_tema"><span
+class="math inline">\(\Theta(n\cdot d)\)</span></span> donde <span
+class="math inline">\(n\)</span> <code>= s.size()</code></p>
+<p>Coste en espacio optimizable hasta <span class="color_tema"><span
+class="math inline">\(\Theta(d)\)</span></span></p>
+</section>
+<section id="solución-mediante-algoritmo-voraz"
+class="slide level2 subsection center">
+<h2 class="subsection center">Solución mediante algoritmo voraz</h2>
+</section>
+<section id="algoritmo-voraz" class="slide level2">
+<h2>Algoritmo voraz</h2>
+<ul>
+<li class="fragment"><p>Sea <span class="math inline">\(S[0..n)\)</span>
+el vector con los tamaños de los ficheros y <span
+class="math inline">\(d\)</span> la capacidad máxima del disco.</p></li>
+<li class="fragment"><p>El algoritmo voraz sigue la siguiente
+estrategia:</p>
+<ul>
+<li class="fragment"><p>Buscar el fichero de menor tamaño. Si cabe en el
+disco, meterlo.</p></li>
+<li class="fragment"><p>Buscar el segundo fichero de menor tamaño. Si
+cabe en el disco, meterlo.</p></li>
+<li class="fragment"><p>Buscar el tercer fichero de menor tamaño. Si
+cabe en el disco, meterlo.</p></li>
+<li class="fragment"><p>…</p></li>
+<li class="fragment"><p>Y así sucesivamente, hasta que el <span
+class="math inline">\(i\)</span>-ésimo fichero de menor tamaño ya no
+quepa en el disco, o hayamos metido todos los ficheros.</p></li>
+</ul></li>
+<li class="fragment"><p>La estrategia puede implementarse eficientemente
+si <strong>se ordena previamente el vector <span
+class="math inline">\(S\)</span></strong>, de menor a mayor
+tamaño.</p></li>
+</ul>
+</section>
+<section id="implementación-1" class="slide level2">
+<h2>Implementación</h2>
+<div class="cpp cpp_block">
+<p><span class="type">int</span> ficheros(<span
+class="type">const</span> <span class="type">vector</span>&lt;<span
+class="type">int</span>&gt; &amp;s, <span class="type">int</span> d)
+{<br>  <span class="type">int</span> n = s.size();<br>  <span
+class="type">vector</span>&lt;<span class="type">int</span>&gt; tam_ord
+= s;<br>  sort(tam_ord.begin(), tam_ord.end());   <span
+class="arrow_box_left fragment">Coste ordenación: <span
+class="math inline">\(\Theta(n \log n)\)</span></span><br><br>  <span
+class="type">int</span> num_ficheros = <span class="number">0</span>,
+espacio_ocupado = <span class="number">0</span>, i = <span
+class="number">0</span>;<br><br>  <strong>while</strong> (i &lt; n
+&amp;&amp; espacio_ocupado + tam_ord[i] &lt;= d) { <span
+class="arrow_box_left fragment">Coste bucle en caso peor: <span
+class="math inline">\(\Theta(n)\)</span></span><br>    num_ficheros++;<br>    espacio_ocupado
++= tam_ord[i];<br>    i++;<br>  }<br><br>  <strong>return</strong>
+num_ficheros;<br>}</p>
+</div>
+<div class="fragment">
+<p>Coste: <span class="color_tema"><span class="math inline">\(\Theta(n
+\log n)\)</span></span>, donde <span class="math inline">\(n\)</span>
+<code>= s.size()</code></p>
+</div>
+</section>
+<section id="programación-dinámica-vs.-algoritmos-voraces"
+class="slide level2">
+<h2>Programación dinámica vs. algoritmos voraces</h2>
+<ul>
+<li><p>Observemos la ecuación recursiva del método de programación
+dinámica, suponiendo que <span class="math inline">\(S[i-1] \leq
+j\)</span>: <span class="math display">\[\small
+  \mathit{ficherosGen}(i, j) = \max \{ \mathit{ficherosGen}(i-1, j), 1 +
+\mathit{ficherosGen}(i-1, j - S[i-1]) \}
+  \]</span></p></li>
+<li><p>En la ecuación se calcula el máximo de dos términos:</p>
+<ul>
+<li><p>En el primero de ellos se explora la posibilidad en la que el
+fichero i-ésimo se descarte.</p></li>
+<li><p>En el segundo de ellos se explora la posibilidad en la que el
+fichero i-ésimo se guarde en el disco duro.</p></li>
+</ul></li>
+</ul>
+<div class="fragment">
+<ul>
+<li>Es decir, el algoritmo de programación dinámica explora <strong>las
+dos alternativas</strong> y toma la decisión a partir de aquella que
+obtenga un mejor resultado (es decir, más ficheros).</li>
+</ul>
+</div>
+</section>
+<section id="programación-dinámica-vs.-algoritmos-voraces-1"
+class="slide level2">
+<h2>Programación dinámica vs. algoritmos voraces</h2>
+<ul>
+<li><p>El algoritmo voraz también recorre los ficheros.</p></li>
+<li><p>A la hora de decidir si se mete el fichero <em>i</em>-ésimo,
+<strong>no explora las consecuencias</strong> «a largo plazo» para saber
+qué decisión tomar.</p></li>
+<li><p>Los algoritmos voraces toman cada decisión <strong>de manera
+local</strong>, para cada fichero.</p>
+<ul>
+<li>Decide incluirlo o no, en función de si cabe o no en el espacio
+restante del disco.</li>
+</ul></li>
+<li><p>Una vez tomada la decisión de moverlo al disco o no, esa decisión
+es <strong>firme</strong>; es decir, no se rectifica en un momento
+posterior.</p></li>
+</ul>
+<div class="info_box fragment">
+<p>🤔 ¿Pero cómo sabemos que la solución obtenida es óptima?</p>
+</div>
+<div class="color_tema fragment" style="text-align:center">
+<p><em>Hay que demostrarlo para cada problema</em></p>
+</div>
+</section>
+<section id="demostrando-que-la-estrategia-voraz-es-óptima"
+class="slide level2 subsection center">
+<h2 class="subsection center">Demostrando que la estrategia voraz es
+óptima</h2>
+</section>
+<section id="definición-de-solución-factible" class="slide level2">
+<h2>Definición de solución factible</h2>
+<ul>
+<li class="fragment"><p>Suponemos que el vector de tamaños de ficheros
+<span class="math inline">\(S[0..n)\)</span> está ordenado de manera
+creciente y que la capacidad máxima del disco duro es <span
+class="math inline">\(d\)</span>.</p></li>
+<li class="fragment"><p>Una <strong>solución</strong> <span
+class="math inline">\(X[0..n)\)</span> es un vector de booleanos.</p>
+<ul>
+<li class="fragment">Si <span class="math inline">\(X[i] =
+\mathit{true}\)</span>, entonces el fichero <span
+class="math inline">\(i\)</span> se introduce en el disco.</li>
+<li class="fragment">Si <span class="math inline">\(X[i] =
+\mathit{false}\)</span>, entonces el fichero <span
+class="math inline">\(i\)</span> no se introduce en el disco.</li>
+</ul></li>
+<li class="fragment"><p>Una solución <span
+class="math inline">\(X[0..n)\)</span> es <strong>factible</strong> si
+cumple las restricciones del enunciado.</p>
+<ul>
+<li class="fragment"><p>En el problema de los ficheros, una solución es
+factible si la suma de los tamaños de los ficheros seleccionados no
+excede la capacidad máxima del disco duro.</p>
+<p><span class="math display">\[
+  \left( \Sigma~i : 0 \leq i &lt; n \wedge X[i] = \mathit{true} : S[i]
+\right) \leq d
+  \]</span></p></li>
+</ul></li>
+</ul>
+</section>
+<section id="definición-de-solución-óptima" class="slide level2">
+<h2>Definición de solución óptima</h2>
+<ul>
+<li><p>Dadas dos soluciones <span class="math inline">\(X\)</span> y
+<span class="math inline">\(X&#39;\)</span> decimos que <span
+class="math inline">\(X&#39;\)</span> es mejor o igual que <span
+class="math inline">\(X\)</span> (escrito <span class="math inline">\(X
+\sqsubseteq X&#39;\)</span>) si <span
+class="math inline">\(X&#39;\)</span> introduce en el disco una cantidad
+de ficheros igual o superior a la de <span
+class="math inline">\(X\)</span>.</p>
+<p><span class="math display">\[\small
+  X \sqsubseteq X&#39; \Longleftrightarrow
+  (\#~i : 0 \leq i &lt; n : X[i] = \mathit{true}) \leq (\#~i : 0 \leq i
+&lt; n : X&#39;[i] = \mathit{true})
+  \]</span></p></li>
+</ul>
+<div class="fragment">
+<ul>
+<li>Decimos que una solución factible <span
+class="math inline">\(X&#39;\)</span> es <strong>óptima</strong> si para
+toda solución factible <span class="math inline">\(X\)</span> se cumple
+<span class="math inline">\(X \sqsubseteq X&#39;\)</span>.</li>
+</ul>
+</div>
+</section>
+<section id="demostración-de-optimalidad-de-la-solución-voraz"
+class="slide level2">
+<h2>Demostración de optimalidad de la solución voraz</h2>
+<ul>
+<li><p>Utilizamos la técnica de <strong>reducción de
+diferencias</strong> para demostrar que la solución voraz es
+óptima.</p></li>
+<li><p>Sea <span class="math inline">\(V[0..n)\)</span> la solución
+obtenida mediante la estrategia voraz y <span
+class="math inline">\(O[0..n)\)</span> una solución óptima.</p></li>
+</ul>
+<div class="fragment">
+<ul>
+<li>Comparamos ambas soluciones:</li>
+</ul>
+<style>
+table.soluciones {
+    margin-bottom: 0.5em;
+}
+
+table.soluciones tr {
+    border: none;
+}
+
+table.soluciones th {
+    border: none;
+    padding-right: 1em;
+}
+
+table.soluciones tr.sol td {
+    border: 2px solid black !important;
+    width: 1em;
+    text-align: center;
+}
+
+table.soluciones tr.sol td.amarillo {
+    background-color: #FFFFE0;
+    font-weight: bold;
+}
+
+table.soluciones tr.sol td.marron {
+    background-color: #A0A050;
+    color: white;
+    font-weight: bold;
+}
+
+table.soluciones tr.sol td.rojo {
+    background-color: #A05050;
+    color: white;
+    font-weight: bold;
+}
+
+table.soluciones tr.intermedio td {
+    border: none;
+    font-weight: bold;
+    text-align: center;
+}
+
+table.soluciones tr.indices td {
+    border: none;
+    font-weight: bold;
+    text-align: center;
+    font-size: 70%;
+    font-family: monospace;
+}
+</style>
+<table class="soluciones">
+<tr class="sol">
+<th>
+<span class="math inline">\(V\)</span>
+</th>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+</tr>
+<tr class="intermedio">
+<td>
+</td>
+<td>
+=
+</td>
+<td>
+=
+</td>
+<td>
+=
+</td>
+<td>
+=
+</td>
+<td>
+=
+</td>
+<td>
+=
+</td>
+<td>
+=
+</td>
+<td>
+=
+</td>
+</tr>
+<tr class="sol">
+<th>
+<span class="math inline">\(O\)</span>
+</th>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+</tr>
+</table>
+</div>
+<div class="fragment">
+<ul>
+<li><p>Si ambas coinciden, entonces <span
+class="math inline">\(V\)</span> también es óptima.</p></li>
+<li><p>Supongamos, a continuación, que <span
+class="math inline">\(V\)</span> y <span
+class="math inline">\(O\)</span> no coinciden.</p></li>
+</ul>
+</div>
+</section>
+<section id="reducción-de-diferencias" class="slide level2">
+<h2>Reducción de diferencias</h2>
+<ul>
+<li>Sea <code>i</code> la primera posición en la que <span
+class="math inline">\(V\)</span> y <span
+class="math inline">\(O\)</span> difieren:</li>
+</ul>
+<table class="soluciones">
+<tr class="indices">
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+i
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr class="sol">
+<th>
+<span class="math inline">\(V\)</span>
+</th>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="marron">
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr class="intermedio">
+<td>
+</td>
+<td>
+=
+</td>
+<td>
+=
+</td>
+<td>
+=
+</td>
+<td>
+=
+</td>
+<td>
+≠
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr class="sol">
+<th>
+<span class="math inline">\(O\)</span>
+</th>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="rojo">
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+</table>
+<div class="fragment">
+<ul>
+<li><p>Hay dos casos posibles:</p>
+<ol type="1">
+<li><span class="math inline">\(V[i] = \mathit{false}\)</span>, <span
+class="math inline">\(O[i] = \mathit{true}\)</span></li>
+<li><span class="math inline">\(V[i] = \mathit{true}\)</span>, <span
+class="math inline">\(O[i] = \mathit{false}\)</span></li>
+</ol></li>
+</ul>
+</div>
+</section>
+<section id="caso-1-vi-mathitfalse-oi-mathittrue" class="slide level2"
+data-transition="slide-in none-out">
+<h2 data-transition="slide-in none-out">Caso 1: <span
+class="math inline">\(V[i] = \mathit{false}\)</span>, <span
+class="math inline">\(O[i] = \mathit{true}\)</span></h2>
+<table class="soluciones">
+<tr class="indices">
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+i
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr class="sol">
+<th>
+<span class="math inline">\(V\)</span>
+</th>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="marron">
+F
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr class="intermedio">
+<td>
+</td>
+<td>
+=
+</td>
+<td>
+=
+</td>
+<td>
+=
+</td>
+<td>
+=
+</td>
+<td>
+≠
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr class="sol">
+<th>
+<span class="math inline">\(O\)</span>
+</th>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="rojo">
+T
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+</table>
+<div class="fragment">
+<ul>
+<li><p>Recordemos que la estrategia voraz va introduciendo los ficheros,
+comenzando desde el 0 (el de menor tamaño) hasta que el siguiente
+fichero ya no cabe en el espacio restante del disco.</p></li>
+<li><p>La estrategia voraz decidió no introducir el fichero
+<code>i</code>-èsimo es porque, si lo introducía, se sobrepasaba la
+capacidad máxima del disco, es decir, <span
+class="math display">\[(\Sigma~i : 0 \leq j &lt; i \wedge V[j] =
+\mathit{true} : S[j]) + S[i] &gt; d\]</span>.</p></li>
+</ul>
+</div>
+</section>
+<section id="caso-1-vi-mathitfalse-oi-mathittrue-1" class="slide level2"
+data-transition="none-in slide-out">
+<h2 data-transition="none-in slide-out">Caso 1: <span
+class="math inline">\(V[i] = \mathit{false}\)</span>, <span
+class="math inline">\(O[i] = \mathit{true}\)</span></h2>
+<table class="soluciones">
+<tr class="indices">
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+i
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr class="sol">
+<th>
+<span class="math inline">\(V\)</span>
+</th>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="marron">
+F
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr class="intermedio">
+<td>
+</td>
+<td>
+=
+</td>
+<td>
+=
+</td>
+<td>
+=
+</td>
+<td>
+=
+</td>
+<td>
+≠
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr class="sol">
+<th>
+<span class="math inline">\(O\)</span>
+</th>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="rojo">
+T
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+</table>
+<ul>
+<li>Sin embargo, si <span class="math inline">\(O[i] =
+\mathit{true}\)</span> tendríamos:</li>
+</ul>
+<p><span class="math display">\[\small
+\begin{array}{lll}
+(\Sigma~i : 0 \leq j \leq i \wedge O[j] = \mathit{true} : S[j]) &amp; =
+&amp; (\Sigma~i : 0 \leq j &lt; i \wedge O[j] = \mathit{true} : S[j]) +
+S[i] \\
+&amp; = &amp; (\Sigma~i : 0 \leq j &lt; i \wedge V[j] = \mathit{true} :
+S[j]) + S[i] \\
+&amp; &gt; &amp; d
+\end{array}
+\]</span></p>
+<ul>
+<li>Por tanto, <span class="math inline">\(O\)</span> <strong>no sería
+factible</strong>. El <em>Caso 1</em> no puede darse.</li>
+</ul>
+</section>
+<section id="caso-2-vi-mathittrue-oi-mathitfalse" class="slide level2"
+data-transition="none-out">
+<h2 data-transition="none-out">Caso 2: <span class="math inline">\(V[i]
+= \mathit{true}\)</span>, <span class="math inline">\(O[i] =
+\mathit{false}\)</span></h2>
+<table class="soluciones">
+<tr class="indices">
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+i
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr class="sol">
+<th>
+<span class="math inline">\(V\)</span>
+</th>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="marron">
+T
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr class="intermedio">
+<td>
+</td>
+<td>
+=
+</td>
+<td>
+=
+</td>
+<td>
+=
+</td>
+<td>
+=
+</td>
+<td>
+≠
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr class="sol">
+<th>
+<span class="math inline">\(O\)</span>
+</th>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="rojo">
+F
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+</table>
+<ul>
+<li class="fragment"><p>Debe existir una posición <span
+class="math inline">\(j \neq i\)</span> tal que <span
+class="math inline">\(V[j] = \mathit{false}\)</span> y <span
+class="math inline">\(O[j] = \mathit{true}\)</span>.</p>
+<ul>
+<li class="fragment">De lo contrario, <span
+class="math inline">\(O\)</span> no sería óptima, porque <span
+class="math inline">\(V\)</span> metería más ficheros en el disco.</li>
+</ul></li>
+<li class="fragment"><p>Además, no puede ser que <span
+class="math inline">\(j &lt; i\)</span>, ya que <span
+class="math inline">\(V[0..i) = O[0..i)\)</span>.</p></li>
+<li class="fragment"><p>Por tanto, <span class="math inline">\(j &gt;
+i\)</span>.</p></li>
+</ul>
+</section>
+<section id="caso-2-vi-mathittrue-oi-mathitfalse-1" class="slide level2"
+data-transition="none-in">
+<h2 data-transition="none-in">Caso 2: <span class="math inline">\(V[i] =
+\mathit{true}\)</span>, <span class="math inline">\(O[i] =
+\mathit{false}\)</span></h2>
+<table class="soluciones">
+<tr class="indices">
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+i
+</td>
+<td>
+</td>
+<td>
+j
+</td>
+<td>
+</td>
+</tr>
+<tr class="sol">
+<th>
+<span class="math inline">\(V\)</span>
+</th>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="marron">
+T
+</td>
+<td>
+</td>
+<td class="marron">
+F
+</td>
+<td>
+</td>
+</tr>
+<tr class="intermedio">
+<td>
+</td>
+<td>
+=
+</td>
+<td>
+=
+</td>
+<td>
+=
+</td>
+<td>
+=
+</td>
+<td>
+≠
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr class="sol">
+<th>
+<span class="math inline">\(O\)</span>
+</th>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="rojo">
+F
+</td>
+<td>
+</td>
+<td class="rojo">
+T
+</td>
+<td>
+</td>
+</tr>
+</table>
+<div class="fragment">
+<ul>
+<li>Sea <span class="math inline">\(O&#39;\)</span> la solución que
+resulta de intercambiar las posiciones <span
+class="math inline">\(i\)</span> y <span
+class="math inline">\(j\)</span> de <span
+class="math inline">\(O\)</span>:</li>
+</ul>
+<table class="soluciones">
+<tr class="indices">
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+i
+</td>
+<td>
+</td>
+<td>
+j
+</td>
+<td>
+</td>
+</tr>
+<tr class="sol">
+<th>
+<span class="math inline">\(O&#39;\)</span>
+</th>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="rojo">
+T
+</td>
+<td>
+</td>
+<td class="rojo">
+F
+</td>
+<td>
+</td>
+</tr>
+</table>
+<ul>
+<li class="fragment"><span class="math inline">\(O&#39;\)</span> es
+factible, porque si el fichero <span class="math inline">\(j\)</span>
+cabía en el disco, también cabe el fichero <span
+class="math inline">\(i\)</span>, que es más pequeño (recuerda que los
+ficheros están ordenados por tamaño).</li>
+<li class="fragment"><span class="math inline">\(O&#39;\)</span> es
+igual de óptima que <span class="math inline">\(O\)</span>, porque <span
+class="math inline">\(O&#39;\)</span> mete en el disco la misma cantidad
+de ficheros que <span class="math inline">\(O\)</span>.</li>
+</ul>
+</div>
+</section>
+<section id="caso-2-vi-mathittrue-oi-mathitfalse-2"
+class="slide level2">
+<h2>Caso 2: <span class="math inline">\(V[i] = \mathit{true}\)</span>,
+<span class="math inline">\(O[i] = \mathit{false}\)</span></h2>
+<p>Hemos modificado la solución óptima por otra solución <span
+class="math inline">\(O&#39;\)</span> que:</p>
+<ul>
+<li>es factible,</li>
+<li>es igual de óptima que la original, y</li>
+<li>coincide con <span class="math inline">\(V\)</span> en todas las
+posiciones <span class="math inline">\([0..i]\)</span>, incluyendo la
+<span class="math inline">\(i\)</span>.</li>
+</ul>
+<table class="soluciones">
+<tr class="indices">
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+i
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr class="sol">
+<th>
+<span class="math inline">\(V\)</span>
+</th>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+T
+</td>
+<td>
+</td>
+<td>
+F
+</td>
+<td>
+</td>
+</tr>
+<tr class="intermedio">
+<td>
+</td>
+<td>
+=
+</td>
+<td>
+=
+</td>
+<td>
+=
+</td>
+<td>
+=
+</td>
+<td>
+=
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr class="sol">
+<th>
+<span class="math inline">\(O&#39;\)</span>
+</th>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+T
+</td>
+<td>
+</td>
+<td>
+F
+</td>
+<td>
+</td>
+</tr>
+</table>
+</section>
+<section id="seguimos-el-proceso-de-reducción-de-diferencias"
+class="slide level2">
+<h2>Seguimos el proceso de reducción de diferencias</h2>
+<table class="soluciones">
+<tr class="indices">
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+i
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr class="sol">
+<th>
+<span class="math inline">\(V\)</span>
+</th>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+T
+</td>
+<td>
+</td>
+<td>
+F
+</td>
+<td>
+</td>
+</tr>
+<tr class="intermedio">
+<td>
+</td>
+<td>
+=
+</td>
+<td>
+=
+</td>
+<td>
+=
+</td>
+<td>
+=
+</td>
+<td>
+=
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr class="sol">
+<th>
+<span class="math inline">\(O&#39;\)</span>
+</th>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+T
+</td>
+<td>
+</td>
+<td>
+F
+</td>
+<td>
+</td>
+</tr>
+</table>
+<ul>
+<li class="fragment"><p>Si <span class="math inline">\(V =
+O&#39;\)</span>, entonces hemos demostrado que la solución <span
+class="math inline">\(V\)</span> es óptima.</p></li>
+<li class="fragment"><p>Si <span class="math inline">\(V \neq
+O&#39;\)</span>, entonces sea <span class="math inline">\(i&#39; &gt;
+i\)</span> la primera posición en la que difieren, y repetimos el
+razonamiento anterior, buscando otra solución <span
+class="math inline">\(O&#39;&#39;\)</span>, igual de factible, igual de
+óptima, y que elimina la diferencia con la voraz en la posición <span
+class="math inline">\(i&#39;\)</span>.</p></li>
+<li class="fragment"><p>Eliminando sucesivamente las diferencias entre
+la solución voraz y la óptima, llegamos a igualar ambas, demostrando que
+<strong>la solución voraz es óptima</strong>.</p></li>
+</ul>
+</section></section>
+<section>
+<section id="método-de-reducción-de-diferencias"
+class="title-slide slide level1 center"
+data-background-image="img/PinkBackground.jpg">
+<h1 class="center" data-background-image="img/PinkBackground.jpg"><span
+class="sc_number">6.2</span>Método de reducción de diferencias</h1>
+
+</section>
+<section id="distancia-entre-soluciones-factibles" class="slide level2">
+<h2>Distancia entre soluciones factibles</h2>
+<ul>
+<li><p>Sea <span class="math inline">\(\mathcal{F}\)</span> el conjunto
+de soluciones factibles a un problema.</p></li>
+<li><p>Una <strong>distancia</strong> <span
+class="math inline">\(d\)</span> en <span
+class="math inline">\(\mathcal{F}\)</span> es una función <span
+class="math inline">\(d : \mathcal{F} \times \mathcal{F} \rightarrow
+\mathbb{N}\)</span> tal que, para todo <span class="math inline">\(X, Y
+\in \mathcal{F}\)</span>:</p>
+<p><span class="math display">\[
+  d(X, Y) = 0 \Longleftrightarrow X = Y
+  \]</span></p></li>
+<li><p>Para demostrar que una solución voraz <span
+class="math inline">\(V\)</span> es óptima, basta con demostrar la
+<strong>hipótesis de reducción</strong>:</p></li>
+</ul>
+<div style="background-color:#E0F0FF;padding:0.5em 1em">
+<p>Para toda solución óptima <span class="math inline">\(O \in
+\mathcal{F}\)</span>, existe otra solución <span
+class="math inline">\(O&#39; \in \mathcal{F}\)</span> tal que <span
+class="math inline">\(O \sqsubseteq O&#39;\)</span> y <span
+class="math inline">\(d(V,O&#39;) &lt; d(V, O)\)</span>.</p>
+</div>
+</section>
+<section id="teorema" class="slide level2">
+<h2>Teorema</h2>
+<div style="background-color:#E0F0FF;padding:0.5em 1em">
+<p>Si <span class="math inline">\(V \in \mathcal{F}\)</span> cumple la
+hipótesis de reducción y existe una solución óptima <span
+class="math inline">\(O\)</span> al problema, entonces existe una
+secuencia de soluciones <span class="math inline">\(O_1, \ldots O_n \in
+\mathcal{F}\)</span> (para <span class="math inline">\(n \geq
+0\)</span>) tales que:</p>
+<p><span class="math display">\[
+O \sqsubseteq O_1 \sqsubseteq \ldots \sqsubseteq O_n \sqsubseteq V
+\]</span></p>
+<p>y, por tanto, <strong><span class="math inline">\(V\)</span> es
+óptima.</strong></p>
+</div>
+<div style="font-size:70%">
+<p><em>Demostración:</em> Por inducción sobre <span
+class="math inline">\(d(V, O)\)</span>.</p>
+<ul>
+<li><p><strong>Base:</strong> Si <span class="math inline">\(d(V, O) =
+0\)</span>, entonces <span class="math inline">\(V = O\)</span> y, por
+tanto <span class="math inline">\(O \sqsubseteq V\)</span>.</p></li>
+<li><p><strong>Paso inductivo:</strong> Si <span
+class="math inline">\(d(V, O) &gt; 0\)</span>, entonces por la hipótesis
+de reducción existe <span class="math inline">\(O&#39; \in
+\mathcal{F}\)</span> tal que <span class="math inline">\(O \sqsubseteq
+O&#39;\)</span> y <span class="math inline">\(d(V, O&#39;) &lt; d(V,
+O)\)</span>. Por hipótesis de inducción se tiene que <span
+class="math inline">\(O&#39; \sqsubseteq O_1 \sqsubseteq \ldots
+\sqsubseteq O_n \sqsubseteq V\)</span> para ciertos <span
+class="math inline">\(O_1, \ldots, O_n \in \mathcal{F}\)</span> y, por
+tanto: <span class="math display">\[
+O \sqsubseteq O&#39; \sqsubseteq O_1 \sqsubseteq \ldots \sqsubseteq O_n
+\sqsubseteq V
+\]</span></p></li>
+</ul>
+</div>
+</section>
+<section id="problema-de-los-ficheros" class="slide level2">
+<h2>Problema de los ficheros</h2>
+<ul>
+<li><p>Supongamos que <span class="math inline">\(S[0..n)\)</span>
+contiene los tamaños de los ficheros y que <span
+class="math inline">\(d\)</span> es la capacidad máxima del disco. El
+espacio de soluciones es el conjunto de vectores booleanos de tamaño
+<span class="math inline">\(n\)</span>.</p></li>
+<li><p>El conjunto de <strong>soluciones factibles</strong> es <span
+class="math display">\[\small
+\mathcal{F} = \{ X \mid (\Sigma~i : 0 \leq i &lt; n \wedge X[i] =
+\mathit{true} : S[i]) \leq d) \}
+\]</span></p></li>
+<li><p>La relación de <strong>optimalidad</strong> viene dada
+por:</p></li>
+</ul>
+<p><span class="math display">\[\small
+X \sqsubseteq Y \Longleftrightarrow (\#~i: 0\leq i &lt; n : X[i] =
+\mathit{true}) \leq (\#~i: 0\leq i &lt; n : Y[i] = \mathit{true})
+\]</span></p>
+<ul>
+<li>La <strong>distancia</strong> entre soluciones es el número de
+posiciones en las que difieren:</li>
+</ul>
+<p><span class="math display">\[\small
+d(X, Y) = \left(\#~i : 0 \leq i &lt; n : X[i] \neq Y[i]\right)
+\]</span></p>
+</section>
+<section id="section" class="slide level2">
+<h2></h2>
+<ul>
+<li>En el ejemplo de los ficheros, también podríamos definir <span
+class="math inline">\(d\)</span> como la distancia desde la primera
+diferencia entre las soluciones hasta el final del vector:</li>
+</ul>
+<p><span class="math display">\[\small
+\begin{array}{rcl}
+d(X, Y) &amp; = &amp; 0 \quad \text{si } X = Y\\
+d(X, Y) &amp; = &amp; n - \left(\min~p : 0 \leq p &lt; n \wedge X[p]
+\neq Y[p] : p \right) \quad \text{ e.o.c.}
+\end{array}
+\]</span></p>
+</section></section>
+<section>
+<section id="el-problema-de-las-gasolineras"
+class="title-slide slide level1 center"
+data-background-image="img/PinkBackground.jpg">
+<h1 class="center" data-background-image="img/PinkBackground.jpg"><span
+class="sc_number">6.3</span>El problema de las gasolineras</h1>
+
+</section>
+<section id="problema-de-las-gasolineras" class="slide level2">
+<h2>Problema de las gasolineras</h2>
+<p style="text-align:center">
+<img data-src="Tema6/Gasolineras.svg" style="width:80.0%" />
+</p>
+<ul>
+<li>Tenemos que realizar una ruta por carretera. A lo largo del camino
+hay varias gasolineras, que dividen el camino en varios tramos.
+Conocemos la distancia de cada tramo.</li>
+<li>El depósito del coche permite realizar, como mucho, una distancia
+<span class="math inline">\(l\)</span> sin repostar.</li>
+</ul>
+<div class="color_tema fragment" style="text-align:center">
+<p><em>Si queremos hacer la ruta desde origen a destino, ¿cuál es el
+mínimo número de paradas que tenemos que realizar para
+repostar?</em></p>
+</div>
+</section>
+<section id="especificación-del-problema" class="slide level2">
+<h2>Especificación del problema</h2>
+<ul>
+<li><p>Suponemos que tenemos un vector <span
+class="math inline">\(T[0..n)\)</span> con la distancia de cada
+tramo.</p>
+<ul>
+<li><span class="math inline">\(T[0]:\)</span> distancia desde origen a
+primera gasolinera.</li>
+<li><span class="math inline">\(T[i]:\)</span> distancia desde
+gasolinera <span class="math inline">\(i\)</span>-ésima hasta la
+siguiente <span class="math inline">\((0 &lt; i &lt; n-1)\)</span>.</li>
+<li><span class="math inline">\(T[n-1]:\)</span> distancia desde última
+gasolinera hasta destino.</li>
+</ul></li>
+<li><p>Suponemos que, <span class="math inline">\(T[i] \leq l\)</span>
+para todo <span class="math inline">\(i \in
+\{0,\ldots,n-1\}\)</span>.</p>
+<ul>
+<li>Es decir, siempre es posible recorrer cualquier tramo con el
+depósito lleno.</li>
+</ul></li>
+<li><p>Suponemos que partimos del origen con el depósito lleno.</p></li>
+</ul>
+</section>
+<section id="estrategia-voraz" class="slide level2">
+<h2>Estrategia voraz</h2>
+<ul>
+<li class="fragment"><p>Recorremos todos los tramos desde el origen
+hasta el destino.</p></li>
+<li class="fragment"><p>Llevamos la cuenta de la distancia recorrida
+desde el último repostaje, o desde el inicio de la ruta.</p></li>
+<li class="fragment"><p>Si podemos recorrer el siguiente tramo sin tener
+que repostar, lo recorremos.</p></li>
+<li class="fragment"><p>En caso contrario, repostamos y recorremos el
+siguiente tramo.</p></li>
+</ul>
+<p style="text-align:center">
+<img data-src="Tema6/Gasolineras2.svg" style="width:80.0%" />
+</p>
+</section>
+<section id="implementación-en-c" class="slide level2">
+<h2>Implementación en C++</h2>
+<div class="cpp cpp_block">
+<p><span class="type">int</span> gasolineras(<span
+class="type">const</span> <span class="type">vector</span>&lt;<span
+class="type">int</span>&gt; &amp;t, <span class="type">int</span> l)
+{<br>  <span class="type">int</span> n = t.size();<br>  <span
+class="type">int</span> num_paradas = <span
+class="number">0</span>;<br><br>  <span class="type">int</span>
+distancia_restante = l;   <span class="arrow_box_left">Distancia que
+podemos recorrer sin repostar</span><br>  <br>  <strong>for</strong>
+(<span class="type">int</span> i = <span class="number">0</span>; i &lt;
+n; i++) {<br>    <strong>if</strong> (distancia_restante &lt; t[i]) {
+<span class="arrow_box_left">Si necesitamos repostar para el siguiente
+tramo, lo
+hacemos</span><br>      num_paradas++;<br>      distancia_restante =
+l;<br>    }<br>    distancia_restante -=
+t[i];<br>  }<br><br>  <strong>return</strong> num_paradas;<br>}</p>
+</div>
+<div class="fragment">
+<p>Coste en tiempo: <span class="color_tema"><span
+class="math inline">\(\Theta(n)\)</span></span>, donde <span
+class="math inline">\(n\)</span> es el número de tramos.</p>
+</div>
+</section>
+<section id="demostración-de-optimalidad"
+class="slide level2 subsection center">
+<h2 class="subsection center">Demostración de optimalidad</h2>
+</section>
+<section id="espacio-de-soluciones" class="slide level2">
+<h2>Espacio de soluciones</h2>
+<ul>
+<li>Numeramos los tramos desde <span class="math inline">\(0\)</span>
+hasta <span class="math inline">\(n-1\)</span>.</li>
+</ul>
+<ul>
+<li class="fragment"><p>Una solución es un vector <span
+class="math inline">\(X[0..n)\)</span> de valores booleanos.</p>
+<ul>
+<li class="fragment"><span class="math inline">\(X[i] = \texttt{true}
+\Longleftrightarrow\)</span> repostamos antes de recorrer el tramo <span
+class="math inline">\(i\)</span>-ésimo.</li>
+<li class="fragment">Por convenio, suponemos que <span
+class="math inline">\(X[0] = \mathit{true}\)</span>, es decir,
+consideramos que hemos rellenado el depósito en el origen, pero esa
+parada no cuenta como repostaje.</li>
+</ul></li>
+<li class="fragment"><p>El número de paradas de una solución se define
+del siguiente modo:</p>
+<p><span class="math display">\[\small
+  \mathit{numParadas}(X) = (\# i : 0 &lt; i &lt; n : X[i] =
+\mathit{true})
+  \]</span></p></li>
+<li class="fragment"><p>Decimos que <span class="math inline">\(X
+\sqsubseteq X&#39;\)</span> si y solo si <span
+class="math inline">\(\mathit{numParadas}(X) \geq
+\mathit{numParadas}(X&#39;)\)</span>.</p></li>
+</ul>
+</section>
+<section id="reducción-de-diferencias-1" class="slide level2">
+<h2>Reducción de diferencias</h2>
+<ul>
+<li>Dadas dos soluciones <span class="math inline">\(X\)</span> e <span
+class="math inline">\(Y\)</span>, definimos su distancia como la
+distancia que hay desde la primera diferencia hasta el final del
+vector.</li>
+</ul>
+<p><span class="math display">\[\small
+\begin{array}{rcl}
+d(X, Y) &amp; = &amp; 0 \quad \text{si } X = Y\\
+d(X, Y) &amp; = &amp; n - \left(\min~p : 0 \leq p &lt; n \wedge X[p]
+\neq Y[p] : p \right) \quad \text{ e.o.c.}
+\end{array}
+\]</span></p>
+</section>
+<section id="reducción-por-diferencias" class="slide level2">
+<h2>Reducción por diferencias</h2>
+<ul>
+<li>Sea <span class="math inline">\(V\)</span> la solución obtenida
+mediante el algoritmo voraz y <span class="math inline">\(O\)</span> una
+solución óptima.</li>
+<li>Sea <span class="math inline">\(i\)</span> la primera posición en la
+que difieren <span class="math inline">\((0 &lt; i &lt;
+n)\)</span>.</li>
+</ul>
+<table class="soluciones">
+<tr class="indices">
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+i
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr class="sol">
+<th>
+<span class="math inline">\(V\)</span>
+</th>
+<td class="amarillo">
+T
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="marron">
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr class="intermedio">
+<td>
+</td>
+<td>
+=
+</td>
+<td>
+=
+</td>
+<td>
+=
+</td>
+<td>
+=
+</td>
+<td>
+≠
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr class="sol">
+<th>
+<span class="math inline">\(O\)</span>
+</th>
+<td class="amarillo">
+T
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="rojo">
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+</table>
+<ul>
+<li><strong>Caso 1:</strong> <span class="math inline">\(V[i] =
+\mathit{true}\)</span>, <span class="math inline">\(O[i] =
+\mathit{false}\)</span></li>
+<li><strong>Caso 2:</strong> <span class="math inline">\(V[i] =
+\mathit{false}\)</span>, <span class="math inline">\(O[i] =
+\mathit{true}\)</span></li>
+</ul>
+</section>
+<section id="caso-1-vi-mathittrue-oi-mathitfalse" class="slide level2">
+<h2>Caso 1: <span class="math inline">\(V[i] = \mathit{true}\)</span>,
+<span class="math inline">\(O[i] = \mathit{false}\)</span></h2>
+<table class="soluciones">
+<tr class="indices">
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+i
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr class="sol">
+<th>
+<span class="math inline">\(V\)</span>
+</th>
+<td class="amarillo">
+T
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="marron">
+T
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr class="intermedio">
+<td>
+</td>
+<td>
+=
+</td>
+<td>
+=
+</td>
+<td>
+=
+</td>
+<td>
+=
+</td>
+<td>
+≠
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr class="sol">
+<th>
+<span class="math inline">\(O\)</span>
+</th>
+<td class="amarillo">
+T
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="rojo">
+F
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+</table>
+<div class="fragment">
+<p><strong>Este caso no es posible</strong></p>
+<p>Si la solución voraz hizo una parada antes de hacer el tramo <span
+class="math inline">\(i\)</span>, es porque no se podía recorrer el
+tramo <span class="math inline">\(i\)</span> sin quedarse sin
+gasolina.</p>
+<p>Como la solución óptima ha hecho los mismos repostajes antes de
+llegar al tramo <span class="math inline">\(i\)</span>, si decidiese no
+repostar en <span class="math inline">\(i\)</span> no sería
+factible.</p>
+</div>
+</section>
+<section id="caso-2-vi-mathitfalse-oi-mathittrue" class="slide level2">
+<h2>Caso 2: <span class="math inline">\(V[i] = \mathit{false}\)</span>,
+<span class="math inline">\(O[i] = \mathit{true}\)</span></h2>
+<table class="soluciones">
+<tr class="indices">
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+i
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr class="sol">
+<th>
+<span class="math inline">\(V\)</span>
+</th>
+<td class="amarillo">
+T
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="marron">
+F
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr class="intermedio">
+<td>
+</td>
+<td>
+=
+</td>
+<td>
+=
+</td>
+<td>
+=
+</td>
+<td>
+=
+</td>
+<td>
+≠
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr class="sol">
+<th>
+<span class="math inline">\(O\)</span>
+</th>
+<td class="amarillo">
+T
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="rojo">
+T
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+</table>
+<ul>
+<li><p>Si <span class="math inline">\(i + 1 &lt; n\)</span>,
+distinguimos casos según <span
+class="math inline">\(O[i+1]\)</span>.</p>
+<ul>
+<li><strong>Caso 2.1:</strong> <span class="math inline">\(O[i+1] =
+\mathit{true}\)</span></li>
+<li><strong>Caso 2.2:</strong> <span class="math inline">\(O[i+1] =
+\mathit{false}\)</span></li>
+</ul></li>
+</ul>
+</section>
+<section id="caso-2.1-oi1-true" class="slide level2">
+<h2>Caso 2.1: <span class="math inline">\(O[i+1] = true\)</span></h2>
+<table class="soluciones">
+<tr class="indices">
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+i
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr class="sol">
+<th>
+<span class="math inline">\(V\)</span>
+</th>
+<td class="amarillo">
+T
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="marron">
+F
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr class="intermedio">
+<td>
+</td>
+<td>
+=
+</td>
+<td>
+=
+</td>
+<td>
+=
+</td>
+<td>
+=
+</td>
+<td>
+≠
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr class="sol">
+<th>
+<span class="math inline">\(O\)</span>
+</th>
+<td class="amarillo">
+T
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="rojo">
+T
+</td>
+<td class="rojo">
+T
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+</table>
+<div class="fragment">
+<p><strong>Este caso no es posible</strong></p>
+<p>Podríamos obtener una solución <span
+class="math inline">\(O&#39;\)</span> igual de factible cambiando la
+posición <span class="math inline">\(i\)</span> por <span
+class="math inline">\(\mathit{false}\)</span>:</p>
+<table class="soluciones">
+<tr class="indices">
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+i
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr class="sol">
+<th>
+<span class="math inline">\(O&#39;\)</span>
+</th>
+<td class="amarillo">
+T
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="rojo">
+F
+</td>
+<td class="rojo">
+T
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+</table>
+<p>Sin embargo, <span class="math inline">\(O&#39;\)</span> realiza
+menos paradas que <span class="math inline">\(O\)</span> contradiciendo
+el hecho de que <span class="math inline">\(O\)</span> es óptima.</p>
+</div>
+</section>
+<section id="caso-2.2-oi1-mathitfalse" class="slide level2">
+<h2>Caso 2.2: <span class="math inline">\(O[i+1] =
+\mathit{false}\)</span></h2>
+<table class="soluciones">
+<tr class="indices">
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+i
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr class="sol">
+<th>
+<span class="math inline">\(V\)</span>
+</th>
+<td class="amarillo">
+T
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="marron">
+F
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr class="intermedio">
+<td>
+</td>
+<td>
+=
+</td>
+<td>
+=
+</td>
+<td>
+=
+</td>
+<td>
+=
+</td>
+<td>
+≠
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr class="sol">
+<th>
+<span class="math inline">\(O\)</span>
+</th>
+<td class="amarillo">
+T
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="rojo">
+T
+</td>
+<td class="rojo">
+F
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+</table>
+<div class="fragment">
+<ul>
+<li>Sea <span class="math inline">\(O&#39;\)</span> la solución que
+resulta de intercambiar las posiciones <span
+class="math inline">\(i\)</span> e <span
+class="math inline">\(i+1\)</span> en <span
+class="math inline">\(O\)</span>:</li>
+</ul>
+<table class="soluciones">
+<tr class="indices">
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+i
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr class="sol">
+<th>
+<span class="math inline">\(O&#39;\)</span>
+</th>
+<td class="amarillo">
+T
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="rojo">
+F
+</td>
+<td class="rojo">
+T
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+</table>
+<ul>
+<li class="fragment"><p><span class="math inline">\(O&#39;\)</span> es
+factible, ya que la solución voraz es factible sin necesidad de hacer
+parada en <span class="math inline">\(i\)</span>. Además, es igual de
+óptima que <span class="math inline">\(O\)</span>, ya que realiza el
+mismo número de paradas.</p></li>
+<li class="fragment"><p>Además, <span class="math inline">\(V[i] =
+O&#39;[i]\)</span>, por lo que se reduce la distancia entre la solución
+voraz y óptima, demostrando la hipótesis de reducción.</p></li>
+</ul>
+</div>
+</section>
+<section id="section-1" class="slide level2">
+<h2></h2>
+<table class="soluciones">
+<tr class="indices">
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+i
+</td>
+</tr>
+<tr class="sol">
+<th>
+<span class="math inline">\(V\)</span>
+</th>
+<td class="amarillo">
+T
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="marron">
+F
+</td>
+</tr>
+<tr class="intermedio">
+<td>
+</td>
+<td>
+=
+</td>
+<td>
+=
+</td>
+<td>
+=
+</td>
+<td>
+=
+</td>
+<td>
+=
+</td>
+<td>
+=
+</td>
+<td>
+=
+</td>
+<td>
+≠
+</td>
+</tr>
+<tr class="sol">
+<th>
+<span class="math inline">\(O\)</span>
+</th>
+<td class="amarillo">
+T
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="rojo">
+T
+</td>
+</tr>
+</table>
+<p>Si estamos en el caso 2, pero <span class="math inline">\(i + 1 =
+n\)</span>, no podemos mirar qué hay en la posición <span
+class="math inline">\(i + 1\)</span>.</p>
+<p>Sin embargo, este caso tampoco es posible, porque podemos reemplazar
+el último <span class="math inline">\(\mathit{true}\)</span> de la
+solución óptima por un <span
+class="math inline">\(\mathit{false}\)</span>:</p>
+<table class="soluciones">
+<tr class="indices">
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+i
+</td>
+</tr>
+<tr class="sol">
+<th>
+<span class="math inline">\(O&#39;\)</span>
+</th>
+<td class="amarillo">
+T
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="amarillo">
+</td>
+<td class="rojo">
+F
+</td>
+</tr>
+</table>
+<p>La solución <span class="math inline">\(O&#39;\)</span> sigue siendo
+factible (porque la voraz no hace parada en <span
+class="math inline">\(i\)</span> y también lo es), y es más óptima que
+<span class="math inline">\(O\)</span>, contradiciendo el hecho de que
+<span class="math inline">\(O\)</span> es óptima.</p>
+</section></section>
+<section>
+<section id="el-problema-del-cambio-de-monedas-versión-voraz"
+class="title-slide slide level1 center"
+data-background-image="img/PinkBackground.jpg">
+<h1 class="center" data-background-image="img/PinkBackground.jpg"><span
+class="sc_number">6.4</span>El problema del cambio de
+monedas<br/>(versión voraz)</h1>
+
+</section>
+<section id="el-problema-del-cambio-de-monedas" class="slide level2">
+<h2>El problema del cambio de monedas</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<ul>
+<li><p>Tenemos varios tipos de moneda, cada uno con un valor.</p></li>
+<li><p>Disponemos de una cantidad ilimitada de monedas de cada
+tipo.</p></li>
+<li><p>Queremos pagar una cantidad <span
+class="math inline">\(c\)</span> utilizando estas monedas.</p></li>
+</ul>
+</div><div class="column" style="width:50%;">
+<p><img data-src="Tema5/Monedas.svg" style="width:100.0%" /></p>
+</div>
+</div>
+<div class="fragment" style="text-align:center">
+<p><span class="color_tema"><em>¿Cómo puedo pagar la cantidad <span
+class="math inline">\(c\)</span> utilizando el <strong>mínimo</strong>
+número de monedas?</em></span></p>
+</div>
+<div class="fragment">
+<ul>
+<li>Ya sabemos resolver este problema mediante programación
+dinámica.</li>
+</ul>
+<div class="fragment" style="text-align:center">
+<p><span class="color_tema"><em>¿Existe una solución voraz a este
+problema?</em></span></p>
+</div>
+</div>
+</section>
+<section id="solución-voraz-al-problema-del-cambio"
+class="slide level2">
+<h2>Solución voraz al problema del cambio</h2>
+<ul>
+<li>Un sistema monetario <strong>canónico</strong> es aquel para el cual
+se puede pagar cualquier cantidad utilizando el mínimo número de monedas
+utilizando la siguiente estrategia voraz:</li>
+</ul>
+<div class="info_box">
+<p>Tomar en cada paso la moneda de mayor valor disponible que no exceda
+de la cantidad restante a pagar</p>
+</div>
+<div class="columns fragment">
+<div class="column" style="font-size:80%;width:75%">
+<p>Ejemplo: sistema monetario de la Eurozona:</p>
+<ul>
+<li class="fragment">Queremos pagar la cantidad de 1.92 €
+<ul>
+<li class="fragment">Ponemos <span class="color_tema">moneda de 1
+€</span> (cantidad restante: 0.92 €)</li>
+<li class="fragment">Ponemos <span class="color_tema">moneda de 50
+cts</span> (cantidad restante: 0.42 €)</li>
+<li class="fragment">Ponemos <span class="color_tema">moneda de 20
+cts</span> (cantidad restante: 0.22 €)</li>
+<li class="fragment">Ponemos <span class="color_tema">moneda de 20
+cts</span> (cantidad restante: 0.02 €)</li>
+<li class="fragment">Ponemos <span class="color_tema">moneda de 2
+cts</span> (cantidad restante: 0.00 €)</li>
+</ul></li>
+</ul>
+</div><div class="column" style="width:25%">
+<p><img data-src="Tema6/Euro_coins_line.jpg" /></p>
+</div>
+</div>
+</section>
+<section id="implementación-en-c-1" class="slide level2">
+<h2>Implementación en C++</h2>
+<div class="cpp cpp_block">
+<p><span class="comment">// Precondición: <code>m</code> está ordenado
+de mayor a menor</span><br><span class="type">pair</span>&lt;<span
+class="type">bool</span>, <span class="type">vector</span>&lt;<span
+class="type">int</span>&gt;&gt; cambio_monedas(<span
+class="type">const</span> <span class="type">vector</span>&lt;<span
+class="type">int</span>&gt; &amp;m, <span class="type">int</span> c)
+{<br>  <span class="type">vector</span>&lt;<span
+class="type">int</span>&gt; result(m.size(), <span
+class="number">0</span>);<br><br>  <span class="type">int</span>
+cantidad_restante = c;<br>  <span class="type">int</span> i = <span
+class="number">0</span>;<br>  <strong>while</strong> (i &lt; m.size()
+&amp;&amp; cantidad_restante &gt; <span class="number">0</span>)
+{<br>    <strong>if</strong> (m[i] &lt;= cantidad_restante)
+{<br>      result[i]++;                      <span
+class="arrow_box_left">Utilizamos una moneda más de valor
+<code>m[i]</code></span><br>      cantidad_restante -= m[i];<br>    }
+<strong>else</strong> {<br>      i++;                              <span
+class="arrow_box_left">Pasamos a la siguiente
+moneda</span><br>    }<br>  }<br><br>  <strong>if</strong>
+(cantidad_restante == <span class="number">0</span>)
+{<br>    <strong>return</strong> {<span class="type">true</span>,
+result};<br>  } <strong>else</strong> {<br>    <strong>return</strong>
+{<span class="type">false</span>, {}};<br>  }<br>}</p>
+</div>
+</section>
+<section id="condición-suficiente-para-un-sistema-canónico"
+class="slide level2">
+<h2>Condición suficiente para un sistema canónico</h2>
+<ul>
+<li class="fragment"><p>Supongamos que tenemos <span
+class="math inline">\(n\)</span> tipos de monedas de valores <span
+class="math inline">\(m_1, \ldots, m_n\)</span>, donde cada moneda tiene
+un valor múltiplo del de la siguiente de menor valor. Es decir, <span
+class="math inline">\(m_i\)</span> es múltiplo de <span
+class="math inline">\(m_{i+1}\)</span> para cada <span
+class="math inline">\(i \in \{1, \ldots, n-1\}\)</span>.</p></li>
+<li class="fragment"><p>Si es posible pagar la cantidad <span
+class="math inline">\(c\)</span> con la estrategia voraz, esta
+estrategia <strong>minimiza el número de monedas necesario</strong> <a
+href="Tema6/coins_voraz.pdf">(demostración)</a></p></li>
+<li class="fragment"><p>Si no es posible pagar la cantidad <span
+class="math inline">\(c\)</span> con la estrategia voraz, entonces no es
+posible pagar la cantidad <span class="math inline">\(c\)</span> con
+este sistema monetario.</p>
+<ul>
+<li class="fragment">Ejemplo: monedas de valores 10, 5 y 1.</li>
+<li class="fragment">El sistema monetario de la Eurozona no cumple esta
+condición.</li>
+</ul></li>
+</ul>
+</section>
+<section id="otra-condición-suficiente" class="slide level2">
+<h2>Otra condición suficiente (*)</h2>
+<ul>
+<li><p>Supongamos que tenemos <span class="math inline">\(n\)</span>
+tipos de monedas de valores <span class="math inline">\(m_1, \ldots,
+m_n\)</span>, ordenadas de manera ascendente con <span
+class="math inline">\(m_1 = 1\)</span>.</p></li>
+<li><p>Denotamos por <span class="math inline">\(G(c)\)</span> la
+cantidad de monedas necesaria devuelta por la estrategia voraz para
+pagar <span class="math inline">\(c\)</span>.</p></li>
+<li><p>Si para toda cantidad <span class="math inline">\(c\)</span> tal
+que <span class="math inline">\(m_3 + 1 &lt; c &lt; m_{n-1} +
+m_n\)</span> y todo <span class="math inline">\(i\)</span> tal que <span
+class="math inline">\(m_i &lt; c\)</span> se cumple <span
+class="math display">\[
+G(c) \leq G(c - m_i) + 1,
+\]</span></p>
+<p>entonces el sistema monetario es canónico <a
+href="https://www.cs.cornell.edu/~kozen/Papers/change.pdf">(Kozen y
+Zaks, 1994)</a>.</p></li>
+<li><p>El sistema monetario de la Eurozona sí cumple esta
+condición.</p></li>
+</ul>
+</section></section>
+<section>
+<section id="el-problema-de-la-mochila-real-versión-voraz"
+class="title-slide slide level1 center"
+data-background-image="img/PinkBackground.jpg">
+<h1 class="center" data-background-image="img/PinkBackground.jpg"><span
+class="sc_number">6.5</span>El problema de la mochila real<br/>(versión
+voraz)</h1>
+
+</section>
+<section id="descripción-del-problema" class="slide level2">
+<h2>Descripción del problema</h2>
+<ul>
+<li>Tenemos una mochila con una capacidad máxima <span
+class="math inline">\(m\)</span>.</li>
+<li>Tenemos varios objetos distintos, cada uno con un peso y con un
+valor (ambos pueden ser números reales).</li>
+<li>Los objetos <strong>pueden fraccionarse</strong> antes de meterlos
+en la mochila.
+<ul>
+<li>Por ejemplo, podemos meter la mitad de un objeto, o tres cuartas
+partes de un objeto.</li>
+<li>En este caso, el objeto solo ocupa en la mochila una fracción de su
+peso, y solo aporta una fracción de su valor.</li>
+</ul></li>
+</ul>
+<div class="color_tema fragment" style="text-align:center">
+<p><em>¿Qué objetos (o fracciones de objetos) debemos tomar para
+maximizar el valor total de lo que llevamos sin exceder la capacidad de
+la mochila?</em></p>
+</div>
+</section>
+<section id="descripción-del-problema-1" class="slide level2">
+<h2>Descripción del problema</h2>
+<ul>
+<li class="fragment"><p>Supongamos dos vectores <span
+class="math inline">\(P[0..n)\)</span> y <span
+class="math inline">\(V[0..n)\)</span>, tales que, para todo <span
+class="math inline">\(i \in \{0..n-1\}\)</span>:</p>
+<ul>
+<li class="fragment"><span class="math inline">\(P[i] &gt; 0\)</span> es
+el peso del objeto <span class="math inline">\(i\)</span>-ésimo.</li>
+<li class="fragment"><span class="math inline">\(V[i] &gt; 0\)</span> es
+el valor del objeto <span class="math inline">\(i\)</span>-ésimo.</li>
+</ul></li>
+<li class="fragment"><p>Suponemos que la mochila tiene capacidad <span
+class="math inline">\(m\)</span>.</p></li>
+<li class="fragment"><p>Queremos encontrar, para cada objeto <span
+class="math inline">\(i\)</span>, un valor real <span
+class="math inline">\(X[i] \in [0,1]\)</span> tal que se maximice <span
+class="math inline">\(\sum_{i = 0}^{n-1} V[i] * X[i]\)</span> sujeto a
+la restricción <span class="math inline">\(\sum_{i = 0}^{n-1} P[i] *
+X[i] \leq m\)</span>.</p></li>
+</ul>
+</section>
+<section id="estrategia-voraz-1" class="slide level2">
+<h2>Estrategia voraz</h2>
+<ul>
+<li class="fragment"><p>Para cada <span class="math inline">\(i\)</span>
+tal que <span class="math inline">\(0 \leq i &lt; n\)</span>, definimos
+la <strong>densidad</strong> de un objeto (denotada por <span
+class="math inline">\(D[i]\)</span>) como el cociente entre el valor del
+objeto y su peso. <span class="math display">\[
+D[i] = \frac{V[i]}{P[i]}
+\]</span></p></li>
+<li class="fragment"><p>La estrategia voraz recorre los objetos
+<strong>en orden decreciente de densidad</strong>.</p></li>
+<li class="fragment"><p>Si el objeto actual cabe entero en el espacio
+restante de la mochila, se mete en su totalidad.</p></li>
+<li class="fragment"><p>Si no cabe entero, se inserta la fracción
+necesaria hasta llenar la mochila.</p></li>
+</ul>
+</section>
+<section id="ejemplo" class="slide level2">
+<h2>Ejemplo</h2>
+<p>Suponemos que la capacidad de la mochila es <span
+class="math inline">\(m = 19\)</span> y tenemos los siguientes
+objetos.</p>
+<table>
+<tr>
+<th>
+Objeto
+</th>
+<th>
+0
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+<th>
+3
+</th>
+</tr>
+<tr>
+<th>
+Valor
+</th>
+<td>
+15
+</td>
+<td>
+10
+</td>
+<td>
+20
+</td>
+<td>
+15
+</td>
+</tr>
+<tr>
+<th>
+Peso
+</th>
+<td>
+10
+</td>
+<td>
+4
+</td>
+<td>
+20
+</td>
+<td>
+30
+</td>
+</tr>
+<tr>
+<th>
+Densidad
+</th>
+<td>
+1.5
+</td>
+<td>
+2.5
+</td>
+<td>
+1.0
+</td>
+<td>
+0.5
+</td>
+</tr>
+</table>
+<ul>
+<li class="fragment">Insertamos el objeto 1 en la mochila (capacidad
+restante: 15)</li>
+<li class="fragment">Insertamos el objeto 0 en la mochila (capacidad
+restante: 5)</li>
+<li class="fragment">El objeto 2 no cabe en la mochila, pero podemos
+insertar <span class="math inline">\(\frac{5}{20} = \frac{1}{4}\)</span>
+parte del mismo.</li>
+</ul>
+<div class="fragment" style="text-align:center">
+<p>Solución: <span class="color_tema"><span class="math inline">\(X =
+[1, 1, 0.25,0]\)</span></span>. Valor obtenido: <span
+class="color_tema"><span class="math inline">\(15 + 10 + 20\frac{1}{4} =
+30\)</span></span></p>
+</div>
+</section>
+<section id="implementación-en-c-2" class="slide level2">
+<h2>Implementación en C++</h2>
+<ul>
+<li><p>La implementación es más eficiente si mantenemos los objetos en
+orden decreciente de densidad.</p></li>
+<li><p>Para no alterar los vectores originales, construimos un vector de
+índices <code>[0, 1, ..., n-1]</code> y lo ordenamos utilizando la
+siguiente relación de orden:</p>
+<ul>
+<li><code>i</code> se coloca antes que <code>j</code> en el vector
+ordenado si la densidad del objeto <code>i</code>-ésimo es mayor que la
+del objeto <code>j</code>-ésimo.</li>
+</ul></li>
+</ul>
+<div class="cpp cpp_block" style="font-size:60%">
+<p><span class="type">vector</span>&lt;<span
+class="type">double</span>&gt; mochila_real(<span
+class="type">const</span> <span class="type">vector</span>&lt;<span
+class="type">double</span>&gt; &amp;peso, <span
+class="type">const</span> <span class="type">vector</span>&lt;<span
+class="type">double</span>&gt; &amp;valor, <span
+class="type">double</span> capacidad) {<br>  <span
+class="type">int</span> n = peso.size();<br>  <span
+class="type">vector</span>&lt;<span class="type">double</span>&gt;
+ids(n);                <span class="arrow_box_left">Vector de tamaño
+<code>n</code></span><br>  iota(ids.begin(), ids.end(), <span
+class="number">0</span>);      <span class="arrow_box_left">ids =
+<code>[0, 1, 2, ..., n-1]</code></span><br><br>  sort(ids.begin(),
+ids.end(), [&amp;valor, &amp;peso](<span class="type">int</span> i,
+<span class="type">int</span> j) { <br>      <strong>return</strong>
+valor[i] / peso[i] &gt; valor[j] / peso[j];           <span
+class="arrow_box_left">Función de
+comparación</span><br>  });<br><br>  ...</p>
+</div>
+</section>
+<section id="section-2" class="slide level2">
+<h2></h2>
+<p>Con el vector <code>ids</code> ya ordenado, lo recorremos para
+construir la solución óptima.</p>
+<div class="cpp cpp_block" style="font-size:60%">
+<p>  ...<br>  <span class="type">vector</span>&lt;<span
+class="type">double</span>&gt; result(n, <span
+class="number">0</span>.<span class="number">0</span>);<br>  <br>  <span
+class="type">double</span> capacidad_restante = capacidad;<br>  <span
+class="type">int</span> i = <span
+class="number">0</span>;<br><br>  <strong>while</strong> (i &lt; n
+&amp;&amp; capacidad_restante &gt; <span class="number">0</span>)
+{<br>    <span class="type">int</span> actual = ids[i];<br>    <span
+class="type">double</span> fraccion = min(<span
+class="number">1</span>.<span class="number">0</span>,
+capacidad_restante / peso[actual]);<br>    result[actual] =
+fraccion;<br>    capacidad_restante -= fraccion *
+peso[actual];<br>    i++;<br>  }<br><br>  <strong>return</strong>
+result;<br>}</p>
+</div>
+<div class="fragment">
+<p>Coste en tiempo: <span class="math inline">\(\Theta(n \log
+n)\)</span> (ordenación previa) + <span
+class="math inline">\(\Theta(n)\)</span> (bucle)</p>
+<p><strong>TOTAL:</strong> <span class="color_tema"><span
+class="math inline">\(\Theta(n \log n)\)</span></span> donde <span
+class="math inline">\(n\)</span> es el número de objetos.</p>
+</div>
+</section>
+<section id="demostración-de-optimalidad-1"
+class="slide level2 subsection center">
+<h2 class="subsection center">Demostración de optimalidad</h2>
+</section>
+<section id="demostración-de-optimalidad-2" class="slide level2">
+<h2>Demostración de optimalidad (*)</h2>
+<ul>
+<li><p>Suponemos que los objetos están en orden decreciente de
+densidad.</p></li>
+<li><p>Sea <span class="math inline">\(X\)</span> la solución obtenida
+mediante la estrategia voraz. Esta solución tiene todas las componentes
+en 1 hasta una posición <span class="math inline">\(j\)</span>, donde
+<span class="math inline">\(X[j] &lt; 1\)</span>.</p></li>
+</ul>
+<table class="soluciones">
+<tr class="indices">
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+j
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr class="sol">
+<th>
+<span class="math inline">\(X\)</span>
+</th>
+<td class="amarillo">
+1
+</td>
+<td class="amarillo">
+1
+</td>
+<td class="amarillo">
+1
+</td>
+<td class="marron">
+&lt;1
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+</tr>
+</table>
+<div class="fragment">
+<ul>
+<li>Sea <span class="math inline">\(O\)</span> una solución óptima
+cualquiera. Sin pérdida de generalidad, suponemos que <span
+class="math inline">\(X\)</span> y <span
+class="math inline">\(O\)</span> llenan completamente la mochila.</li>
+</ul>
+</div>
+<div class="fragment">
+<ul>
+<li>Vamos a demostrar, que para todo <span
+class="math inline">\(i\)</span>:</li>
+</ul>
+<p><span class="math display">\[
+(X[i] - O[i]) * \frac{V[i]}{P[i]} \geq (X[i] - O[i]) * \frac{V[j]}{P[j]}
+\]</span></p>
+</div>
+</section>
+<section class="slide level2">
+
+<p><span class="math display">\[
+(X[i] - O[i]) * \frac{V[i]}{P[i]} \geq (X[i] - O[i]) * \frac{V[j]}{P[j]}
+\]</span></p>
+<ul>
+<li class="fragment"><p><strong>Caso 1</strong>: <span
+class="math inline">\(i &lt; j\)</span>. Se tiene <span
+class="math inline">\(X[i] = 1 \geq O[i]\)</span>, por lo que <span
+class="math inline">\(X[i] - O[i] \geq 0\)</span>. Además, como los
+objetos están ordenados por densidad, <span
+class="math inline">\(\frac{V[i]}{P[i]} \geq \frac{V[j]}{P[j]}\)</span>.
+Multiplicando por <span class="math inline">\((X[i] - O[i])\)</span> a
+ambos lados se consigue la desigualdad indicada.</p></li>
+<li class="fragment"><p><strong>Caso 2</strong>: <span
+class="math inline">\(i = j\)</span>. Trivial.</p></li>
+<li class="fragment"><p><strong>Caso 3</strong>: <span
+class="math inline">\(i &gt; j\)</span>. Se tiene <span
+class="math inline">\(X[i] = 0 \leq O[i]\)</span>. Además, <span
+class="math inline">\(\frac{V[i]}{P[i]} \leq \frac{V[j]}{P[j]}\)</span>.
+Multiplicando por <span class="math inline">\(X[i] - O[i]\)</span> (que
+es un número ≤ 0) a ambos lados, se obtiene la desigualdad
+indicada.</p></li>
+</ul>
+</section>
+<section class="slide level2">
+
+<p>Demostramos que el valor de la solución voraz coincide con el de la
+solución óptima. Calculamos la diferencia entre ambos valores.</p>
+<p><span class="math display">\[\small\begin{array}{rcl}
+\left(\sum_{i=0}^{n-1} X[i] * V[i]\right) - \left(\sum_{i=0}^{n-1} O[i]
+* V[i]\right) &amp; = &amp; \sum_{i=0}^{n-1} (X[i]-O[i])* V[i] \\
+&amp; = &amp; \sum_{i=0}^{n-1} (X[i]-O[i])* P[i] * \frac{V[i]}{P[i]} \\
+&amp; \geq &amp; \sum_{i=0}^{n-1} (X[i]-O[i])* P[i] * \frac{V[j]}{P[j]}
+\\
+&amp; = &amp;  \frac{V[j]}{P[j]} * \sum_{i=0}^{n-1} (X[i]-O[i])*
+P[i]  \\
+&amp; = &amp;  \frac{V[j]}{P[j]} * \left(\sum_{i=0}^{n-1} (X[i]*P[i]) -
+\sum_{i=0}^{n-1} (O[i]* P[i])\right)  \\
+&amp; = &amp;  \frac{V[j]}{P[j]} * \left(m - m\right)  \\
+&amp; = &amp;  0
+\end{array}
+\]</span></p>
+<p>Por tanto, la solución voraz consigue el mismo valor que la
+óptima.</p>
+</section></section>
+<section>
+<section id="interludio-colas-de-prioridad"
+class="title-slide slide level1 center"
+data-background-image="img/PinkBackground.jpg">
+<h1 class="center" data-background-image="img/PinkBackground.jpg"><span
+class="sc_number">6.6</span>Interludio: colas de prioridad</h1>
+
+</section>
+<section id="colas-de-prioridad" class="slide level2">
+<h2>Colas de prioridad</h2>
+<ul>
+<li><p>Una <strong>cola de prioridad</strong> es un tipo abstracto de
+datos que permite almacenar una colección de elementos.</p></li>
+<li><p>Cada elemento tiene una <strong>prioridad</strong>
+asignada.</p></li>
+<li><p>Los elementos se pueden introducir en la cola de prioridad en
+cualquier orden.</p></li>
+<li><p>A la hora de extraer los elementos de la cola, se extraen según
+su prioridad:</p>
+<ul>
+<li><strong>Cola de prioridad de máximos</strong>: Los elementos se
+extraen desde el más prioritario hasta el menos prioritario.</li>
+<li><strong>Cola de prioridad de mínimos</strong>: Los elementos se
+extraen desde el menos prioritario hasta el más prioritario.</li>
+</ul></li>
+</ul>
+</section>
+<section id="la-clase-priority_queuet" class="slide level2">
+<h2>La clase <code>priority_queue&lt;T&gt;</code></h2>
+<ul>
+<li><p>Pertenece a las bibliotecas de C++.</p>
+<ul>
+<li>Requiere incluir el fichero de cabecera
+<code>&lt;queue&gt;</code>.</li>
+</ul></li>
+<li><p>Implementa las colas de prioridad que contienen elementos de tipo
+<code>T</code>.</p></li>
+<li><p>Por defecto, utiliza el operador <code>&gt;</code> para
+determinar la prioridad de los objetos de la cola.</p>
+<ul>
+<li><code>x</code> es más prioritario que <code>z</code> si y solo si
+<code>x &gt; z</code>.</li>
+<li>Por tanto, es una cola de prioridad de máximos.</li>
+</ul></li>
+</ul>
+</section>
+<section id="operaciones-de-priority_queuet" class="slide level2">
+<h2>Operaciones de <code>priority_queue&lt;T&gt;</code></h2>
+<div class="columns">
+<div class="column" style="width:50%">
+<dl>
+<dt><code>pq.push(x)</code></dt>
+<dd>
+inserta el elemento <code>x</code>.
+</dd>
+<dt><code>pq.pop()</code></dt>
+<dd>
+elimina el elemento más prioritario.
+</dd>
+<dt><code>pq.top()</code></dt>
+<dd>
+devuelve el elemento más prioritario (sin eliminarlo).
+</dd>
+<dt><code>pq.empty()</code></dt>
+<dd>
+devuelve <code>true</code> si la cola está vacía.
+</dd>
+<dt><code>pq.size()</code></dt>
+<dd>
+devuelve el número de elementos.
+</dd>
+</dl>
+</div><div class="column" style="width:50%">
+<div class="cpp cpp_block" style="font-size:60%">
+<p>priority_queue&lt;<span class="type">int</span>&gt; pq;   <span
+class="comment">// pq = {}</span><br>pq.push(<span
+class="number">10</span>);              <span class="comment">// pq =
+{<span class="number">10</span>}</span><br>pq.push(<span
+class="number">5</span>);               <span class="comment">// pq =
+{<span class="number">10</span>, <span
+class="number">5</span>}</span><br>pq.push(<span
+class="number">12</span>);              <span class="comment">// pq =
+{<span class="number">10</span>, <span class="number">5</span>, <span
+class="number">12</span>}</span><br>pq.push(<span
+class="number">7</span>);               <span class="comment">// pq =
+{<span class="number">10</span>, <span class="number">5</span>, <span
+class="number">12</span>, <span class="number">7</span>}</span><br>cout
+&lt;&lt; pq.top() &lt;&lt; endl; <span class="comment">// Imprime <span
+class="number">12</span></span><br>pq.pop();                 <span
+class="comment">// pq = {<span class="number">10</span>, <span
+class="number">5</span>, <span class="number">7</span>}</span><br>cout
+&lt;&lt; pq.top() &lt;&lt; endl; <span class="comment">// Imprime <span
+class="number">10</span></span><br>pq.push(<span
+class="number">11</span>);              <span class="comment">// pq =
+{<span class="number">10</span>, <span class="number">5</span>, <span
+class="number">7</span>, <span class="number">11</span>}</span><br>cout
+&lt;&lt; pq.top() &lt;&lt; endl; <span class="comment">// Imprime <span
+class="number">11</span></span><br>pq.pop();                 <span
+class="comment">// pq = {<span class="number">10</span>, <span
+class="number">5</span>, <span
+class="number">7</span>}</span><br>pq.pop();                 <span
+class="comment">// pq = {<span class="number">5</span>, <span
+class="number">7</span>}</span><br>cout &lt;&lt; pq.top() &lt;&lt; endl;
+<span class="comment">// Imprime <span
+class="number">7</span></span></p>
+</div>
+</div>
+</div>
+</section>
+<section id="implementación-de-las-colas-de-prioridad"
+class="slide level2">
+<h2>Implementación de las colas de prioridad (*)</h2>
+<ul>
+<li><p>Se suelen utilizar <strong>montículos binarios</strong>,
+representados mediante vectores.</p></li>
+<li><p>Más información: <a
+href="https://youtu.be/mvaLy_ta3Qw">https://youtu.be/mvaLy_ta3Qw</a></p></li>
+</ul>
+<ul class="no_bolos">
+<li class="biblio">
+Ricardo Peña<br/>       <span class="color_tema"><em>Algoritmos y
+estructuras de datos : con programas verificados en
+Dafny</em></span><br/>       Garceta D.L., 2019<br/>       <em>Sección
+3.1.</em>
+</li>
+<li class="biblio">
+Thomas Cormen, Charles E. Leiserson, Ronald L. Rivest, Clifford
+Stein<br/>       <span class="color_tema"><em>Introduction to
+algorithms, fourth edition</em></span><br/>       The MIT Press,
+2022<br/>       <em>Capítulo 6</em>
+</li>
+</ul>
+</section>
+<section id="coste-de-las-operaciones" class="slide level2">
+<h2>Coste de las operaciones</h2>
+<p>Si <span class="math inline">\(n\)</span> es el número de elementos
+de la cola de prioridad:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Operación</th>
+<th style="text-align: center;">Coste</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><code>push</code></td>
+<td style="text-align: center;"><span class="math inline">\(\Theta(\log
+n)\)</span></td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>pop</code></td>
+<td style="text-align: center;"><span class="math inline">\(\Theta(\log
+n)\)</span></td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>top</code></td>
+<td style="text-align: center;"><span
+class="math inline">\(\Theta(1)\)</span></td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>empty</code></td>
+<td style="text-align: center;"><span
+class="math inline">\(\Theta(1)\)</span></td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>size</code></td>
+<td style="text-align: center;"><span
+class="math inline">\(\Theta(1)\)</span></td>
+</tr>
+</tbody>
+</table>
+<div class="fragment">
+<p><em>Resumen:</em> las operaciones modificadoras tienen coste <span
+class="math inline">\(\Theta(\log n)\)</span> y las consultoras tienen
+coste <span class="math inline">\(\Theta(1)\)</span>.</p>
+</div>
+</section>
+<section id="colas-de-prioridades-variables-indexpq"
+class="slide level2 subsection center">
+<h2 class="subsection center">Colas de prioridades variables
+(<code>IndexPQ</code>)</h2>
+</section>
+<section id="colas-de-prioridades-variables" class="slide level2">
+<h2>Colas de prioridades variables</h2>
+<ul>
+<li class="fragment"><p>Variante de las colas de prioridad, que permiten
+<strong>modificar la prioridad</strong> de un elemento ya
+existente.</p></li>
+<li class="fragment"><p>Cambios con respecto a las colas de prioridad
+anteriores:</p>
+<ul>
+<li class="fragment">La prioridad ya no es una característica intrínseca
+del elemento. Es decir, la operación <code>push</code> ya no recibe
+solamente el elemento a insertar, sino que también recibe su prioridad
+en un parámetro aparte.</li>
+<li class="fragment">Los elementos que pueden insertarse en la cola de
+prioridad son valores numéricos en el rango <code>[0..N)</code>. El
+valor de <code>N</code> se determina al crear la cola de prioridad.</li>
+<li class="fragment">Existe una operación <code>pq.update(x, p)</code>
+que modifica la prioridad de un elemento.</li>
+</ul></li>
+<li class="fragment"><p>Implementación en el Campus Virtual:
+<code>IndexPQ.h</code></p></li>
+</ul>
+</section>
+<section id="operaciones-de-colas-de-prioridades-variables"
+class="slide level2">
+<h2>Operaciones de colas de prioridades variables</h2>
+<div class="columns">
+<div class="column" style="width:50%;font-size:90%">
+<dl>
+<dt><code>IndexPQ(N)</code></dt>
+<dd>
+constructor, construye una cola <strong>de mínimos</strong> que permite
+almacenar números en el rango <code>[0..N)</code>.
+</dd>
+<dt><code>pq.push(x, p)</code></dt>
+<dd>
+inserta el elemento <code>x</code> con prioridad <code>p</code>.
+</dd>
+<dt><code>pq.update(x, p)</code></dt>
+<dd>
+actualiza la prioridad de <code>x</code> a <code>p</code>. Si
+<code>x</code> no está en la cola de prioridad, actúa como
+<code>push</code>.
+</dd>
+<dt><code>pq.top()</code></dt>
+<dd>
+devuelve un par (<code>x</code>, <code>p</code>) con el elemento más
+prioritario y su prioridad <code>p</code>.
+</dd>
+<dt><code>pq.pop()</code></dt>
+<dd>
+
+</dd>
+<dt><code>pq.empty()</code></dt>
+<dd>
+
+</dd>
+<dt><code>pq.size()</code></dt>
+<dd>
+
+</dd>
+</dl>
+</div><div class="column" style="width:50%">
+<div class="cpp cpp_block" style="font-size:60%">
+<p>IndexPQ&lt;<span class="type">int</span>&gt; pq(<span
+class="number">10</span>);<br>pq.push(<span class="number">7</span>,
+<span class="number">200</span>);<br>pq.push(<span
+class="number">3</span>, <span
+class="number">150</span>);<br>pq.push(<span class="number">4</span>,
+<span class="number">300</span>);<br><strong>auto</strong> [x1, p1] =
+pq.top();<br>cout &lt;&lt; x1 &lt;&lt; endl;       <span
+class="comment">// Imprime <span
+class="number">3</span></span><br><br>pq.update(<span
+class="number">4</span>, <span
+class="number">100</span>);<br><strong>auto</strong> [x2, p2] =
+pq.top();<br>cout &lt;&lt; x2 &lt;&lt; endl;       <span
+class="comment">// Imprime <span
+class="number">4</span></span><br><br>pq.update(<span
+class="number">1</span>, <span class="number">20</span>);         <span
+class="comment">// Inserta el valor <span
+class="number">1</span></span><br><strong>auto</strong> [x3, p3] =
+pq.top();<br>cout &lt;&lt; x3 &lt;&lt; endl;       <span
+class="comment">// Imprime <span class="number">1</span></span></p>
+</div>
+</div>
+</div>
+</section>
+<section id="implementación-2" class="slide level2">
+<h2>Implementación (*)</h2>
+<ul>
+<li><p>También se suelen utilizar <strong>montículos binarios</strong>,
+representados mediante vectores.</p></li>
+<li><p>No obstante, la operación <code>update</code> requiere saber
+dónde se encuentra el elemento a actualizar dentro del
+montículo.</p></li>
+<li><p>Para ello, existe un vector adicional (de tamaño <code>N</code>)
+que indica la posición del montículo en el que se encuentra cada
+elemento.</p></li>
+<li><p>Más información: <a
+href="https://youtu.be/dVwcKjXsqZc">https://youtu.be/dVwcKjXsqZc</a></p></li>
+</ul>
+</section>
+<section id="coste-de-las-operaciones-1" class="slide level2">
+<h2>Coste de las operaciones</h2>
+<p>Si <span class="math inline">\(n\)</span> es el número de elementos
+de la cola de prioridad y <span class="math inline">\(N\)</span> es el
+rango de elementos que pueden introducirse.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Operación</th>
+<th style="text-align: center;">Coste</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">constructor</td>
+<td style="text-align: center;"><span
+class="math inline">\(\Theta(N)\)</span></td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>push</code></td>
+<td style="text-align: center;"><span class="math inline">\(\Theta(\log
+n)\)</span></td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>update</code></td>
+<td style="text-align: center;"><span class="math inline">\(\Theta(\log
+n)\)</span></td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>pop</code></td>
+<td style="text-align: center;"><span class="math inline">\(\Theta(\log
+n)\)</span></td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>top</code></td>
+<td style="text-align: center;"><span
+class="math inline">\(\Theta(1)\)</span></td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>empty</code></td>
+<td style="text-align: center;"><span
+class="math inline">\(\Theta(1)\)</span></td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>size</code></td>
+<td style="text-align: center;"><span
+class="math inline">\(\Theta(1)\)</span></td>
+</tr>
+</tbody>
+</table>
+</section></section>
+<section>
+<section id="búsqueda-de-caminos-mínimos-algoritmo-de-dijkstra"
+class="title-slide slide level1 center"
+data-background-image="img/PinkBackground.jpg">
+<h1 class="center" data-background-image="img/PinkBackground.jpg"><span
+class="sc_number">6.7</span>Búsqueda de caminos mínimos:<br/>algoritmo
+de Dijkstra</h1>
+
+</section>
+<section id="búsqueda-de-caminos-mínimos" class="slide level2">
+<h2>Búsqueda de caminos mínimos</h2>
+<div class="columns">
+<div class="column" style="width:50%">
+<ul>
+<li>Tenemos un grafo dirigido valorado con <span
+class="math inline">\(n\)</span> vértices.</li>
+<li>Suponemos que las aristas tienen costes <strong>no
+negativos</strong>.</li>
+<li>Distinguimos un vértice del grafo, al que denominamos
+<strong>origen</strong>, que será el vértice <code>0</code>.</li>
+</ul>
+</div><div class="column" style="width:50%">
+<p><img data-src="Tema6/Grafo1.svg" /></p>
+</div>
+</div>
+<div class="fragment" style="text-align:center">
+<p><span class="color_tema"><em>¿Cuál es el camino de coste mínimo desde
+el vértice origen al resto de vértices?</em></span></p>
+</div>
+</section>
+<section id="respuesta-del-algoritmo" class="slide level2">
+<h2>Respuesta del algoritmo</h2>
+<p>El algoritmo devolverá dos vectores de tamaño <span
+class="math inline">\(n\)</span>.</p>
+<ul>
+<li class="fragment"><code>dist[0..n)</code>: contiene las distancias
+mínimas desde el origen.
+<ul>
+<li class="fragment"><code>dist[i]</code> ≡ distancia mínima desde el
+origen hasta el vértice <span class="math inline">\(i\)</span>.</li>
+<li class="fragment">Obviamente <code>dist[0] = 0</code>.</li>
+<li class="fragment">El resto de posiciones se inicializarán a <span
+class="math inline">\(+\infty\)</span>.</li>
+</ul></li>
+<li class="fragment"><code>ant[0..n)</code>: permite reconstruir los
+caminos mínimos.
+<ul>
+<li class="fragment"><code>ant[i]</code> ≡ vértice anterior a
+<code>i</code> en el camino mínimo que va desde el origen a
+<code>i</code>.</li>
+<li class="fragment">Las posiciones se inicializan a un valor arbitrario
+(por ejemplo, <code>-1</code>).</li>
+</ul></li>
+</ul>
+</section>
+<section id="idea-clave-relajación-de-aristas" class="slide level2">
+<h2>Idea clave: relajación de aristas</h2>
+<div class="columns">
+<div class="column" style="width:50%">
+<ul>
+<li><p>Suponemos que <code>dist[u]</code> y <code>dist[w]</code>
+contienen los costes de los caminos mínimos encontrados (hasta el
+momento) desde el origen hasta los vértices <code>u</code> y
+<code>w</code>, respectivamente.</p></li>
+<li><p>Supongamos que existe una arista de <code>w</code> a
+<code>u</code>, de coste <code>v</code>.</p></li>
+</ul>
+</div><div class="column" style="width:50%">
+<p><img data-src="Tema6/Relajacion.svg" /></p>
+</div>
+</div>
+<ul>
+<li class="fragment"><p>Si se cumple que <span
+class="color_tema"><code>dist[w] + v &lt; dist[u]</code></span>, hemos
+encontrado un camino desde el origen a <code>u</code> que tiene mejor
+coste que el que conocíamos hasta ahora.</p></li>
+<li class="fragment"><p>Actualizamos camino mínimo: <span
+class="pseudo inline">dist[u] := dist[w] + v; ant[u] :=
+w;</span></p></li>
+</ul>
+</section>
+<section id="esquema-del-algoritmo" class="slide level2">
+<h2>Esquema del algoritmo</h2>
+<p>Tenemos un bucle que realiza lo siguiente:</p>
+<ol type="1">
+<li class="fragment">Buscamos el vértice <code>w</code> con menor
+<code>dist[w]</code> que no haya sido procesado hasta ahora.
+<ul>
+<li class="fragment">Inicialmente, este vértice será el origen.</li>
+</ul></li>
+<li class="fragment">Recorremos cada arista <span
+class="math inline">\(\texttt{w} \stackrel{\texttt{v}}{\longrightarrow}
+\texttt{u}\)</span> que salga de <code>w</code>.
+<ul>
+<li class="fragment">Para cada una de ellas, comprobamos si
+<code>dist[w] + v &lt; dist[u]</code>. En caso afirmativo, actualizamos
+<code>dist[u]</code> y <code>ant[u]</code> como hemos visto
+anteriormente.</li>
+</ul></li>
+<li class="fragment">Marcamos el vértice <code>w</code> como procesado y
+volvemos al paso <code>1</code>.</li>
+</ol>
+<p><span class="fragment">El algoritmo termina cuando no quedan vértices
+alcanzables desde el origen por procesar.</span></p>
+</section>
+<section id="ejemplo-1" class="slide level2" data-transition="none-out">
+<h2 data-transition="none-out">Ejemplo</h2>
+<div class="columns">
+<div class="column" style="width:50%">
+<table>
+<thead>
+<tr>
+<th style="text-align: center;"><code>i</code></th>
+<th style="text-align: center;"><code>dist[i]</code></th>
+<th style="text-align: center;"><code>ant[i]</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><code>0</code></td>
+<td style="text-align: center;"><code>0</code></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>1</code></td>
+<td style="text-align: center;"><code>+∞</code></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>2</code></td>
+<td style="text-align: center;"><code>+∞</code></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>3</code></td>
+<td style="text-align: center;"><code>+∞</code></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>4</code></td>
+<td style="text-align: center;"><code>+∞</code></td>
+<td style="text-align: center;"></td>
+</tr>
+</tbody>
+</table>
+</div><div class="column" style="width:50%">
+<p><img data-src="Tema6/Grafo1.svg" /></p>
+</div>
+</div>
+<ul>
+<li>Comenzamos con el vértice <code>0</code>, que es el mínimo de
+<code>dist</code>. Tiene tres aristas</li>
+</ul>
+<p><span class="math display">\[
+\texttt{0} \stackrel{\texttt{4}}{\longrightarrow} \texttt{1} \qquad
+\texttt{0} \stackrel{\texttt{3}}{\longrightarrow} \texttt{2} \qquad
+\texttt{0} \stackrel{\texttt{7}}{\longrightarrow} \texttt{3}
+\]</span></p>
+</section>
+<section id="ejemplo-2" class="slide level2"
+data-transition="none-in none-out">
+<h2 data-transition="none-in none-out">Ejemplo</h2>
+<div class="columns">
+<div class="column" style="width:50%">
+<table>
+<thead>
+<tr>
+<th style="text-align: center;"><code>i</code></th>
+<th style="text-align: center;"><code>dist[i]</code></th>
+<th style="text-align: center;"><code>ant[i]</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><code>0</code></td>
+<td style="text-align: center;"><code>0</code></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>1</code></td>
+<td style="text-align: center;"><code>+∞</code></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>2</code></td>
+<td style="text-align: center;"><code>+∞</code></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>3</code></td>
+<td style="text-align: center;"><code>+∞</code></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>4</code></td>
+<td style="text-align: center;"><code>+∞</code></td>
+<td style="text-align: center;"></td>
+</tr>
+</tbody>
+</table>
+</div><div class="column" style="width:50%">
+<p><img data-src="Tema6/Grafo2.svg" /></p>
+</div>
+</div>
+<ul>
+<li class="fragment"><p>Arista <span class="math inline">\(\texttt{0}
+\stackrel{\texttt{4}}{\longrightarrow} \texttt{1}\)</span>:</p>
+<ul>
+<li class="fragment">Condición de relajación: <code
+class="color_tema">dist[0] + 4 &lt; dist[1]</code>   <span
+class="fragment">✅</span></li>
+<li class="fragment">Actualizamos
+<code>dist[1] := 4; ant[1] := 0;</code></li>
+</ul></li>
+</ul>
+</section>
+<section id="ejemplo-3" class="slide level2"
+data-transition="none-in none-out">
+<h2 data-transition="none-in none-out">Ejemplo</h2>
+<div class="columns">
+<div class="column" style="width:50%">
+<table>
+<thead>
+<tr>
+<th style="text-align: center;"><code>i</code></th>
+<th style="text-align: center;"><code>dist[i]</code></th>
+<th style="text-align: center;"><code>ant[i]</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><code>0</code></td>
+<td style="text-align: center;"><code>0</code></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>1</code></td>
+<td style="text-align: center;"><code>4</code></td>
+<td style="text-align: center;"><code>0</code></td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>2</code></td>
+<td style="text-align: center;"><code>+∞</code></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>3</code></td>
+<td style="text-align: center;"><code>+∞</code></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>4</code></td>
+<td style="text-align: center;"><code>+∞</code></td>
+<td style="text-align: center;"></td>
+</tr>
+</tbody>
+</table>
+</div><div class="column" style="width:50%">
+<p><img data-src="Tema6/Grafo3.svg" /></p>
+</div>
+</div>
+<ul>
+<li class="fragment"><p>Arista <span class="math inline">\(\texttt{0}
+\stackrel{\texttt{3}}{\longrightarrow} \texttt{2}\)</span>:</p>
+<ul>
+<li class="fragment">Condición de relajación: <code
+class="color_tema">dist[0] + 3 &lt; dist[2]</code>   <span
+class="fragment">✅</span></li>
+<li class="fragment">Actualizamos
+<code>dist[2] := 3; ant[2] := 0;</code></li>
+</ul></li>
+</ul>
+</section>
+<section id="ejemplo-4" class="slide level2"
+data-transition="none-in none-out">
+<h2 data-transition="none-in none-out">Ejemplo</h2>
+<div class="columns">
+<div class="column" style="width:50%">
+<table>
+<thead>
+<tr>
+<th style="text-align: center;"><code>i</code></th>
+<th style="text-align: center;"><code>dist[i]</code></th>
+<th style="text-align: center;"><code>ant[i]</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><code>0</code></td>
+<td style="text-align: center;"><code>0</code></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>1</code></td>
+<td style="text-align: center;"><code>4</code></td>
+<td style="text-align: center;"><code>0</code></td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>2</code></td>
+<td style="text-align: center;"><code>3</code></td>
+<td style="text-align: center;"><code>0</code></td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>3</code></td>
+<td style="text-align: center;"><code>+∞</code></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>4</code></td>
+<td style="text-align: center;"><code>+∞</code></td>
+<td style="text-align: center;"></td>
+</tr>
+</tbody>
+</table>
+</div><div class="column" style="width:50%">
+<p><img data-src="Tema6/Grafo4.svg" /></p>
+</div>
+</div>
+<ul>
+<li class="fragment"><p>Arista <span class="math inline">\(\texttt{0}
+\stackrel{\texttt{7}}{\longrightarrow} \texttt{3}\)</span>:</p>
+<ul>
+<li class="fragment">Condición de relajación: <code
+class="color_tema">dist[0] + 7 &lt; dist[3]</code>   <span
+class="fragment">✅</span></li>
+<li class="fragment">Actualizamos
+<code>dist[3] := 7; ant[3] := 0;</code></li>
+</ul></li>
+</ul>
+</section>
+<section id="ejemplo-5" class="slide level2"
+data-transition="none-in none-out">
+<h2 data-transition="none-in none-out">Ejemplo</h2>
+<div class="columns">
+<div class="column" style="width:50%">
+<table>
+<thead>
+<tr>
+<th style="text-align: center;"><code>i</code></th>
+<th style="text-align: center;"><code>dist[i]</code></th>
+<th style="text-align: center;"><code>ant[i]</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><span
+style="color:lightgray"><code>0</code></span></td>
+<td style="text-align: center;"><code>0</code></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>1</code></td>
+<td style="text-align: center;"><code>4</code></td>
+<td style="text-align: center;"><code>0</code></td>
+</tr>
+<tr>
+<td style="text-align: center;"><span
+class="hl"><code>2</code></span></td>
+<td style="text-align: center;"><span
+class="hl"><code>3</code></span></td>
+<td style="text-align: center;"><code>0</code></td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>3</code></td>
+<td style="text-align: center;"><code>7</code></td>
+<td style="text-align: center;"><code>0</code></td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>4</code></td>
+<td style="text-align: center;"><code>+∞</code></td>
+<td style="text-align: center;"></td>
+</tr>
+</tbody>
+</table>
+</div><div class="column" style="width:50%">
+<p><img data-src="Tema6/Grafo5.svg" /></p>
+</div>
+</div>
+<ul>
+<li class="fragment">Marcamos el vértice <code>0</code> como procesado y
+seleccionamos el vértice <code>2</code>, que tiene menor distancia al
+origen.</li>
+<li class="fragment">Existen dos aristas que salen del vértice
+<code>2</code>: <span class="math inline">\(\texttt{2}
+\stackrel{\texttt{1}}{\longrightarrow} \texttt{3}, \texttt{2}
+\stackrel{\texttt{1}}{\longrightarrow} \texttt{4}\)</span></li>
+</ul>
+</section>
+<section id="ejemplo-6" class="slide level2"
+data-transition="none-in none-out">
+<h2 data-transition="none-in none-out">Ejemplo</h2>
+<div class="columns">
+<div class="column" style="width:50%">
+<table>
+<thead>
+<tr>
+<th style="text-align: center;"><code>i</code></th>
+<th style="text-align: center;"><code>dist[i]</code></th>
+<th style="text-align: center;"><code>ant[i]</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><span
+style="color:lightgray"><code>0</code></span></td>
+<td style="text-align: center;"><code>0</code></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>1</code></td>
+<td style="text-align: center;"><code>4</code></td>
+<td style="text-align: center;"><code>0</code></td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>2</code></td>
+<td style="text-align: center;"><code>3</code></td>
+<td style="text-align: center;"><code>0</code></td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>3</code></td>
+<td style="text-align: center;"><code>7</code></td>
+<td style="text-align: center;"><code>0</code></td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>4</code></td>
+<td style="text-align: center;"><code>+∞</code></td>
+<td style="text-align: center;"></td>
+</tr>
+</tbody>
+</table>
+</div><div class="column" style="width:50%">
+<p><img data-src="Tema6/Grafo6.svg" /></p>
+</div>
+</div>
+<ul>
+<li class="fragment"><p>Arista <span class="math inline">\(\texttt{2}
+\stackrel{\texttt{1}}{\longrightarrow} \texttt{3}\)</span>:</p>
+<ul>
+<li class="fragment">Condición de relajación: <code
+class="color_tema">dist[2] + 1 &lt; dist[3]</code>   <span
+class="fragment">✅</span></li>
+<li class="fragment">Actualizamos
+<code>dist[3] := 4; ant[3] := 2;</code></li>
+</ul></li>
+</ul>
+</section>
+<section id="ejemplo-7" class="slide level2"
+data-transition="none-in none-out">
+<h2 data-transition="none-in none-out">Ejemplo</h2>
+<div class="columns">
+<div class="column" style="width:50%">
+<table>
+<thead>
+<tr>
+<th style="text-align: center;"><code>i</code></th>
+<th style="text-align: center;"><code>dist[i]</code></th>
+<th style="text-align: center;"><code>ant[i]</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><span
+style="color:lightgray"><code>0</code></span></td>
+<td style="text-align: center;"><code>0</code></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>1</code></td>
+<td style="text-align: center;"><code>4</code></td>
+<td style="text-align: center;"><code>0</code></td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>2</code></td>
+<td style="text-align: center;"><code>3</code></td>
+<td style="text-align: center;"><code>0</code></td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>3</code></td>
+<td style="text-align: center;"><code>4</code></td>
+<td style="text-align: center;"><code>2</code></td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>4</code></td>
+<td style="text-align: center;"><code>+∞</code></td>
+<td style="text-align: center;"></td>
+</tr>
+</tbody>
+</table>
+</div><div class="column" style="width:50%">
+<p><img data-src="Tema6/Grafo7.svg" /></p>
+</div>
+</div>
+<ul>
+<li class="fragment"><p>Arista <span class="math inline">\(\texttt{2}
+\stackrel{\texttt{1}}{\longrightarrow} \texttt{4}\)</span>:</p>
+<ul>
+<li class="fragment">Condición de relajación: <code
+class="color_tema">dist[2] + 1 &lt; dist[4]</code>   <span
+class="fragment">✅</span></li>
+<li class="fragment">Actualizamos
+<code>dist[4] := 4; ant[4] := 2;</code></li>
+</ul></li>
+</ul>
+</section>
+<section id="ejemplo-8" class="slide level2"
+data-transition="none-in none-out">
+<h2 data-transition="none-in none-out">Ejemplo</h2>
+<div class="columns">
+<div class="column" style="width:50%">
+<table>
+<thead>
+<tr>
+<th style="text-align: center;"><code>i</code></th>
+<th style="text-align: center;"><code>dist[i]</code></th>
+<th style="text-align: center;"><code>ant[i]</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><span
+style="color:lightgray"><code>0</code></span></td>
+<td style="text-align: center;"><code>0</code></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;"><span
+class="hl"><code>1</code></span></td>
+<td style="text-align: center;"><span
+class="hl"><code>4</code></span></td>
+<td style="text-align: center;"><code>0</code></td>
+</tr>
+<tr>
+<td style="text-align: center;"><span
+style="color:lightgray"><code>2</code></span></td>
+<td style="text-align: center;"><code>3</code></td>
+<td style="text-align: center;"><code>0</code></td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>3</code></td>
+<td style="text-align: center;"><code>4</code></td>
+<td style="text-align: center;"><code>2</code></td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>4</code></td>
+<td style="text-align: center;"><code>4</code></td>
+<td style="text-align: center;"><code>2</code></td>
+</tr>
+</tbody>
+</table>
+</div><div class="column" style="width:50%">
+<p><img data-src="Tema6/Grafo8.svg" /></p>
+</div>
+</div>
+<ul>
+<li class="fragment">Marcamos el vértice <code>2</code> como procesado y
+seleccionamos el vértice <code>1</code>, que es el que tiene menor
+distancia al origen (empatado con el resto).</li>
+<li class="fragment">Existen dos aristas que salen del vértice
+<code>1</code>: <span class="math inline">\(\texttt{1}
+\stackrel{\texttt{2}}{\longrightarrow} \texttt{3}, \texttt{1}
+\stackrel{\texttt{5}}{\longrightarrow} \texttt{2}\)</span></li>
+</ul>
+</section>
+<section id="ejemplo-9" class="slide level2"
+data-transition="none-in none-out">
+<h2 data-transition="none-in none-out">Ejemplo</h2>
+<div class="columns">
+<div class="column" style="width:50%">
+<table>
+<thead>
+<tr>
+<th style="text-align: center;"><code>i</code></th>
+<th style="text-align: center;"><code>dist[i]</code></th>
+<th style="text-align: center;"><code>ant[i]</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><span
+style="color:lightgray"><code>0</code></span></td>
+<td style="text-align: center;"><code>0</code></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>1</code></td>
+<td style="text-align: center;"><code>4</code></td>
+<td style="text-align: center;"><code>0</code></td>
+</tr>
+<tr>
+<td style="text-align: center;"><span
+style="color:lightgray"><code>2</code></span></td>
+<td style="text-align: center;"><code>3</code></td>
+<td style="text-align: center;"><code>0</code></td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>3</code></td>
+<td style="text-align: center;"><code>4</code></td>
+<td style="text-align: center;"><code>2</code></td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>4</code></td>
+<td style="text-align: center;"><code>4</code></td>
+<td style="text-align: center;"><code>2</code></td>
+</tr>
+</tbody>
+</table>
+</div><div class="column" style="width:50%">
+<p><img data-src="Tema6/Grafo9.svg" /></p>
+</div>
+</div>
+<ul>
+<li class="fragment"><p>Arista <span class="math inline">\(\texttt{1}
+\stackrel{\texttt{2}}{\longrightarrow} \texttt{3}\)</span>:</p>
+<ul>
+<li class="fragment">Condición de relajación: <code
+class="color_tema">dist[1] + 2 &lt; dist[3]</code>   <span
+class="fragment">❌</span></li>
+</ul></li>
+</ul>
+</section>
+<section id="ejemplo-10" class="slide level2"
+data-transition="none-in none-out">
+<h2 data-transition="none-in none-out">Ejemplo</h2>
+<div class="columns">
+<div class="column" style="width:50%">
+<table>
+<thead>
+<tr>
+<th style="text-align: center;"><code>i</code></th>
+<th style="text-align: center;"><code>dist[i]</code></th>
+<th style="text-align: center;"><code>ant[i]</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><span
+style="color:lightgray"><code>0</code></span></td>
+<td style="text-align: center;"><code>0</code></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>1</code></td>
+<td style="text-align: center;"><code>4</code></td>
+<td style="text-align: center;"><code>0</code></td>
+</tr>
+<tr>
+<td style="text-align: center;"><span
+style="color:lightgray"><code>2</code></span></td>
+<td style="text-align: center;"><code>3</code></td>
+<td style="text-align: center;"><code>0</code></td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>3</code></td>
+<td style="text-align: center;"><code>4</code></td>
+<td style="text-align: center;"><code>2</code></td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>4</code></td>
+<td style="text-align: center;"><code>4</code></td>
+<td style="text-align: center;"><code>2</code></td>
+</tr>
+</tbody>
+</table>
+</div><div class="column" style="width:50%">
+<p><img data-src="Tema6/Grafo10.svg" /></p>
+</div>
+</div>
+<ul>
+<li class="fragment"><p>Arista <span class="math inline">\(\texttt{1}
+\stackrel{\texttt{5}}{\longrightarrow} \texttt{2}\)</span>:</p>
+<ul>
+<li class="fragment">Condición de relajación: <code
+class="color_tema">dist[1] + 5 &lt; dist[2]</code>   <span
+class="fragment">❌</span></li>
+<li class="fragment">Para los vértices ya procesados, el valor
+<code>dist[i]</code> es definitivo y no se podrá mejorar.</li>
+</ul></li>
+</ul>
+</section>
+<section id="ejemplo-11" class="slide level2"
+data-transition="none-in none-out">
+<h2 data-transition="none-in none-out">Ejemplo</h2>
+<div class="columns">
+<div class="column" style="width:50%">
+<table>
+<thead>
+<tr>
+<th style="text-align: center;"><code>i</code></th>
+<th style="text-align: center;"><code>dist[i]</code></th>
+<th style="text-align: center;"><code>ant[i]</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><span
+style="color:lightgray"><code>0</code></span></td>
+<td style="text-align: center;"><code>0</code></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;"><span
+style="color:lightgray"><code>1</code></span></td>
+<td style="text-align: center;"><code>4</code></td>
+<td style="text-align: center;"><code>0</code></td>
+</tr>
+<tr>
+<td style="text-align: center;"><span
+style="color:lightgray"><code>2</code></span></td>
+<td style="text-align: center;"><code>3</code></td>
+<td style="text-align: center;"><code>0</code></td>
+</tr>
+<tr>
+<td style="text-align: center;"><span
+class="hl"><code>3</code></span></td>
+<td style="text-align: center;"><span
+class="hl"><code>4</code></span></td>
+<td style="text-align: center;"><code>2</code></td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>4</code></td>
+<td style="text-align: center;"><code>4</code></td>
+<td style="text-align: center;"><code>2</code></td>
+</tr>
+</tbody>
+</table>
+</div><div class="column" style="width:50%">
+<p><img data-src="Tema6/Grafo11.svg" /></p>
+</div>
+</div>
+<ul>
+<li class="fragment">Marcamos el vértice <code>1</code> como procesado y
+seleccionamos el vértice <code>3</code>.</li>
+<li class="fragment">Existe solo una arista que sale del vértice
+<code>3</code> (<span class="math inline">\(\texttt{3}
+\stackrel{\texttt{3}}{\longrightarrow} \texttt{4}\)</span>).</li>
+</ul>
+</section>
+<section id="ejemplo-12" class="slide level2"
+data-transition="none-in none-out">
+<h2 data-transition="none-in none-out">Ejemplo</h2>
+<div class="columns">
+<div class="column" style="width:50%">
+<table>
+<thead>
+<tr>
+<th style="text-align: center;"><code>i</code></th>
+<th style="text-align: center;"><code>dist[i]</code></th>
+<th style="text-align: center;"><code>ant[i]</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><span
+style="color:lightgray"><code>0</code></span></td>
+<td style="text-align: center;"><code>0</code></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;"><span
+style="color:lightgray"><code>1</code></span></td>
+<td style="text-align: center;"><code>4</code></td>
+<td style="text-align: center;"><code>0</code></td>
+</tr>
+<tr>
+<td style="text-align: center;"><span
+style="color:lightgray"><code>2</code></span></td>
+<td style="text-align: center;"><code>3</code></td>
+<td style="text-align: center;"><code>0</code></td>
+</tr>
+<tr>
+<td style="text-align: center;"><span
+class="hl"><code>3</code></span></td>
+<td style="text-align: center;"><span
+class="hl"><code>4</code></span></td>
+<td style="text-align: center;"><code>2</code></td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>4</code></td>
+<td style="text-align: center;"><code>4</code></td>
+<td style="text-align: center;"><code>2</code></td>
+</tr>
+</tbody>
+</table>
+</div><div class="column" style="width:50%">
+<p><img data-src="Tema6/Grafo12.svg" /></p>
+</div>
+</div>
+<ul>
+<li class="fragment"><p>Arista <span class="math inline">\(\texttt{3}
+\stackrel{\texttt{3}}{\longrightarrow} \texttt{4}\)</span>:</p>
+<ul>
+<li class="fragment">Condición de relajación: <code
+class="color_tema">dist[3] + 3 &lt; dist[4]</code>   <span
+class="fragment">❌</span></li>
+</ul></li>
+</ul>
+</section>
+<section id="ejemplo-13" class="slide level2"
+data-transition="none-in none-out">
+<h2 data-transition="none-in none-out">Ejemplo</h2>
+<div class="columns">
+<div class="column" style="width:50%">
+<table>
+<thead>
+<tr>
+<th style="text-align: center;"><code>i</code></th>
+<th style="text-align: center;"><code>dist[i]</code></th>
+<th style="text-align: center;"><code>ant[i]</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><span
+style="color:lightgray"><code>0</code></span></td>
+<td style="text-align: center;"><code>0</code></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;"><span
+style="color:lightgray"><code>1</code></span></td>
+<td style="text-align: center;"><code>4</code></td>
+<td style="text-align: center;"><code>0</code></td>
+</tr>
+<tr>
+<td style="text-align: center;"><span
+style="color:lightgray"><code>2</code></span></td>
+<td style="text-align: center;"><code>3</code></td>
+<td style="text-align: center;"><code>0</code></td>
+</tr>
+<tr>
+<td style="text-align: center;"><span
+style="color:lightgray"><code>3</code></span></td>
+<td style="text-align: center;"><code>4</code></td>
+<td style="text-align: center;"><code>2</code></td>
+</tr>
+<tr>
+<td style="text-align: center;"><span
+class="hl"><code>4</code></span></td>
+<td style="text-align: center;"><span
+class="hl"><code>4</code></span></td>
+<td style="text-align: center;"><code>2</code></td>
+</tr>
+</tbody>
+</table>
+</div><div class="column" style="width:50%">
+<p><img data-src="Tema6/Grafo13.svg" /></p>
+</div>
+</div>
+<ul>
+<li class="fragment">Marcamos el vértice <code>3</code> como procesado y
+seleccionamos el vértice <code>4</code>.</li>
+<li class="fragment">Existe solo una arista que sale del vértice
+<code>4</code> (<span class="math inline">\(\texttt{4}
+\stackrel{\texttt{4}}{\longrightarrow} \texttt{2}\)</span>).</li>
+</ul>
+</section>
+<section id="ejemplo-14" class="slide level2"
+data-transition="none-in none-out">
+<h2 data-transition="none-in none-out">Ejemplo</h2>
+<div class="columns">
+<div class="column" style="width:50%">
+<table>
+<thead>
+<tr>
+<th style="text-align: center;"><code>i</code></th>
+<th style="text-align: center;"><code>dist[i]</code></th>
+<th style="text-align: center;"><code>ant[i]</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><span
+style="color:lightgray"><code>0</code></span></td>
+<td style="text-align: center;"><code>0</code></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;"><span
+style="color:lightgray"><code>1</code></span></td>
+<td style="text-align: center;"><code>4</code></td>
+<td style="text-align: center;"><code>0</code></td>
+</tr>
+<tr>
+<td style="text-align: center;"><span
+style="color:lightgray"><code>2</code></span></td>
+<td style="text-align: center;"><code>3</code></td>
+<td style="text-align: center;"><code>0</code></td>
+</tr>
+<tr>
+<td style="text-align: center;"><span
+style="color:lightgray"><code>3</code></span></td>
+<td style="text-align: center;"><code>4</code></td>
+<td style="text-align: center;"><code>2</code></td>
+</tr>
+<tr>
+<td style="text-align: center;"><span
+class="hl"><code>4</code></span></td>
+<td style="text-align: center;"><span
+class="hl"><code>4</code></span></td>
+<td style="text-align: center;"><code>2</code></td>
+</tr>
+</tbody>
+</table>
+</div><div class="column" style="width:50%">
+<p><img data-src="Tema6/Grafo14.svg" /></p>
+</div>
+</div>
+<ul>
+<li class="fragment"><p>Arista <span class="math inline">\(\texttt{4}
+\stackrel{\texttt{4}}{\longrightarrow} \texttt{2}\)</span>:</p>
+<ul>
+<li class="fragment">Condición de relajación: <code
+class="color_tema">dist[4] + 4 &lt; dist[2]</code>   <span
+class="fragment">❌</span></li>
+</ul></li>
+</ul>
+</section>
+<section id="ejemplo-15" class="slide level2"
+data-transition="none-in slide-out">
+<h2 data-transition="none-in slide-out">Ejemplo</h2>
+<div class="columns">
+<div class="column" style="width:50%">
+<table>
+<thead>
+<tr>
+<th style="text-align: center;"><code>i</code></th>
+<th style="text-align: center;"><code>dist[i]</code></th>
+<th style="text-align: center;"><code>ant[i]</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><span
+style="color:lightgray"><code>0</code></span></td>
+<td style="text-align: center;"><code>0</code></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;"><span
+style="color:lightgray"><code>1</code></span></td>
+<td style="text-align: center;"><code>4</code></td>
+<td style="text-align: center;"><code>0</code></td>
+</tr>
+<tr>
+<td style="text-align: center;"><span
+style="color:lightgray"><code>2</code></span></td>
+<td style="text-align: center;"><code>3</code></td>
+<td style="text-align: center;"><code>0</code></td>
+</tr>
+<tr>
+<td style="text-align: center;"><span
+style="color:lightgray"><code>3</code></span></td>
+<td style="text-align: center;"><code>4</code></td>
+<td style="text-align: center;"><code>2</code></td>
+</tr>
+<tr>
+<td style="text-align: center;"><span
+style="color:lightgray"><code>4</code></span></td>
+<td style="text-align: center;"><code>4</code></td>
+<td style="text-align: center;"><code>2</code></td>
+</tr>
+</tbody>
+</table>
+</div><div class="column" style="width:50%">
+<p><img data-src="Tema6/Grafo15.svg" /></p>
+</div>
+</div>
+<ul>
+<li>Todos los vértices han sido procesados.</li>
+<li>Se muestran en rojo los caminos mínimos desde el vértice
+<code>0</code> hasta el resto de vértices.</li>
+</ul>
+</section>
+<section id="corrección-del-algoritmo"
+class="slide level2 subsection center">
+<h2 class="subsection center">Corrección del algoritmo</h2>
+</section>
+<section id="proposición-auxiliar" class="slide level2">
+<h2>Proposición auxiliar</h2>
+<ul>
+<li><p>Suponemos un grafo <code>G</code> y un vértice origen
+<code>s</code>.</p></li>
+<li><p>El vector <code>dist[0..n)</code> contiene los costes de los
+caminos mínimos desde <code>s</code> hasta el resto de vértices
+<strong>si y solo si</strong> el vector cumple las siguientes tres
+condiciones:</p>
+<ol type="1">
+<li><code>dist[s] = 0</code></li>
+<li>Para todo vértice <code>u</code> de <code>G</code>,
+<code>dist[u]</code> contiene el coste de algún camino desde
+<code>s</code> hasta <code>u</code> (no necesariamente el de mínimo
+coste).</li>
+<li>Para toda arista <span class="math inline">\(\texttt{u}
+\stackrel{\texttt{v}}{\longrightarrow} \texttt{w}\)</span> de
+<code>G</code>, se cumple <code>dist[w] ≤ dist[u] + v</code>.</li>
+</ol></li>
+</ul>
+</section>
+<section class="slide level2">
+
+<h3 id="demostración-rightarrow">Demostración (<span
+class="math inline">\(\Rightarrow\)</span>)</h3>
+<div class="color_tema" style="text-align:center">
+<p><code>dist[0..n)</code> contiene solución óptima <span
+class="math inline">\(\Rightarrow\)</span> <code>dist[0..n)</code>
+cumple condiciones (1), (2), (3)</p>
+</div>
+<ul>
+<li><p>La demostración de las condiciones (1) y (2) es trivial.</p></li>
+<li><p>Demostramos el contrarrecíproco de (3). Supongamos que esta
+condición no se cumple. Es decir, existe una arista <span
+class="math inline">\(\texttt{u} \stackrel{\texttt{v}}{\longrightarrow}
+\texttt{w}\)</span> en <code>G</code> tal que
+<code>dist[w] &gt; dist[u] + v</code></p></li>
+<li><p>Entonces, hemos encontrado un camino desde <code>s</code> hasta
+<code>w</code> que tiene menor coste que el indicado en
+<code>dist[w]</code>.</p>
+<ul>
+<li>Ese camino es el que va desde <code>s</code> hasta <code>u</code>, y
+luego utiliza la arista <span class="math inline">\(\texttt{u}
+\stackrel{\texttt{v}}{\longrightarrow} \texttt{w}\)</span>.</li>
+</ul></li>
+<li><p>Por tanto <code>dist[w]</code> no contiene el camino de mejor
+coste hata <code>w</code>.</p></li>
+</ul>
+</section>
+<section class="slide level2">
+
+<h3 id="demostración-leftarrow">Demostración (<span
+class="math inline">\(\Leftarrow\)</span>)</h3>
+<div class="color_tema" style="text-align:center">
+<p><code>dist[0..n)</code> contiene solución óptima <span
+class="math inline">\(\Leftarrow\)</span> <code>dist[0..n)</code> cumple
+condiciones (1), (2), (3)</p>
+</div>
+<p>Suponemos un camino cualquiera desde <code>s</code> hasta
+<code>w</code>: <span class="math inline">\(\small \texttt{s}
+\stackrel{\texttt{v}_0}{\rightarrow} \texttt{u}_0
+\stackrel{\texttt{v}_1}{\rightarrow} \texttt{u}_1
+\stackrel{\texttt{v}_2}{\rightarrow} \ldots
+\stackrel{\texttt{v}_{n-1}}{\rightarrow}
+\texttt{u}_{n-1}  \stackrel{\texttt{v}_n}{\rightarrow}
+\texttt{w}\)</span></p>
+<div class="pseudo">
+<p>dist[w] &lt;= dist[u<sub>n-1</sub>] +
+v<sub>n</sub>                    <span class="arrow_box_left">por
+condición (3)</span><br>        &lt;= dist[u<sub>n-2</sub>] +
+v<sub>n-1</sub> + v<sub>n</sub>             <span
+class="arrow_box_left">por condición
+(3)</span><br>        …<br>        &lt;= dist[s] + v<sub>0</sub> + … +
+v<sub>n-1</sub> + v<sub>n</sub>       <span class="arrow_box_left">por
+condición (3)</span><br>        &lt;= v<sub>0</sub> + … +
+v<sub>n-1</sub> + v<sub>n</sub>                 <span
+class="arrow_box_left">por condición (1)</span></p>
+</div>
+<p>Vemos que <code>dist[w]</code> tiene un coste menor o igual que el
+coste de cualquier camino desde <code>s</code> a <code>w</code>. Por
+tanto, <code>dist[w]</code> contiene el coste mínimo.</p>
+</section>
+<section id="corrección-del-algoritmo-de-dijkstra" class="slide level2">
+<h2>Corrección del algoritmo de Dijkstra</h2>
+<p>El algoritmo de Dijkstra devuelve una solución
+<code>dist[0..n)</code> que cumple las condiciones (1), (2) y (3).</p>
+<ol type="1">
+<li><code>dist[s] = 0</code>
+<ul>
+<li>Se hace al principio del algoritmo.</li>
+</ul></li>
+<li>Para todo vértice <code>u</code> de <code>G</code>,
+<code>dist[u]</code> contiene el coste de algún camino desde
+<code>s</code> hasta <code>u</code> (no necesariamente el de mínimo
+coste).
+<ul>
+<li><code>dist[u]</code> siempre se actualiza sumando a algún
+<code>dist[w]</code> el coste de una arista de <code>w</code> a
+<code>u</code>.</li>
+</ul></li>
+<li>Para toda arista <span class="math inline">\(\texttt{u}
+\stackrel{\texttt{v}}{\longrightarrow} \texttt{w}\)</span> de
+<code>G</code>, se cumple <code>dist[w] ≤ dist[u] + v</code>.
+<ul>
+<li>Si no se cumple, el algoritmo actualiza <code>dist[w]</code> para
+que se cumpla.</li>
+</ul></li>
+</ol>
+<p>Por tanto, el algoritmo de Dijkstra <strong>devuelve el coste de los
+caminos mínimos</strong>.</p>
+</section>
+<section id="implementación-del-algoritmo"
+class="slide level2 subsection center">
+<h2 class="subsection center">Implementación del algoritmo</h2>
+</section>
+<section id="representación-de-los-grafos" class="slide level2">
+<h2>Representación de los grafos</h2>
+<ul>
+<li><p>Representaremos los grafos mediante <strong>listas de
+adyacencia</strong>.</p></li>
+<li><p>Para cada vértice, almacenamos una lista con las aristas que
+salen de él.</p></li>
+</ul>
+<div class="columns">
+<div class="column" style="width:50%;font-size:75%">
+<table>
+<colgroup>
+<col style="width: 30%" />
+<col style="width: 69%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;">Vértice</th>
+<th style="text-align: left;">Aristas</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><code>0</code></td>
+<td style="text-align: left;">[<span class="math inline">\(\texttt{0}
+\stackrel{\texttt{4}}{\longrightarrow} \texttt{1}\)</span>,<span
+class="math inline">\(\texttt{0} \stackrel{\texttt{3}}{\longrightarrow}
+\texttt{2}\)</span>, <span class="math inline">\(\texttt{0}
+\stackrel{\texttt{7}}{\longrightarrow} \texttt{3}\)</span> ]</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>1</code></td>
+<td style="text-align: left;">[<span class="math inline">\(\texttt{1}
+\stackrel{\texttt{2}}{\longrightarrow} \texttt{3}\)</span>,<span
+class="math inline">\(\texttt{1} \stackrel{\texttt{5}}{\longrightarrow}
+\texttt{2}\)</span>]</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>2</code></td>
+<td style="text-align: left;">[<span class="math inline">\(\texttt{2}
+\stackrel{\texttt{1}}{\longrightarrow} \texttt{3}\)</span>,<span
+class="math inline">\(\texttt{2} \stackrel{\texttt{1}}{\longrightarrow}
+\texttt{4}\)</span>]</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>3</code></td>
+<td style="text-align: left;">[<span class="math inline">\(\texttt{3}
+\stackrel{\texttt{3}}{\longrightarrow} \texttt{4}\)</span>]</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>4</code></td>
+<td style="text-align: left;">[<span class="math inline">\(\texttt{4}
+\stackrel{\texttt{4}}{\longrightarrow} \texttt{2}\)</span>]</td>
+</tr>
+</tbody>
+</table>
+</div><div class="column" style="width:50%">
+<p><img data-src="Tema6/Grafo1.svg" /></p>
+</div>
+</div>
+</section>
+<section class="slide level2">
+
+<h3 id="representación-en-c">Representación en C++</h3>
+<ul>
+<li>Tipo de datos <code>arista</code></li>
+</ul>
+<div class="cpp cpp_block">
+<p><strong>struct</strong> arista {<br>  <span class="type">int</span>
+origen, destino;<br>  <span class="type">int</span> coste;<br>};</p>
+</div>
+<ul>
+<li>Tipo de datos <code>lista_aristas</code></li>
+</ul>
+<div class="cpp cpp_block">
+<p><strong>using</strong> lista_aristas = <span
+class="type">vector</span>&lt;arista&gt;;</p>
+</div>
+<ul>
+<li>Un grafo de <code>n</code> vértices es un vector
+<code>g[0..n)</code> tal que <code>g[i]</code> contiene las aristas que
+salen de <code>i</code>.</li>
+</ul>
+<div class="cpp cpp_block">
+<p><strong>using</strong> grafo = <span
+class="type">vector</span>&lt;lista_aristas&gt;;</p>
+</div>
+</section>
+<section class="slide level2">
+
+<h3 id="operaciones-con-grafos">Operaciones con grafos</h3>
+<div class="cpp cpp_block">
+<p>grafo crear_grafo(<span class="type">int</span> num_vertices)
+{               <span class="arrow_box_left">Crear un grafo nuevo sin
+aristas</span><br>  <strong>return</strong> <span
+class="type">vector</span>&lt;<span
+class="type">vector</span>&lt;arista&gt;&gt;(num_vertices);<br>}<br><br><span
+class="type">void</span> anyadir_arista(grafo &amp;g, <span
+class="type">int</span> origen, <span class="type">int</span> destino,
+<span class="type">int</span> coste) { <span
+class="arrow_box_left">Añadir una
+arista</span><br>  g[origen].push_back({origen, destino,
+coste});<br>}<br><br><span class="type">const</span> lista_aristas &amp;
+aristas(<span class="type">const</span> grafo &amp;g, <span
+class="type">int</span> w) {  <span class="arrow_box_left">Obtenener
+aristas que salen de <code>w</code></span><br>  <strong>return</strong>
+g[w];<br>}<br><br><span class="type">int</span> num_vertices(<span
+class="type">const</span> grafo &amp;g) {  <span
+class="arrow_box_left">Obtener número de vértices del
+grafo</span><br>  <strong>return</strong> g.size();<br>}</p>
+</div>
+</section>
+<section id="obtener-el-mínimo-de-dist" class="slide level2">
+<h2>Obtener el mínimo de <code>dist</code></h2>
+<ul>
+<li><p>El algoritmo de Dijkstra requiere, en cada paso, obtener el
+vértice no procesado con el menor coste desde el origen obtenido hasta
+el momento.</p>
+<ul>
+<li>Eso nos obligaría a recorrer el vector <code>dist</code> cada vez
+que queremos obtener este vértice (ineficiente), y a guardar qué
+vértices han sido procesados y cuáles no.</li>
+</ul></li>
+</ul>
+<div class="fragment">
+<ul>
+<li><p>Para evitar recorrer el vector <code>dist</code>, guardamos los
+vértices pendientes de procesar en una <strong>cola de
+prioridad</strong> con prioridades <strong>variables</strong>
+(<code>IndexPQ</code>).</p>
+<ul>
+<li>Inicialmente, añadimos el vértice <code>0</code> en la cola de
+prioridad.</li>
+<li>Cada vez que se modifica el valor <code>dist[w]</code> de un vértice
+<code>w</code>, se añade <code>w</code> a la cola de prioridad o, si ya
+existe, se modifica su prioridad con el nuevo valor de
+<code>dist[w]</code>.</li>
+<li>Los vértices procesados se eliminan de la cola y no se vuelven a
+añadir más, porque su valor <code>dist</code> ya no cambia.</li>
+</ul></li>
+</ul>
+</div>
+</section>
+<section id="implementación-en-c-3" class="slide level2">
+<h2>Implementación en C++</h2>
+<p>Utilizamos un <code>struct</code> para agrupar los vectores
+resultantes del algoritmo:</p>
+<div class="cpp cpp_block" style="font-size:55%">
+<p><strong>struct</strong> DijkstraResult {<br>  <span
+class="type">vector</span>&lt;<span class="type">int</span>&gt; dist,
+ant;<br>};</p>
+</div>
+<p>Inicialización:</p>
+<div class="cpp cpp_block" style="font-size:55%">
+<p>DijkstraResult caminos_minimos(<span class="type">const</span> grafo
+&amp;g, <span class="type">int</span> origen) {<br>  <span
+class="type">int</span> n = num_vertices(g);<br>  <span
+class="comment">// Creamos cola de prioridad vacía</span><br>  IndexPQ
+pq(n);<br><br>  <span class="comment">// Inicializamos dist y
+ant</span><br>  <span class="type">vector</span>&lt;<span
+class="type">int</span>&gt; dist(n, numeric_limits&lt;<span
+class="type">int</span>&gt;::max());<br>  <span
+class="type">vector</span>&lt;<span class="type">int</span>&gt;
+ant(n);<br>  dist[origen] = <span
+class="number">0</span>;<br>  ant[origen] = -<span
+class="number">1</span>;<br><br>  <span class="comment">// Introducimos
+vértice 0 en cola de prioridad</span><br>  pq.push(origen, <span
+class="number">0</span>);<br><br>  ...</p>
+</div>
+</section>
+<section class="slide level2">
+
+<p>Bucle principal:</p>
+<div class="cpp cpp_block">
+<p>  <span class="comment">// Mientras queden vértices por
+procesar</span><br>  <strong>while</strong> (!pq.empty()) {<br>    <span
+class="comment">// Obtenemos el vértice de menor distancia al origen que
+no haya sido procesado</span><br>    <span class="comment">// y lo
+sacamos de la cola</span><br>    <span class="type">int</span> actual =
+pq.top().elem; pq.pop();<br>    <span class="comment">// Recorremos las
+aristas que salen de ese vértice</span><br>    <strong>for</strong>
+(<span class="type">const</span> arista &amp;a : aristas(g, actual))
+{<br>      <span class="comment">// Si la arista permite mejorar el
+coste del camino mínimo desde el origen al</span><br>      <span
+class="comment">// destino, actualizamos el camino mínimo hasta
+destino.</span><br>      <strong>if</strong> (dist[a.destino] &gt;
+dist[actual] + a.coste) {<br>        dist[a.destino] = dist[actual] +
+a.coste;<br>        ant[a.destino] =
+actual;<br>        pq.update(a.destino,dist[a.destino]);<br>      }<br>    }<br>  }<br><br>  <strong>return</strong>
+{dist, ant};<br>}</p>
+</div>
+</section>
+<section id="análisis-de-coste" class="slide level2">
+<h2>Análisis de coste</h2>
+<p>Suponemos que el grafo tiene <span class="math inline">\(v\)</span>
+vértices y <span class="math inline">\(a\)</span> aristas.</p>
+<ul>
+<li class="fragment">Inicializar vectores <code>dist</code> y
+<code>ant</code> (<span class="math inline">\(\Theta(v)\)</span>) y cola
+de prioridad (<span class="math inline">\(\Theta(v)\)</span>).</li>
+<li class="fragment">Cada vértice se se saca, como mucho, una vez de la
+cola de prioridad.
+<ul>
+<li class="fragment">Se hacen, como mucho, <span
+class="math inline">\(v\)</span> llamadas a <code>pop()</code>, cada una
+de coste <span class="math inline">\(\Theta(\log~v)\)</span></li>
+</ul></li>
+<li class="fragment">El bucle interno realiza, como mucho, tantas
+iteraciones como aristas.
+<ul>
+<li class="fragment">Se hacen, como mucho, <span
+class="math inline">\(a\)</span> llamadas a <code>update()</code>, cada
+una de coste <span class="math inline">\(\Theta(\log v)\)</span>.</li>
+</ul></li>
+</ul>
+<div class="fragment">
+<p><strong>Coste en tiempo:</strong> <span
+class="math inline">\(\Theta(v + v + v\log v + a \log v) =\)</span>
+<span class="color_tema"><span class="math inline">\(\Theta((v + a) \log
+v)\)</span></span></p>
+<p>Si el grafo es conexo, <span class="math inline">\(a \geq
+v-1\)</span>. En ese caso el coste es <span class="color_tema"><span
+class="math inline">\(\Theta(a \log v)\)</span></span></p>
+<p><strong>Coste en espacio:</strong> <span class="color_tema"><span
+class="math inline">\(\Theta(v)\)</span></span> (por la cola de
+prioridad)</p>
+</div>
+</section></section>
+<section>
+<section id="interludio-estructuras-union-find"
+class="title-slide slide level1 center"
+data-background-image="img/PinkBackground.jpg">
+<h1 class="center" data-background-image="img/PinkBackground.jpg"><span
+class="sc_number">6.8</span>Interludio:<br/>estructuras
+<em>union-find</em></h1>
+
+</section>
+<section id="estructuras-union-find" class="slide level2">
+<h2>Estructuras <em>union-find</em></h2>
+<ul>
+<li><p>Una estructura <em>union-find</em> (también llamada
+<em>estructura de partición</em> o <em>conjuntos disjuntos</em>) es un
+tipo abstracto de datos que almacena una partición de un conjunto <span
+class="math inline">\(\{0, ..., N-1\}\)</span> en conjuntos
+disjuntos.</p></li>
+<li><p>Permite almacenar clases de equivalencia de una relación dada,
+fusionarlas y comprobar si dos elementos pertenecen a la misma clase de
+equivalencia.</p></li>
+<li><p>En el Campus Virtual se proporciona una implementación de este
+tipo abstracto de datos.</p></li>
+</ul>
+</section>
+<section id="operaciones" class="slide level2">
+<h2>Operaciones</h2>
+<dl>
+<dt><code>union_find(n)</code> (constructor)</dt>
+<dd>
+Crea una estructura <em>union-find</em> para el conjunto <span
+class="math inline">\(\{0, \ldots, N-1\}\)</span>. Inicialmente, cada
+elemento está en su propia clase de equivalencia.
+</dd>
+<dt><code>uf.unir(a, b)</code></dt>
+<dd>
+Fusiona las clases de equivalencia de <code>a</code> y <code>b</code>.
+</dd>
+<dt><code>uf.unidos(a, b)</code></dt>
+<dd>
+Devuelve <code>true</code> si los elementos <code>a</code> y
+<code>b</code> pertenecen a la misma clase de equivalencia.
+</dd>
+<dt><code>uf.cardinal(a)</code></dt>
+<dd>
+Devuelve el tamaño de la clase de equivalencia de <code>a</code>.
+</dd>
+<dt><code>uf.num_cjtos()</code></dt>
+<dd>
+Devuelve el número de clases de equivalencia.
+</dd>
+</dl>
+</section>
+<section id="ejemplo-16" class="slide level2">
+<h2>Ejemplo</h2>
+<div class="cpp cpp_block">
+<p>union_find uf(<span class="number">5</span>);  <span
+class="comment"><span class="fragment">// uf = {{<span
+class="number">0</span>}, {<span class="number">1</span>}, {<span
+class="number">2</span>}, {<span class="number">3</span>}, {<span
+class="number">4</span>}}</span></span><br><br>uf.unir(<span
+class="number">1</span>, <span class="number">2</span>);     <span
+class="comment"><span class="fragment">// uf = {{<span
+class="number">0</span>}, {<span class="number">1</span>, <span
+class="number">2</span>}, {<span class="number">3</span>}, {<span
+class="number">4</span>}}</span></span><br><br>uf.unir(<span
+class="number">3</span>, <span class="number">4</span>);     <span
+class="comment"><span class="fragment">// uf = {{<span
+class="number">0</span>}, {<span class="number">1</span>, <span
+class="number">2</span>}, {<span class="number">3</span>, <span
+class="number">4</span>}}</span></span><br><br>cout &lt;&lt;
+uf.unidos(<span class="number">1</span>, <span
+class="number">3</span>);    <span class="comment"><span
+class="fragment">// -&gt; <span
+class="type">false</span></span></span><br><br>uf.unir(<span
+class="number">2</span>, <span class="number">4</span>);     <span
+class="comment"><span class="fragment">// uf = {{<span
+class="number">0</span>}, {<span class="number">1</span>, <span
+class="number">2</span>, <span class="number">3</span>, <span
+class="number">4</span>}}</span></span><br><br>cout &lt;&lt;
+uf.unidos(<span class="number">1</span>, <span
+class="number">3</span>);    <span class="comment"><span
+class="fragment">// -&gt; <span
+class="type">true</span></span></span><br><br>cout &lt;&lt;
+uf.num_cjtos();     <span class="comment"><span class="fragment">//
+-&gt; <span class="number">2</span></span></span></p>
+</div>
+</section>
+<section id="coste-de-las-operaciones-2" class="slide level2">
+<h2>Coste de las operaciones</h2>
+<p>Suponiendo una partición de <span class="math inline">\(n\)</span>
+elementos, cualquier secuencia de <span class="math inline">\(m\)</span>
+llamadas a <code>unir</code> y <code>unidos</code> tiene coste <span
+class="math inline">\(\Theta(n + m \log^\star n)\)</span>.</p>
+<p>donde <span class="math inline">\(log^\star\)</span> se define del
+siguiente modo:</p>
+<p><span class="math display">\[
+\log^\star~n = \begin{cases}
+0 &amp; \text{si } n \geq 1\\
+1 + \log^\star(\log_2 n) &amp; \text{si } n &gt; 1
+\end{cases}
+\]</span></p>
+<div class="fragment">
+<p>Por ejemplo:</p>
+<p><span class="math display">\[
+\log^* 2 = 1 \qquad \log^* 2^2 = 2 \qquad \log^* 2^{2^2} = 3 \qquad
+\log^* 2^{2^{2^2}} = 4
+\]</span></p>
+</div>
+<div class="fragment">
+<p>En la práctica, la clase de complejidad de <span
+class="math inline">\(\log^\star n\)</span> se considera constante.</p>
+</div>
+</section>
+<section id="implementación-3" class="slide level2">
+<h2>Implementación (*)</h2>
+<div style="text-align:center">
+<p><img data-src="Tema6/UnionFind.svg" /></p>
+</div>
+<ul>
+<li>Los elementos de la estructura se agrupan en distintos árboles
+<em>n</em>-arios.
+<ul>
+<li>Dos elementos están en la misma clase de equivalencia si pertenecen
+al mismo árbol.</li>
+</ul></li>
+<li><code>unir(a, b)</code> busca las raíces de <code>a</code> y
+<code>b</code>, y coloca el árbol <code>a</code> como subárbol de la
+raíz de <code>b</code>, o viceversa.</li>
+<li><code>unidos(a, b)</code> devuelve <code>true</code> si las raíces
+de los árboles a los que pertenecen <code>a</code> y <code>b</code>
+coinciden.</li>
+</ul>
+</section>
+<section id="implementación-4" class="slide level2">
+<h2>Implementación (*)</h2>
+<div style="text-align:center">
+<p><img data-src="Tema6/UnionFind.svg" /></p>
+</div>
+<ul>
+<li>En realidad, esta estructura de árboles se representa mediante un
+<strong>vector</strong>, donde <code>v[i]</code> contiene el padre del
+elemento <code>i</code> en el respectivo árbol.
+<ul>
+<li>Si <code>i</code> no tiene padre, entonces
+<code>v[i] = -1</code>.</li>
+</ul></li>
+</ul>
+<table class="soluciones">
+<tr class="indices">
+<td>
+0
+</td>
+<td>
+1
+</td>
+<td>
+2
+</td>
+<td>
+3
+</td>
+<td>
+4
+</td>
+<td>
+5
+</td>
+<td>
+6
+</td>
+<td>
+7
+</td>
+<td>
+8
+</td>
+<td>
+9
+</td>
+</tr>
+<tr class="sol">
+<td>
+2
+</td>
+<td>
+3
+</td>
+<td>
+-1
+</td>
+<td>
+-1
+</td>
+<td>
+3
+</td>
+<td>
+3
+</td>
+<td>
+5
+</td>
+<td>
+2
+</td>
+<td>
+5
+</td>
+<td>
+-1
+</td>
+</tr>
+</table>
+</section>
+<section id="implementación-5" class="slide level2">
+<h2>Implementación (*)</h2>
+<p>Utilizando distintas optimizaciones, se consigue mantener la altura
+de los árboles lo más baja posible.</p>
+<dl>
+<dt>Unión por tamaños</dt>
+<dd>
+<p>Al unir dos clases de equivalencia, se colocan los árboles de menor
+altura como hijos de las raíces de los árboles de mayor altura.</p>
+</dd>
+<dt>Compresión de caminos</dt>
+<dd>
+<p>Al comprobar a qué clase de equivalencia pertenece un elemento, se
+coloca ese elemento y todos sus antecesores como hijos directos de la
+raíz.</p>
+</dd>
+</dl>
+</section>
+<section id="más-información" class="slide level2">
+<h2>Más información (*)</h2>
+<p>Vídeo: <a
+href="https://youtu.be/RqcwQS_0mcA">https://youtu.be/RqcwQS_0mcA</a></p>
+<p> </p>
+<ul class="no_bolos">
+<li class="biblio">
+Thomas Cormen, Charles E. Leiserson, Ronald L. Rivest, Clifford
+Stein<br/>       <span class="color_tema"><em>Introduction to
+algorithms, fourth edition</em></span><br/>       The MIT Press,
+2022<br/>       <em>Capítulo 19</em>
+</li>
+</ul>
+</section></section>
+<section>
+<section id="árbol-de-recubrimiento-mínimo-algoritmo-de-kruskal"
+class="title-slide slide level1 center"
+data-background-image="img/PinkBackground.jpg">
+<h1 class="center" data-background-image="img/PinkBackground.jpg"><span
+class="sc_number">6.9</span>Árbol de recubrimiento mínimo<br/>algoritmo
+de Kruskal</h1>
+
+</section>
+<section id="árboles-de-recubrimiento" class="slide level2">
+<h2>Árboles de recubrimiento</h2>
+<ul>
+<li><p>Suponemos un grafo <span class="math inline">\(G\)</span> conexo
+no dirigido.</p></li>
+<li><p>Un <strong>árbol de recubrimiento</strong> de <span
+class="math inline">\(G\)</span> es un subgrafo que conecta todos los
+vértices de <span class="math inline">\(G\)</span> y que no contiene
+ciclos.</p></li>
+</ul>
+<div style="text-align:center">
+<p><img data-src="Tema6/ARMInicial.svg" /> <img
+data-src="Tema6/ARM1.svg" class="fragment" /> <img
+data-src="Tema6/ARM2.svg" class="fragment" /></p>
+</div>
+<div class="fragment">
+<ul>
+<li>Si <span class="math inline">\(G\)</span> tiene <span
+class="math inline">\(v\)</span> vértices, cada árbol de recubrimiento
+tiene exactamente <span class="math inline">\(v-1\)</span> aristas.</li>
+</ul>
+</div>
+</section>
+<section id="árboles-de-recubrimiento-mínimo" class="slide level2">
+<h2>Árboles de recubrimiento mínimo</h2>
+<ul>
+<li>Supongamos que nuestro grafo es valorado. Es decir, cada arista
+tiene un coste.</li>
+</ul>
+<div style="text-align:center">
+<p><img data-src="Tema6/ARM3.svg" /></p>
+</div>
+<ul>
+<li>El <strong>coste</strong> de un árbol de recubrimiento es la suma de
+los costes de las aristas que forman parte de él.</li>
+</ul>
+<div class="color_tema fragment" style="text-align:center">
+<p><em>¿Cúal es el árbol de recubrimiento de <strong>coste
+mínimo</strong> del grafo?</em></p>
+</div>
+</section>
+<section id="simplificaciones" class="slide level2">
+<h2>Simplificaciones</h2>
+<ul>
+<li>Suponemos que el grafo <span class="math inline">\(G\)</span> es
+conexo <span class="math inline">\(\Longrightarrow\)</span> existe un
+árbol de recubrimiento.</li>
+<li>Suponemos que no hay dos aristas en <span
+class="math inline">\(G\)</span> con el mismo coste <span
+class="math inline">\(\Longrightarrow\)</span> el árbol de recubrimiento
+mínimo es único.</li>
+</ul>
+<p>Estas suposiciones no son estrictamente necesarias para el algoritmo
+que veremos, pero simplifican las demostraciones.</p>
+</section>
+<section id="algoritmo-de-kruskal" class="slide level2">
+<h2>Algoritmo de Kruskal</h2>
+<ul>
+<li><p>Es un algoritmo voraz que calcula el árbol de recubrimiento
+mínimo (ARM) de un grafo <span
+class="math inline">\(G\)</span>.</p></li>
+<li><p>Consiste en recorrer las aristas en orden ascendente de coste.
+Para cada arista, se añade al ARM salvo que conecte dos vértices que ya
+están en el ARM.</p></li>
+</ul>
+<ol type="1">
+<li class="fragment"><p>Ordenar las aristas por coste, de menor a
+mayor.</p></li>
+<li class="fragment"><p>Inicialmente, <span class="math inline">\(R =
+\emptyset\)</span>.</p></li>
+<li class="fragment"><p>Mientras no se hayan recorrido todas las aristas
+y <span class="math inline">\(|R| &lt; \texttt{num\_vertices}(G) -
+1\)</span>:</p>
+<ul>
+<li class="fragment">Sea <span class="math inline">\(a\)</span> la
+arista que se está recorriendo actualmente.</li>
+<li class="fragment">Si el grafo <span class="math inline">\(R \cup
+\{a\}\)</span> no contiene ciclos, añadir <span
+class="math inline">\(a\)</span> a <span
+class="math inline">\(R\)</span>.</li>
+</ul></li>
+<li class="fragment"><p>Devolver <span
+class="math inline">\(R\)</span>.</p></li>
+</ol>
+</section>
+<section id="detección-de-ciclos" class="slide level2">
+<h2>Detección de ciclos</h2>
+<p><span class="color_tema">¿Cómo sabemos si, al añadir una arista al
+ARM, se forma un ciclo?</span></p>
+<ul>
+<li class="fragment"><p>Mediante una estructura <em>unión-find</em> que
+contiene los vértices del grafo.</p></li>
+<li class="fragment"><p>Cada clase de equivalencia es una componente
+conexa de los vértices seleccionados del ARM.</p></li>
+<li class="fragment"><p>Cada vez que se añade una arista al ARM, se
+fusionan las clases de equivalencia de los vértices adyacentes.</p></li>
+<li class="fragment"><p>Para saber si se formaría un ciclo al añadir una
+arista, basta con comprobar si los vértices conectados por la arista
+forman parte de la misma clase de equivalencia.</p></li>
+</ul>
+<style>
+
+table.aristas td {
+    border: 2px solid black !important;
+    font-family: monospace;
+}
+table.aristas td.actual {
+    font-weight: bold;
+    background-color: #FFFFE0;
+}
+table.aristas td.pasada {
+    color: lightgray;
+}
+table.aristas td.seleccionada {
+    color: #20A020;
+}
+
+table.union_find td {
+    border: 2px solid black !important;
+    font-family: monospace;
+    background-color: #D0D0FF;
+}
+</style>
+</section>
+<section id="ejemplo-17" class="slide level2"
+data-transition="none-out">
+<h2 data-transition="none-out">Ejemplo</h2>
+<div class="columns">
+<div class="column" style="width:30%">
+<p><img data-src="Tema6/ARM4.svg" /></p>
+</div><div class="column" style="width:70%">
+<p>Aristas ordenadas:</p>
+<table class="aristas">
+<tr>
+<td>
+5
+</td>
+<td>
+10
+</td>
+<td>
+14
+</td>
+<td>
+15
+</td>
+<td>
+20
+</td>
+<td>
+22
+</td>
+<td>
+25
+</td>
+<td>
+30
+</td>
+<td>
+41
+</td>
+<td>
+50
+</td>
+</tr>
+</table>
+<p>Estructura <em>union-find</em>:</p>
+<table class="union_find">
+<tr>
+<td>
+0
+</td>
+<td>
+1
+</td>
+<td>
+2
+</td>
+<td>
+3
+</td>
+<td>
+4
+</td>
+<td>
+5
+</td>
+</tr>
+</table>
+</div>
+</div>
+</section>
+<section id="ejemplo-18" class="slide level2"
+data-transition="none-in none-out">
+<h2 data-transition="none-in none-out">Ejemplo</h2>
+<div class="columns">
+<div class="column" style="width:30%">
+<p><img data-src="Tema6/ARM5.svg" /></p>
+</div><div class="column" style="width:70%">
+<p>Aristas ordenadas:</p>
+<table class="aristas">
+<tr>
+<td class="actual">
+5
+</td>
+<td>
+10
+</td>
+<td>
+14
+</td>
+<td>
+15
+</td>
+<td>
+20
+</td>
+<td>
+22
+</td>
+<td>
+25
+</td>
+<td>
+30
+</td>
+<td>
+41
+</td>
+<td>
+50
+</td>
+</tr>
+</table>
+<p>Estructura <em>union-find</em>:</p>
+<table class="union_find">
+<tr>
+<td>
+0
+</td>
+<td>
+1
+</td>
+<td>
+2
+</td>
+<td>
+3
+</td>
+<td>
+4
+</td>
+<td>
+5
+</td>
+</tr>
+</table>
+</div>
+</div>
+<ul>
+<li><p>Los vértices <code>2</code> y <code>3</code> no pertenecen a la
+misma clase de equivalencia.</p></li>
+<li><p>Añadimos la arista al ARM y fusionamos las clases.</p></li>
+</ul>
+</section>
+<section id="ejemplo-19" class="slide level2"
+data-transition="none-in none-out">
+<h2 data-transition="none-in none-out">Ejemplo</h2>
+<div class="columns">
+<div class="column" style="width:30%">
+<p><img data-src="Tema6/ARM6.svg" /></p>
+</div><div class="column" style="width:70%">
+<p>Aristas ordenadas:</p>
+<table class="aristas">
+<tr>
+<td class="seleccionada">
+5
+</td>
+<td class="actual">
+10
+</td>
+<td>
+14
+</td>
+<td>
+15
+</td>
+<td>
+20
+</td>
+<td>
+22
+</td>
+<td>
+25
+</td>
+<td>
+30
+</td>
+<td>
+41
+</td>
+<td>
+50
+</td>
+</tr>
+</table>
+<p>Estructura <em>union-find</em>:</p>
+<table class="union_find">
+<tr>
+<td>
+0
+</td>
+<td>
+1
+</td>
+<td>
+2 3
+</td>
+<td>
+4
+</td>
+<td>
+5
+</td>
+</tr>
+</table>
+</div>
+</div>
+<ul>
+<li><p>Los vértices <code>0</code> y <code>1</code> no pertenecen a la
+misma clase de equivalencia.</p></li>
+<li><p>Añadimos la arista al ARM y fusionamos las clases.</p></li>
+</ul>
+</section>
+<section id="ejemplo-20" class="slide level2"
+data-transition="none-in none-out">
+<h2 data-transition="none-in none-out">Ejemplo</h2>
+<div class="columns">
+<div class="column" style="width:30%">
+<p><img data-src="Tema6/ARM7.svg" /></p>
+</div><div class="column" style="width:70%">
+<p>Aristas ordenadas:</p>
+<table class="aristas">
+<tr>
+<td class="seleccionada">
+5
+</td>
+<td class="seleccionada">
+10
+</td>
+<td class="actual">
+14
+</td>
+<td>
+15
+</td>
+<td>
+20
+</td>
+<td>
+22
+</td>
+<td>
+25
+</td>
+<td>
+30
+</td>
+<td>
+41
+</td>
+<td>
+50
+</td>
+</tr>
+</table>
+<p>Estructura <em>union-find</em>:</p>
+<table class="union_find">
+<tr>
+<td>
+0 1
+</td>
+<td>
+2 3
+</td>
+<td>
+4
+</td>
+<td>
+5
+</td>
+</tr>
+</table>
+</div>
+</div>
+<ul>
+<li><p>Los vértices <code>0</code> y <code>3</code> no pertenecen a la
+misma clase de equivalencia.</p></li>
+<li><p>Añadimos la arista al ARM y fusionamos las clases.</p></li>
+</ul>
+</section>
+<section id="ejemplo-21" class="slide level2"
+data-transition="none-in none-out">
+<h2 data-transition="none-in none-out">Ejemplo</h2>
+<div class="columns">
+<div class="column" style="width:30%">
+<p><img data-src="Tema6/ARM8.svg" /></p>
+</div><div class="column" style="width:70%">
+<p>Aristas ordenadas:</p>
+<table class="aristas">
+<tr>
+<td class="seleccionada">
+5
+</td>
+<td class="seleccionada">
+10
+</td>
+<td class="seleccionada">
+14
+</td>
+<td class="actual">
+15
+</td>
+<td>
+20
+</td>
+<td>
+22
+</td>
+<td>
+25
+</td>
+<td>
+30
+</td>
+<td>
+41
+</td>
+<td>
+50
+</td>
+</tr>
+</table>
+<p>Estructura <em>union-find</em>:</p>
+<table class="union_find">
+<tr>
+<td>
+0 1 2 3
+</td>
+<td>
+4
+</td>
+<td>
+5
+</td>
+</tr>
+</table>
+</div>
+</div>
+<ul>
+<li><p>Los vértices <code>1</code> y <code>2</code> pertenecen a la
+misma clase de equivalencia.</p></li>
+<li><p>No añadimos la arista al ARM.</p></li>
+</ul>
+</section>
+<section id="ejemplo-22" class="slide level2"
+data-transition="none-in none-out">
+<h2 data-transition="none-in none-out">Ejemplo</h2>
+<div class="columns">
+<div class="column" style="width:30%">
+<p><img data-src="Tema6/ARM9.svg" /></p>
+</div><div class="column" style="width:70%">
+<p>Aristas ordenadas:</p>
+<table class="aristas">
+<tr>
+<td class="seleccionada">
+5
+</td>
+<td class="seleccionada">
+10
+</td>
+<td class="seleccionada">
+14
+</td>
+<td class="pasada">
+15
+</td>
+<td class="actual">
+20
+</td>
+<td>
+22
+</td>
+<td>
+25
+</td>
+<td>
+30
+</td>
+<td>
+41
+</td>
+<td>
+50
+</td>
+</tr>
+</table>
+<p>Estructura <em>union-find</em>:</p>
+<table class="union_find">
+<tr>
+<td>
+0 1 2 3
+</td>
+<td>
+4
+</td>
+<td>
+5
+</td>
+</tr>
+</table>
+</div>
+</div>
+<ul>
+<li><p>Los vértices <code>1</code> y <code>4</code> no pertenecen a la
+misma clase de equivalencia.</p></li>
+<li><p>Añadimos la arista al ARM y fusionamos las clases.</p></li>
+</ul>
+</section>
+<section id="ejemplo-23" class="slide level2"
+data-transition="none-in none-out">
+<h2 data-transition="none-in none-out">Ejemplo</h2>
+<div class="columns">
+<div class="column" style="width:30%">
+<p><img data-src="Tema6/ARM10.svg" /></p>
+</div><div class="column" style="width:70%">
+<p>Aristas ordenadas:</p>
+<table class="aristas">
+<tr>
+<td class="seleccionada">
+5
+</td>
+<td class="seleccionada">
+10
+</td>
+<td class="seleccionada">
+14
+</td>
+<td class="pasada">
+15
+</td>
+<td class="seleccionada">
+20
+</td>
+<td class="actual">
+22
+</td>
+<td>
+25
+</td>
+<td>
+30
+</td>
+<td>
+41
+</td>
+<td>
+50
+</td>
+</tr>
+</table>
+<p>Estructura <em>union-find</em>:</p>
+<table class="union_find">
+<tr>
+<td>
+0 1 2 3 4
+</td>
+<td>
+5
+</td>
+</tr>
+</table>
+</div>
+</div>
+<ul>
+<li><p>Los vértices <code>3</code> y <code>5</code> no pertenecen a la
+misma clase de equivalencia.</p></li>
+<li><p>Añadimos la arista al ARM y fusionamos las clases.</p></li>
+</ul>
+</section>
+<section id="ejemplo-24" class="slide level2" data-transition="none-in">
+<h2 data-transition="none-in">Ejemplo</h2>
+<div class="columns">
+<div class="column" style="width:30%">
+<p><img data-src="Tema6/ARM11.svg" /></p>
+</div><div class="column" style="width:70%">
+<p>Aristas ordenadas:</p>
+<table class="aristas">
+<tr>
+<td class="seleccionada">
+5
+</td>
+<td class="seleccionada">
+10
+</td>
+<td class="seleccionada">
+14
+</td>
+<td class="pasada">
+15
+</td>
+<td class="seleccionada">
+20
+</td>
+<td class="seleccionada">
+22
+</td>
+<td class="pasada">
+25
+</td>
+<td class="pasada">
+30
+</td>
+<td class="pasada">
+41
+</td>
+<td class="pasada">
+50
+</td>
+</tr>
+</table>
+<p>Estructura <em>union-find</em>:</p>
+<table class="union_find">
+<tr>
+<td>
+0 1 2 3 4 5
+</td>
+</tr>
+</table>
+</div>
+</div>
+<ul>
+<li>Ya hemos seleccionado 5 aristas (= 6 - 1). Por tanto, ya hemos
+terminado.</li>
+</ul>
+</section>
+<section id="corrección-del-algoritmo-1"
+class="slide level2 subsection center">
+<h2 class="subsection center">Corrección del algoritmo</h2>
+</section>
+<section id="propiedad-de-corte" class="slide level2">
+<h2>Propiedad de corte</h2>
+<ul>
+<li><p>Supongamos que <span class="math inline">\(V\)</span> es el
+conjunto de vértices de un grafo.</p></li>
+<li><p>Un <strong>corte</strong> de un grafo es una partición del
+conjunto <span class="math inline">\(V\)</span> de vértices en dos
+conjuntos disjuntos <span class="math inline">\(V_1\)</span> y <span
+class="math inline">\(V_2\)</span>.</p></li>
+<li><p>Decimos que una arista <span class="math inline">\(a\)</span>
+<strong>cruza</strong> un corte si conecta un vértice de <span
+class="math inline">\(V_1\)</span> con otro de <span
+class="math inline">\(V_2\)</span></p></li>
+</ul>
+<div style="text-align:center">
+<p><img data-src="Tema6/Corte1.svg" style="width:40.0%" /></p>
+</div>
+</section>
+<section id="propiedad-del-corte" class="slide level2">
+<h2>Propiedad del corte</h2>
+<h3 id="proposición">Proposición</h3>
+<p>Dado un corte cualquiera de un grafo, sea <span
+class="math inline">\(a\)</span> la arista de menor coste de entre todas
+que cruzan el corte. <strong>La arista <span
+class="math inline">\(a\)</span> debe formar parte del ARM del
+grafo.</strong></p>
+<h3 class="fragment" id="demostración">Demostración</h3>
+<div class="fragment">
+<p><span style="font-size:85%">Supongamos que el ARM del grafo no
+contiene la arista <span class="math inline">\(a\)</span>. Debe existir
+otra arista distinta <span class="math inline">\(a&#39;\)</span> en el
+ARM que cruce el corte (de lo contrario, no sería árbol de
+recubrimiento). Al reemplazar <span
+class="math inline">\(a&#39;\)</span> por <span
+class="math inline">\(a\)</span> en el árbol, se obtiene un árbol de
+recubrimiento de coste menor, contradiciendo el hecho de que el ARM
+tiene coste mínimo.</span></p>
+<div style="text-align:center">
+<p><img data-src="Tema6/Corte2.svg" style="width:40.0%" /> <img
+data-src="Tema6/Corte3.svg" style="width:40.0%" /></p>
+</div>
+</div>
+</section>
+<section id="demostración-del-algoritmo-de-kruskal"
+class="slide level2">
+<h2>Demostración del algoritmo de Kruskal</h2>
+<ul>
+<li class="fragment">En el transcurso del algoritmo de Kruskal,
+suponemos el corte formado por dos conjuntos disjuntos:
+<ul>
+<li class="fragment">Los vértices del grafo que forman parte del ARM
+construido hasta ahora.</li>
+<li class="fragment">Los vértices que aún no forman parte del ARM.</li>
+</ul></li>
+<li class="fragment">En cada paso del algoritmo, si se añade una arista,
+la arista añadida conecta un vértice del ARM con otro vértice ajeno al
+ARM.
+<ul>
+<li class="fragment">Por tanto, cada arista que se añade es una arista
+que cruza el corte existente en ese momento.</li>
+</ul></li>
+<li class="fragment">Además, como se recorren las aristas en orden
+ascendente de coste, cada arista que se añade es la de menor coste de
+entre todas aquellas que cruzan el corte existente en ese momento.
+<ul>
+<li class="fragment">Por tanto, <strong>todas las aristas que se añaden
+forman parte del ARM</strong>.</li>
+</ul></li>
+</ul>
+</section>
+<section id="implementación-del-algoritmo-1"
+class="slide level2 subsection center">
+<h2 class="subsection center">Implementación del algoritmo</h2>
+</section>
+<section id="implementación-en-c-4" class="slide level2">
+<h2>Implementación en C++</h2>
+<p>Inicialización:</p>
+<div class="cpp cpp_block">
+<p><span class="type">vector</span>&lt;arista&gt; kruskal(<span
+class="type">const</span> grafo &amp;g) {<br>  <span
+class="type">int</span> v = num_vertices(g);<br>  <br>  <span
+class="comment">// Obtenemos las aristas del grafo y las guardamos en un
+vector: <span class="math inline">\(\Theta(a)\)</span></span><br>  <span
+class="type">vector</span>&lt;arista&gt;
+lista_aristas;<br>  <strong>for</strong> (<span class="type">int</span>
+i = <span class="number">0</span>; i &lt; v; i++)
+{<br>    <strong>for</strong> (<span class="type">const</span> arista
+&amp;a : aristas(g, i)) { lista_aristas.push_back(a);
+}<br>  }<br><br>  <span class="comment">// Ordenamos las aristas por
+coste: <span class="math inline">\(\Theta(a \log
+a)\)</span></span><br>  sort(lista_aristas.begin(), lista_aristas.end(),
+[](<span class="type">const</span> arista &amp;a, <span
+class="type">const</span> arista &amp;b)
+{<br>    <strong>return</strong> a.coste &lt;
+b.coste;<br>  });<br>  ...</p>
+</div>
+</section>
+<section class="slide level2">
+
+<p>Bucle principal:</p>
+<div class="cpp cpp_block" style="font-size:65%">
+<p>  ...<br>  union_find uf(v);     <span class="comment">// Crear
+estructura union-find: <span class="math inline">\(\Theta(v) \subseteq
+\Theta(a)\)</span>, porque <span class="math inline">\(a \geq v -
+1\)</span></span><br>  <span class="type">vector</span>&lt;arista&gt;
+result;        <span class="comment">// Vector con aristas
+seleccionadas</span><br>  <span class="type">int</span> i = <span
+class="number">0</span>;<br>  <strong>while</strong> (i &lt;
+lista_aristas.size() &amp;&amp; result.size() &lt; v - <span
+class="number">1</span>) { <span class="comment">// <span
+class="math inline">\(\Theta(a)\)</span> iteraciones en c.
+peor</span><br>    arista actual = lista_aristas[i];<br>    <span
+class="comment">// Si los vértices que une la arista no forman parte del
+ARM, añadimos la arista</span><br>    <strong>if</strong>
+(!uf.unidos(actual.vertice1, actual.vertice2))
+{<br>      result.push_back(actual);<br>      uf.unir(actual.vertice1,
+actual.vertice2);<br>    }<br>    i++;<br>  }<br>  <strong>return</strong>
+result;<br>}</p>
+</div>
+<p>Coste: <span class="color_tema"><span class="math inline">\(\Theta(a
+\log a)\)</span></span> en tiempo <span class="color_tema"><span
+class="math inline">\(\Theta(a)\)</span></span> en espacio, donde <span
+class="math inline">\(a\)</span> es el número de aristas.</p>
+</section></section>
+    </div>
+  </div>
+
+  <script src="dist/reveal.js"></script>
+
+  <!-- reveal.js plugins -->
+  <script src="plugin/notes/notes.js"></script>
+  <script src="plugin/search/search.js"></script>
+  <script src="plugin/zoom/zoom.js"></script>
+  <script src="plugin/highlight/highlight.js"></script>
+  <script src="plugin/math/math.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+        // Display controls in the bottom right corner
+        controls: false,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: true,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'bottom-right',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: false,
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: false,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: false,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'default',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Prints all fragments in their visible states on the same slide 
+        pdfSeparateFragments: false,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: true,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'slide',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'fade',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1600,
+
+        height: 900,
+
+        math: {
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom,
+          // RevealHighlight          
+        ]
+      });
+    </script>
+    </body>
+</html>
