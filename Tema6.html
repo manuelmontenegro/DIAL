@@ -4642,8 +4642,8 @@ siguiente modo:</p>
 <div class="fragment">
 <p>Por ejemplo:</p>
 <p><span class="math display">\[
-\log^* 2 = 1 \qquad \log^* 2^2 = 2 \qquad \log^* 2^{2^2} = 3 \qquad
-\log^* 2^{2^{2^2}} = 4
+\log^\star 2 = 1 \qquad \log^\star 2^2 = 2 \qquad \log^\star 2^{2^2} = 3
+\qquad \log^\star 2^{2^{2^2}} = 4
 \]</span></p>
 </div>
 <div class="fragment">
@@ -5491,23 +5491,19 @@ data-src="Tema6/Corte3.svg" style="width:40.0%" /></p>
 class="slide level2">
 <h2>Demostración del algoritmo de Kruskal</h2>
 <ul>
-<li class="fragment">En el transcurso del algoritmo de Kruskal,
-suponemos el corte formado por dos conjuntos disjuntos:
+<li class="fragment"><p>En el transcurso del algoritmo de Kruskal, al
+añadir una arista, suponemos el corte formado por dos conjuntos
+disjuntos:</p>
 <ul>
-<li class="fragment">Los vértices del grafo que forman parte del ARM
-construido hasta ahora.</li>
-<li class="fragment">Los vértices que aún no forman parte del ARM.</li>
+<li class="fragment">Los vértices del grafo que forman parte de una de
+las componentes del grafo adyacentes a esa arista.</li>
+<li class="fragment">El resto de vértices.</li>
 </ul></li>
-<li class="fragment">En cada paso del algoritmo, si se añade una arista,
-la arista añadida conecta un vértice del ARM con otro vértice ajeno al
-ARM.
-<ul>
-<li class="fragment">Por tanto, cada arista que se añade es una arista
-que cruza el corte existente en ese momento.</li>
-</ul></li>
-<li class="fragment">Además, como se recorren las aristas en orden
+<li class="fragment"><p>Por tanto, cada arista que se añade es una
+arista que cruza el corte existente en ese momento.</p></li>
+<li class="fragment"><p>Además, como se recorren las aristas en orden
 ascendente de coste, cada arista que se añade es la de menor coste de
-entre todas aquellas que cruzan el corte existente en ese momento.
+entre todas aquellas que cruzan el corte existente en ese momento.</p>
 <ul>
 <li class="fragment">Por tanto, <strong>todas las aristas que se añaden
 forman parte del ARM</strong>.</li>
