@@ -3111,7 +3111,7 @@ actualiza la prioridad de <code>x</code> a <code>p</code>. Si
 </dd>
 <dt><code>pq.top()</code></dt>
 <dd>
-devuelve un par (<code>x</code>, <code>p</code>) con el elemento más
+devuelve un par (<code>x</code>, <code>p</code>) con el elemento menos
 prioritario y su prioridad <code>p</code>.
 </dd>
 <dt><code>pq.pop()</code></dt>
@@ -4405,8 +4405,7 @@ class="type">vector</span>&lt;lista_aristas&gt;;</p>
 <p>grafo crear_grafo(<span class="type">int</span> num_vertices)
 {               <span class="arrow_box_left">Crear un grafo nuevo sin
 aristas</span><br>  <strong>return</strong> <span
-class="type">vector</span>&lt;<span
-class="type">vector</span>&lt;arista&gt;&gt;(num_vertices);<br>}<br><br><span
+class="type">vector</span>&lt;lista_aristas&gt;(num_vertices);<br>}<br><br><span
 class="type">void</span> anyadir_arista(grafo &amp;g, <span
 class="type">int</span> origen, <span class="type">int</span> destino,
 <span class="type">int</span> coste) { <span
