@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="83.929176mm"
+   height="9.432765mm"
+   viewBox="0 0 83.929179 9.432765"
+   version="1.1"
+   id="svg1"
+   sodipodi:docname="cp_2.svg"
+   inkscape:version="1.4.3 (0d15f75042, 2025-12-25)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     inkscape:zoom="1.0393815"
+     inkscape:cx="172.21781"
+     inkscape:cy="81.298349"
+     inkscape:window-width="1920"
+     inkscape:window-height="1011"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs1" />
+  <g
+     inkscape:label="Capa 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-22.815119,-17.020359)">
+    <g
+       id="g21"
+       transform="translate(-24.49821,-18.483808)">
+      <rect
+         style="fill:#ffecb1;fill-opacity:1;stroke:#000000;stroke-width:0.212751"
+         id="rect1-3"
+         width="14.163245"
+         height="8.9432507"
+         x="47.419704"
+         y="35.610542" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52778px;font-family:monospace;-inkscape-font-specification:monospace;text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.336"
+         x="54.360592"
+         y="41.521614"
+         id="text17-8"><tspan
+           sodipodi:role="line"
+           id="tspan17-4"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52778px;font-family:Arial;-inkscape-font-specification:Arial;stroke-width:0.336"
+           x="54.360592"
+           y="41.521614">est = 10</tspan></text>
+    </g>
+    <g
+       id="g1"
+       transform="translate(-28.001429,-52.439039)">
+      <rect
+         style="fill:#ffecb1;fill-opacity:1;stroke:#000000;stroke-width:0.212751"
+         id="rect1-1"
+         width="14.163245"
+         height="8.9432507"
+         x="68.5877"
+         y="69.842537" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52778px;font-family:monospace;-inkscape-font-specification:monospace;text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.336"
+         x="75.583656"
+         y="75.473099"
+         id="text17-8-2"><tspan
+           sodipodi:role="line"
+           id="tspan17-4-0"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52778px;font-family:Arial;-inkscape-font-specification:Arial;stroke-width:0.336"
+           x="75.583656"
+           y="75.473099">est = 30</tspan></text>
+    </g>
+    <g
+       id="g2"
+       transform="translate(-63.690108,-87.313545)">
+      <rect
+         style="fill:#ffecb1;fill-opacity:1;stroke:#000000;stroke-width:0.212751"
+         id="rect1-36"
+         width="14.163245"
+         height="8.9432507"
+         x="121.23978"
+         y="104.50295" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52778px;font-family:monospace;-inkscape-font-specification:monospace;text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.336"
+         x="128.40494"
+         y="110.30206"
+         id="text17-8-6"><tspan
+           sodipodi:role="line"
+           id="tspan17-4-6"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52778px;font-family:Arial;-inkscape-font-specification:Arial;stroke-width:0.336"
+           x="128.40494"
+           y="110.30206">est = 8</tspan></text>
+    </g>
+  </g>
+</svg>

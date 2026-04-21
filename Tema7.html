@@ -1,0 +1,4923 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Manuel Montenegro Montes Dpto. de Sistemas Informáticos y Computación Facultad de Informática Universidad Complutense de Madrid">
+  <title>Métodos de exploración exhaustiva</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="dist/reset.css">
+  <link rel="stylesheet" href="dist/reveal.css">
+  <link rel="stylesheet" href="css/nnfx-light.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <style>
+    .reveal .sourceCode {  /* see #7635 */
+      overflow: visible;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <link rel="stylesheet" href="css/dial.css" id="theme">
+    <style>
+  :root {
+    --color-tema: #de7a16;
+  }
+    </style>
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide" data-background-image="img/OrangeBackground.jpg" class="center">
+  <p class="subtitle">Tema 7</p>
+  <h1 class="title">Métodos de exploración exhaustiva</h1>
+<div id="author-container">
+<div class="author">
+<strong>Manuel Montenegro Montes</strong><br>Dpto. de Sistemas
+Informáticos y Computación<br>Facultad de Informática<br>Universidad
+Complutense de Madrid
+</div>
+</div>
+</section>
+
+<section>
+<section id="introducción" class="title-slide slide level1 center"
+data-background-image="img/OrangeBackground.jpg">
+<h1 class="center"
+data-background-image="img/OrangeBackground.jpg"><span
+class="sc_number">7.1</span>Introducción</h1>
+
+</section>
+<section id="introducción-1" class="slide level2">
+<h2>Introducción</h2>
+<style>
+.strikethrough-diagonal {
+  position: relative;
+  font-weight: bold;
+
+  &:before {
+    position: absolute;
+    content: '';
+    left: 0;
+    top: 45%;
+    right: 0;
+    border-top: 7px solid;
+    border-color: black;
+    -webkit-transform: skewY(-45deg);
+    -moz-transform: skewY(-45deg);
+    transform: skewY(-45deg);
+  }
+}
+</style>
+<ul>
+<li><p>A veces no es posible encontrar un algoritmo que resuelva un
+problema de manera directa, o utilizando las técnicas vistas hasta
+ahora.</p></li>
+<li><p>En esos casos, una opción es <strong>buscar
+exhaustivamente</strong> una solución válida entre todas las soluciones
+potenciales a un problema.</p>
+<ul>
+<li class="fragment">
+<p>En el caso de problemas de optimización, debemos recorrer
+<strong>todas</strong> las soluciones factibles para encontrar la
+solución óptima.</p>
+</li>
+</ul></li>
+</ul>
+</section>
+<section id="refinamientos-de-los-algoritmos-de-fuerza-bruta"
+class="slide level2">
+<h2>Refinamientos de los algoritmos de fuerza bruta</h2>
+<ul>
+<li class="fragment"><p>En general, los algoritmos de fuerza bruta son
+muy <strong>ineficientes</strong>.</p>
+<ul>
+<li class="fragment">El espacio de candidatos a soluciones es demasiado
+grande.</li>
+</ul></li>
+<li class="fragment"><p>Existen refinamientos que permiten buscar una
+solución de manera ordenada, construirla de manera incremental y, si
+deja de ser factible, descartarla.</p>
+<ul>
+<li class="fragment"><p><span class="color_tema"><strong>Vuelta
+atrás</strong></span> (<em>backtracking</em>)</p></li>
+<li class="fragment"><p><span class="color_tema"><strong>Ramificación y
+poda</strong></span> (<em>branch and bound</em>)</p></li>
+</ul></li>
+</ul>
+</section></section>
+<section>
+<section id="ejemplo-coloreado-de-grafos"
+class="title-slide slide level1 center"
+data-background-image="img/OrangeBackground.jpg">
+<h1 class="center"
+data-background-image="img/OrangeBackground.jpg"><span
+class="sc_number">7.2</span>Ejemplo: coloreado de grafos</h1>
+
+</section>
+<section id="coloreado-de-grafos" class="slide level2"
+data-transition="slide-in none-out">
+<h2 data-transition="slide-in none-out">Coloreado de grafos</h2>
+<ul>
+<li>Dado un grafo <span class="math inline">\(G\)</span> y una cantidad
+<span class="math inline">\(c\)</span> de colores. ¿Es posible asignar
+un color a cada vértice del grafo de modo que no haya dos vértices
+adyacentes con el mismo color?</li>
+</ul>
+<p style="text-align:center">
+<img data-src="Tema7/GrafoBlanco.svg" />
+</p>
+</section>
+<section id="coloreado-de-grafos-1" class="slide level2"
+data-transition="none-in slide-out">
+<h2 data-transition="none-in slide-out">Coloreado de grafos</h2>
+<ul>
+<li>Dado un grafo <span class="math inline">\(G\)</span> y una cantidad
+<span class="math inline">\(c\)</span> de colores. ¿Es posible asignar
+un color a cada vértice del grafo de modo que no haya dos vértices
+adyacentes con el mismo color?</li>
+</ul>
+<p style="text-align:center">
+<img data-src="Tema7/GrafoColoreado.svg" />
+</p>
+<ul>
+<li>Con <span class="math inline">\(c \geq 3\)</span> colores es posible
+el coloreado de este grafo.</li>
+</ul>
+<div class="fragment">
+<ul>
+<li>Con <span class="math inline">\(c &lt; 3\)</span> no es
+posible.</li>
+</ul>
+</div>
+</section>
+<section id="aplicaciones-del-coloreado-de-grafos" class="slide level2">
+<h2>Aplicaciones del coloreado de grafos</h2>
+<div style="float:right">
+<p><img data-src="Tema7/Africa.svg"
+style="height:400px; margin-right: 2em" /></p>
+</div>
+<ul>
+<li class="fragment"><p>Coloreado de mapas</p></li>
+<li class="fragment"><p>Programación de horarios de eventos, exámenes,
+etc.</p></li>
+<li class="fragment"><p>Asignación de variables a registros de
+CPU</p></li>
+<li class="fragment"><p>Asignación de frecuencias a redes
+inalámbricas</p></li>
+<li class="fragment"><p>etc.</p></li>
+</ul>
+</section>
+<section id="formalización-del-problema" class="slide level2">
+<h2>Formalización del problema</h2>
+<ul>
+<li><p>Suponemos que el grafo tiene <span
+class="math inline">\(n\)</span> vértices, numerados desde <span
+class="math inline">\(0\)</span> hasta <span class="math inline">\(n -
+1\)</span>.</p></li>
+<li><p>Suponemos que tenemos <span class="math inline">\(c\)</span>
+colores.</p></li>
+</ul>
+<div class="fragment">
+<ul>
+<li><p>Una <strong>solución válida</strong> es un array <span
+class="math inline">\(X[0..n)\)</span>, de modo que <span
+class="math inline">\(X[i]\)</span> es el color asignado al vértice
+<span class="math inline">\(i\)</span>-ésimo del grafo.</p>
+<ul>
+<li>Si los vértices <span class="math inline">\(i\)</span> y <span
+class="math inline">\(j\)</span> son adyacentes en el grafo, entonces
+<span class="math inline">\(X[i] \neq X[j]\)</span>.</li>
+</ul></li>
+</ul>
+</div>
+</section>
+<section id="construcción-incremental-de-soluciones"
+class="slide level2">
+<h2>Construcción incremental de soluciones</h2>
+<ul>
+<li class="fragment"><p>Una <strong>solución parcial</strong> es un
+array <span class="math inline">\(X[0..k)\)</span>, donde <span
+class="math inline">\(k \leq n\)</span>.</p></li>
+<li class="fragment"><p>Una solución parcial es
+<strong>prometedora</strong> si no asigna el mismo color a dos vértices
+adyacentes del grafo.</p></li>
+<li class="fragment"><p>Si <span class="math inline">\(k &lt;
+n\)</span>, debemos extender la solución con otro color <span
+class="math inline">\(z\)</span>:</p>
+<p><span class="math display">\[
+  X&#39; = X +\!\!\!+ \: [\textcolor{red}{z}]
+\]</span></p>
+<ul>
+<li class="fragment"><p>Si <span class="math inline">\(X&#39;\)</span>
+es prometedora, podemos seguir explorando esa solución.</p></li>
+<li class="fragment"><p>Si <span class="math inline">\(X&#39;\)</span>
+no es prometedora, podemos descartar <span
+class="math inline">\(X&#39;\)</span> y buscar otro <span
+class="math inline">\(z&#39;\)</span> con el que extender <span
+class="math inline">\(X\)</span>.</p></li>
+<li class="fragment"><p>Si no es posible extender <span
+class="math inline">\(X&#39;\)</span> con un color para obtener otra
+solución parcial prometedora, debemos rectificar algunas de las
+componentes de <span class="math inline">\(X\)</span> y volver a
+intentarlo.</p></li>
+</ul></li>
+</ul>
+</section>
+<section id="ejemplo" class="slide level2"
+data-transition="slide-in none-out">
+<h2 data-transition="slide-in none-out">Ejemplo</h2>
+<div class="columns">
+<div class="column">
+<p style="text-align: center;">
+<img data-src="Tema7/GrafoBlanco.svg" />
+</p>
+</div><div class="column">
+<table>
+<tr>
+<th>
+0
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+<th>
+3
+</th>
+<th>
+4
+</th>
+</tr>
+<tr>
+<td style="border-bottom: none;">
+<span style="color:#FFFFFF"><strong>R</strong></span>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</section>
+<section id="ejemplo-1" class="slide level2"
+data-transition="none-in none-out">
+<h2 data-transition="none-in none-out">Ejemplo</h2>
+<div class="columns">
+<div class="column">
+<p style="text-align: center;">
+<img data-src="Tema7/GrafoIncr1.svg" />
+</p>
+</div><div class="column">
+<table>
+<tr>
+<th>
+0
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+<th>
+3
+</th>
+<th>
+4
+</th>
+</tr>
+<tr>
+<td style="border-bottom: none;">
+<span style="color:#930202"><strong>R</strong></span>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</section>
+<section id="ejemplo-2" class="slide level2"
+data-transition="none-in none-out">
+<h2 data-transition="none-in none-out">Ejemplo</h2>
+<div class="columns">
+<div class="column">
+<p style="text-align: center;">
+<img data-src="Tema7/GrafoIncr2.svg" />
+</p>
+</div><div class="column">
+<table>
+<tr>
+<th>
+0
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+<th>
+3
+</th>
+<th>
+4
+</th>
+</tr>
+<tr>
+<td style="border-bottom: none;">
+<span style="color:#930202"><strong>R</strong></span>
+</td>
+<td style="border-bottom: none;">
+<span style="color:#930202"><strong>R</strong></span>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</section>
+<section id="ejemplo-3" class="slide level2"
+data-transition="none-in none-out">
+<h2 data-transition="none-in none-out">Ejemplo</h2>
+<div class="columns">
+<div class="column">
+<p style="text-align: center;">
+<img data-src="Tema7/GrafoIncr3.svg" />
+</p>
+</div><div class="column">
+<table>
+<tr>
+<th>
+0
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+<th>
+3
+</th>
+<th>
+4
+</th>
+</tr>
+<tr>
+<td style="border-bottom: none;">
+<span style="color:#930202"><strong>R</strong></span>
+</td>
+<td style="border-bottom: none;">
+<span class="strikethrough-diagonal"
+style="color:#A0A0A0"><strong>R</strong></span>
+</td>
+</tr>
+<tr>
+<td style="border-bottom: none;">
+</td>
+<td style="border-bottom: none;">
+<span style="color:#0059a1"><strong>A</strong></span>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</section>
+<section id="ejemplo-4" class="slide level2"
+data-transition="none-in none-out">
+<h2 data-transition="none-in none-out">Ejemplo</h2>
+<div class="columns">
+<div class="column">
+<p style="text-align: center;">
+<img data-src="Tema7/GrafoIncr4.svg" />
+</p>
+</div><div class="column">
+<table>
+<tr>
+<th>
+0
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+<th>
+3
+</th>
+<th>
+4
+</th>
+</tr>
+<tr>
+<td style="border-bottom: none;">
+<span style="color:#930202"><strong>R</strong></span>
+</td>
+<td style="border-bottom: none;">
+<span class="strikethrough-diagonal"
+style="color:#A0A0A0"><strong>R</strong></span>
+</td>
+<td style="border-bottom: none;">
+<span style="color:#930202"><strong>R</strong></span>
+</td>
+</tr>
+<tr>
+<td style="border-bottom: none;">
+</td>
+<td style="border-bottom: none;">
+<span style="color:#0059a1"><strong>A</strong></span>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</section>
+<section id="ejemplo-5" class="slide level2"
+data-transition="none-in none-out">
+<h2 data-transition="none-in none-out">Ejemplo</h2>
+<div class="columns">
+<div class="column">
+<p style="text-align: center;">
+<img data-src="Tema7/GrafoIncr5.svg" />
+</p>
+</div><div class="column">
+<table>
+<tr>
+<th>
+0
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+<th>
+3
+</th>
+<th>
+4
+</th>
+</tr>
+<tr>
+<td style="border-bottom: none;">
+<span style="color:#930202"><strong>R</strong></span>
+</td>
+<td style="border-bottom: none;">
+<span class="strikethrough-diagonal"
+style="color:#A0A0A0"><strong>R</strong></span>
+</td>
+<td style="border-bottom: none;">
+<span style="color:#930202"><strong>R</strong></span>
+</td>
+<td style="border-bottom: none;">
+<span style="color:#930202"><strong>R</strong></span>
+</td>
+</tr>
+<tr>
+<td style="border-bottom: none;">
+</td>
+<td style="border-bottom: none;">
+<span style="color:#0059a1"><strong>A</strong></span>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</section>
+<section id="ejemplo-6" class="slide level2"
+data-transition="none-in none-out">
+<h2 data-transition="none-in none-out">Ejemplo</h2>
+<div class="columns">
+<div class="column">
+<p style="text-align: center;">
+<img data-src="Tema7/GrafoIncr6.svg" />
+</p>
+</div><div class="column">
+<table>
+<tr>
+<th>
+0
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+<th>
+3
+</th>
+<th>
+4
+</th>
+</tr>
+<tr>
+<td style="border-bottom: none;">
+<span style="color:#930202"><strong>R</strong></span>
+</td>
+<td style="border-bottom: none;">
+<span class="strikethrough-diagonal"
+style="color:#A0A0A0"><strong>R</strong></span>
+</td>
+<td style="border-bottom: none;">
+<span style="color:#930202"><strong>R</strong></span>
+</td>
+<td style="border-bottom: none;">
+<span class="strikethrough-diagonal"
+style="color:#A0A0A0"><strong>R</strong></span>
+</td>
+</tr>
+<tr>
+<td style="border-bottom: none;">
+</td>
+<td style="border-bottom: none;">
+<span style="color:#0059a1"><strong>A</strong></span>
+</td>
+<td style="border-bottom: none;">
+</td>
+<td style="border-bottom: none;">
+<span style="color:#0059a1"><strong>A</strong></span>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</section>
+<section id="ejemplo-7" class="slide level2"
+data-transition="none-in none-out">
+<h2 data-transition="none-in none-out">Ejemplo</h2>
+<div class="columns">
+<div class="column">
+<p style="text-align: center;">
+<img data-src="Tema7/GrafoIncr7.svg" />
+</p>
+</div><div class="column">
+<table>
+<tr>
+<th>
+0
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+<th>
+3
+</th>
+<th>
+4
+</th>
+</tr>
+<tr>
+<td style="border-bottom: none;">
+<span style="color:#930202"><strong>R</strong></span>
+</td>
+<td style="border-bottom: none;">
+<span class="strikethrough-diagonal"
+style="color:#A0A0A0"><strong>R</strong></span>
+</td>
+<td style="border-bottom: none;">
+<span style="color:#930202"><strong>R</strong></span>
+</td>
+<td style="border-bottom: none;">
+<span class="strikethrough-diagonal"
+style="color:#A0A0A0"><strong>R</strong></span>
+</td>
+</tr>
+<tr>
+<td style="border-bottom: none;">
+</td>
+<td style="border-bottom: none;">
+<span style="color:#0059a1"><strong>A</strong></span>
+</td>
+<td style="border-bottom: none;">
+</td>
+<td style="border-bottom: none;">
+<span class="strikethrough-diagonal"
+style="color:#A0A0A0"><strong>A</strong></span>
+</td>
+</tr>
+<tr>
+<td style="border-bottom: none;">
+</td>
+<td style="border-bottom: none;">
+</td>
+<td style="border-bottom: none;">
+</td>
+<td style="border-bottom: none;">
+<span style="color:#347e00"><strong>V</strong></span>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</section>
+<section id="ejemplo-8" class="slide level2"
+data-transition="none-in none-out">
+<h2 data-transition="none-in none-out">Ejemplo</h2>
+<div class="columns">
+<div class="column">
+<p style="text-align: center;">
+<img data-src="Tema7/GrafoIncr8.svg" />
+</p>
+</div><div class="column">
+<table>
+<tr>
+<th>
+0
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+<th>
+3
+</th>
+<th>
+4
+</th>
+</tr>
+<tr>
+<td style="border-bottom: none;">
+<span style="color:#930202"><strong>R</strong></span>
+</td>
+<td style="border-bottom: none;">
+<span class="strikethrough-diagonal"
+style="color:#A0A0A0"><strong>R</strong></span>
+</td>
+<td style="border-bottom: none;">
+<span style="color:#930202"><strong>R</strong></span>
+</td>
+<td style="border-bottom: none;">
+<span class="strikethrough-diagonal"
+style="color:#A0A0A0"><strong>R</strong></span>
+</td>
+<td style="border-bottom: none;">
+<span style="color:#930202"><strong>R</strong></span>
+</td>
+</tr>
+<tr>
+<td style="border-bottom: none;">
+</td>
+<td style="border-bottom: none;">
+<span style="color:#0059a1"><strong>A</strong></span>
+</td>
+<td style="border-bottom: none;">
+</td>
+<td style="border-bottom: none;">
+<span class="strikethrough-diagonal"
+style="color:#A0A0A0"><strong>A</strong></span>
+</td>
+</tr>
+<tr>
+<td style="border-bottom: none;">
+</td>
+<td style="border-bottom: none;">
+</td>
+<td style="border-bottom: none;">
+</td>
+<td style="border-bottom: none;">
+<span style="color:#347e00"><strong>V</strong></span>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</section>
+<section id="ejemplo-9" class="slide level2"
+data-transition="none-in none-out">
+<h2 data-transition="none-in none-out">Ejemplo</h2>
+<div class="columns">
+<div class="column">
+<p style="text-align: center;">
+<img data-src="Tema7/GrafoIncr9.svg" />
+</p>
+</div><div class="column">
+<table>
+<tr>
+<th>
+0
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+<th>
+3
+</th>
+<th>
+4
+</th>
+</tr>
+<tr>
+<td style="border-bottom: none;">
+<span style="color:#930202"><strong>R</strong></span>
+</td>
+<td style="border-bottom: none;">
+<span class="strikethrough-diagonal"
+style="color:#A0A0A0"><strong>R</strong></span>
+</td>
+<td style="border-bottom: none;">
+<span style="color:#930202"><strong>R</strong></span>
+</td>
+<td style="border-bottom: none;">
+<span class="strikethrough-diagonal"
+style="color:#A0A0A0"><strong>R</strong></span>
+</td>
+<td style="border-bottom: none;">
+<span class="strikethrough-diagonal"
+style="color:#A0A0A0"><strong>R</strong></span>
+</td>
+</tr>
+<tr>
+<td style="border-bottom: none;">
+</td>
+<td style="border-bottom: none;">
+<span style="color:#0059a1"><strong>A</strong></span>
+</td>
+<td style="border-bottom: none;">
+</td>
+<td style="border-bottom: none;">
+<span class="strikethrough-diagonal"
+style="color:#A0A0A0"><strong>A</strong></span>
+</td>
+<td style="border-bottom: none;">
+<span style="color:#0059a1"><strong>A</strong></span>
+</td>
+</tr>
+<tr>
+<td style="border-bottom: none;">
+</td>
+<td style="border-bottom: none;">
+</td>
+<td style="border-bottom: none;">
+</td>
+<td style="border-bottom: none;">
+<span style="color:#347e00"><strong>V</strong></span>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</section>
+<section id="ejemplo-10" class="slide level2"
+data-transition="none-in none-out">
+<h2 data-transition="none-in none-out">Ejemplo</h2>
+<div class="columns">
+<div class="column">
+<p style="text-align: center;">
+<img data-src="Tema7/GrafoIncrA.svg" />
+</p>
+</div><div class="column">
+<table>
+<tr>
+<th>
+0
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+<th>
+3
+</th>
+<th>
+4
+</th>
+</tr>
+<tr>
+<td style="border-bottom: none;">
+<span style="color:#930202"><strong>R</strong></span>
+</td>
+<td style="border-bottom: none;">
+<span class="strikethrough-diagonal"
+style="color:#A0A0A0"><strong>R</strong></span>
+</td>
+<td style="border-bottom: none;">
+<span style="color:#930202"><strong>R</strong></span>
+</td>
+<td style="border-bottom: none;">
+<span class="strikethrough-diagonal"
+style="color:#A0A0A0"><strong>R</strong></span>
+</td>
+<td style="border-bottom: none;">
+<span class="strikethrough-diagonal"
+style="color:#A0A0A0"><strong>R</strong></span>
+</td>
+</tr>
+<tr>
+<td style="border-bottom: none;">
+</td>
+<td style="border-bottom: none;">
+<span style="color:#0059a1"><strong>A</strong></span>
+</td>
+<td style="border-bottom: none;">
+</td>
+<td style="border-bottom: none;">
+<span class="strikethrough-diagonal"
+style="color:#A0A0A0"><strong>A</strong></span>
+</td>
+<td style="border-bottom: none;">
+<span class="strikethrough-diagonal"
+style="color:#A0A0A0"><strong>A</strong></span>
+</td>
+</tr>
+<tr>
+<td style="border-bottom: none;">
+</td>
+<td style="border-bottom: none;">
+</td>
+<td style="border-bottom: none;">
+</td>
+<td style="border-bottom: none;">
+<span style="color:#347e00"><strong>V</strong></span>
+</td>
+<td style="border-bottom: none;">
+<span style="color:#347e00"><strong>V</strong></span>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</section>
+<section id="ejemplo-11" class="slide level2"
+data-transition="none-in none-out">
+<h2 data-transition="none-in none-out">Ejemplo</h2>
+<div class="columns">
+<div class="column">
+<p style="text-align: center;">
+<img data-src="Tema7/GrafoIncr7.svg" />
+</p>
+</div><div class="column">
+<table>
+<tr>
+<th>
+0
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+<th>
+3
+</th>
+<th>
+4
+</th>
+</tr>
+<tr>
+<td style="border-bottom: none;">
+<span style="color:#930202"><strong>R</strong></span>
+</td>
+<td style="border-bottom: none;">
+<span class="strikethrough-diagonal"
+style="color:#A0A0A0"><strong>R</strong></span>
+</td>
+<td style="border-bottom: none;">
+<span style="color:#930202"><strong>R</strong></span>
+</td>
+<td style="border-bottom: none;">
+<span class="strikethrough-diagonal"
+style="color:#A0A0A0"><strong>R</strong></span>
+</td>
+<td style="border-bottom: none;">
+<span class="strikethrough-diagonal"
+style="color:#A0A0A0"><strong>R</strong></span>
+</td>
+</tr>
+<tr>
+<td style="border-bottom: none;">
+</td>
+<td style="border-bottom: none;">
+<span style="color:#0059a1"><strong>A</strong></span>
+</td>
+<td style="border-bottom: none;">
+</td>
+<td style="border-bottom: none;">
+<span class="strikethrough-diagonal"
+style="color:#A0A0A0"><strong>A</strong></span>
+</td>
+<td style="border-bottom: none;">
+<span class="strikethrough-diagonal"
+style="color:#A0A0A0"><strong>A</strong></span>
+</td>
+</tr>
+<tr>
+<td style="border-bottom: none;">
+</td>
+<td style="border-bottom: none;">
+</td>
+<td style="border-bottom: none;">
+</td>
+<td style="border-bottom: none;">
+<span style="color:#347e00"><strong>V</strong></span>
+</td>
+<td style="border-bottom: none;">
+<span class="strikethrough-diagonal"
+style="color:#A0A0A0"><strong>V</strong></span>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</section>
+<section id="ejemplo-12" class="slide level2"
+data-transition="none-in none-out">
+<h2 data-transition="none-in none-out">Ejemplo</h2>
+<div class="columns">
+<div class="column">
+<p style="text-align: center;">
+<img data-src="Tema7/GrafoIncr7.svg" />
+</p>
+</div><div class="column">
+<table>
+<tr>
+<th>
+0
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+<th>
+3
+</th>
+<th>
+4
+</th>
+</tr>
+<tr>
+<td style="border-bottom: none;">
+<span style="color:#930202"><strong>R</strong></span>
+</td>
+<td style="border-bottom: none;">
+<span class="strikethrough-diagonal"
+style="color:#A0A0A0"><strong>R</strong></span>
+</td>
+<td style="border-bottom: none;">
+<span style="color:#930202"><strong>R</strong></span>
+</td>
+<td style="border-bottom: none;">
+<span class="strikethrough-diagonal"
+style="color:#A0A0A0"><strong>R</strong></span>
+</td>
+<td style="border-bottom: none;">
+<span style="color:#FFFFFF"><strong>R</strong></span>
+</td>
+</tr>
+<tr>
+<td style="border-bottom: none;">
+</td>
+<td style="border-bottom: none;">
+<span style="color:#0059a1"><strong>A</strong></span>
+</td>
+<td style="border-bottom: none;">
+</td>
+<td style="border-bottom: none;">
+<span class="strikethrough-diagonal"
+style="color:#A0A0A0"><strong>A</strong></span>
+</td>
+</tr>
+<tr>
+<td style="border-bottom: none;">
+</td>
+<td style="border-bottom: none;">
+</td>
+<td style="border-bottom: none;">
+</td>
+<td style="border-bottom: none;">
+<span style="color:#347e00"><strong>V</strong></span>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</section>
+<section id="ejemplo-13" class="slide level2"
+data-transition="none-in none-out">
+<h2 data-transition="none-in none-out">Ejemplo</h2>
+<div class="columns">
+<div class="column">
+<p style="text-align: center;">
+<img data-src="Tema7/GrafoIncr4.svg" />
+</p>
+</div><div class="column">
+<table>
+<tr>
+<th>
+0
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+<th>
+3
+</th>
+<th>
+4
+</th>
+</tr>
+<tr>
+<td style="border-bottom: none;">
+<span style="color:#930202"><strong>R</strong></span>
+</td>
+<td style="border-bottom: none;">
+<span class="strikethrough-diagonal"
+style="color:#A0A0A0"><strong>R</strong></span>
+</td>
+<td style="border-bottom: none;">
+<span style="color:#930202"><strong>R</strong></span>
+</td>
+<td style="border-bottom: none;">
+<span class="strikethrough-diagonal"
+style="color:#A0A0A0"><strong>R</strong></span>
+</td>
+<td style="border-bottom: none;">
+<span style="color:#FFFFFF"><strong>R</strong></span>
+</td>
+</tr>
+<tr>
+<td style="border-bottom: none;">
+</td>
+<td style="border-bottom: none;">
+<span style="color:#0059a1"><strong>A</strong></span>
+</td>
+<td style="border-bottom: none;">
+</td>
+<td style="border-bottom: none;">
+<span class="strikethrough-diagonal"
+style="color:#A0A0A0"><strong>A</strong></span>
+</td>
+</tr>
+<tr>
+<td style="border-bottom: none;">
+</td>
+<td style="border-bottom: none;">
+</td>
+<td style="border-bottom: none;">
+</td>
+<td style="border-bottom: none;">
+<span class="strikethrough-diagonal"
+style="color:#A0A0A0"><strong>V</strong></span>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</section>
+<section id="ejemplo-14" class="slide level2"
+data-transition="none-in none-out">
+<h2 data-transition="none-in none-out">Ejemplo</h2>
+<div class="columns">
+<div class="column">
+<p style="text-align: center;">
+<img data-src="Tema7/GrafoIncr4.svg" />
+</p>
+</div><div class="column">
+<table>
+<tr>
+<th>
+0
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+<th>
+3
+</th>
+<th>
+4
+</th>
+</tr>
+<tr>
+<td style="border-bottom: none;">
+<span style="color:#930202"><strong>R</strong></span>
+</td>
+<td style="border-bottom: none;">
+<span class="strikethrough-diagonal"
+style="color:#A0A0A0"><strong>R</strong></span>
+</td>
+<td style="border-bottom: none;">
+<span style="color:#930202"><strong>R</strong></span>
+</td>
+<td style="border-bottom: none;">
+<span style="color:#FFFFFF"><strong>R</strong></span>
+</td>
+<td style="border-bottom: none;">
+<span style="color:#FFFFFF"><strong>R</strong></span>
+</td>
+</tr>
+<tr>
+<td style="border-bottom: none;">
+</td>
+<td style="border-bottom: none;">
+<span style="color:#0059a1"><strong>A</strong></span>
+</td>
+<td style="border-bottom: none;">
+</td>
+</tr>
+<tr>
+<td style="border-bottom: none;">
+</td>
+<td style="border-bottom: none;">
+</td>
+<td style="border-bottom: none;">
+</td>
+</tr>
+</table>
+</div>
+</div>
+</section>
+<section id="ejemplo-15" class="slide level2"
+data-transition="none-in none-out">
+<h2 data-transition="none-in none-out">Ejemplo</h2>
+<div class="columns">
+<div class="column">
+<p style="text-align: center;">
+<img data-src="Tema7/GrafoIncr3.svg" />
+</p>
+</div><div class="column">
+<table>
+<tr>
+<th>
+0
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+<th>
+3
+</th>
+<th>
+4
+</th>
+</tr>
+<tr>
+<td style="border-bottom: none;">
+<span style="color:#930202"><strong>R</strong></span>
+</td>
+<td style="border-bottom: none;">
+<span class="strikethrough-diagonal"
+style="color:#A0A0A0"><strong>R</strong></span>
+</td>
+<td style="border-bottom: none;">
+<span class="strikethrough-diagonal"
+style="color:#A0A0A0"><strong>R</strong></span>
+</td>
+<td style="border-bottom: none;">
+<span style="color:#FFFFFF"><strong>R</strong></span>
+</td>
+<td style="border-bottom: none;">
+<span style="color:#FFFFFF"><strong>R</strong></span>
+</td>
+</tr>
+<tr>
+<td style="border-bottom: none;">
+</td>
+<td style="border-bottom: none;">
+<span style="color:#0059a1"><strong>A</strong></span>
+</td>
+<td style="border-bottom: none;">
+</td>
+</tr>
+<tr>
+<td style="border-bottom: none;">
+</td>
+<td style="border-bottom: none;">
+</td>
+<td style="border-bottom: none;">
+</td>
+</tr>
+</table>
+</div>
+</div>
+</section>
+<section id="ejemplo-16" class="slide level2"
+data-transition="none-in none-out">
+<h2 data-transition="none-in none-out">Ejemplo</h2>
+<div class="columns">
+<div class="column">
+<p style="text-align: center;">
+<img data-src="Tema7/GrafoIncrB.svg" />
+</p>
+</div><div class="column">
+<table>
+<tr>
+<th>
+0
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+<th>
+3
+</th>
+<th>
+4
+</th>
+</tr>
+<tr>
+<td style="border-bottom: none;">
+<span style="color:#930202"><strong>R</strong></span>
+</td>
+<td style="border-bottom: none;">
+<span class="strikethrough-diagonal"
+style="color:#A0A0A0"><strong>R</strong></span>
+</td>
+<td style="border-bottom: none;">
+<span class="strikethrough-diagonal"
+style="color:#A0A0A0"><strong>R</strong></span>
+</td>
+<td style="border-bottom: none;">
+<span style="color:#FFFFFF"><strong>R</strong></span>
+</td>
+<td style="border-bottom: none;">
+<span style="color:#FFFFFF"><strong>R</strong></span>
+</td>
+</tr>
+<tr>
+<td style="border-bottom: none;">
+</td>
+<td style="border-bottom: none;">
+<span style="color:#0059a1"><strong>A</strong></span>
+</td>
+<td style="border-bottom: none;">
+<span style="color:#0059a1"><strong>A</strong></span>
+</td>
+</tr>
+<tr>
+<td style="border-bottom: none;">
+</td>
+<td style="border-bottom: none;">
+</td>
+<td style="border-bottom: none;">
+</td>
+</tr>
+</table>
+</div>
+</div>
+</section>
+<section id="ejemplo-17" class="slide level2"
+data-transition="none-in none-out">
+<h2 data-transition="none-in none-out">Ejemplo</h2>
+<div class="columns">
+<div class="column">
+<p style="text-align: center;">
+<img data-src="Tema7/GrafoIncrC.svg" />
+</p>
+</div><div class="column">
+<table>
+<tr>
+<th>
+0
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+<th>
+3
+</th>
+<th>
+4
+</th>
+</tr>
+<tr>
+<td style="border-bottom: none;">
+<span style="color:#930202"><strong>R</strong></span>
+</td>
+<td style="border-bottom: none;">
+<span class="strikethrough-diagonal"
+style="color:#A0A0A0"><strong>R</strong></span>
+</td>
+<td style="border-bottom: none;">
+<span class="strikethrough-diagonal"
+style="color:#A0A0A0"><strong>R</strong></span>
+</td>
+<td style="border-bottom: none;">
+<span style="color:#FFFFFF"><strong>R</strong></span>
+</td>
+<td style="border-bottom: none;">
+<span style="color:#FFFFFF"><strong>R</strong></span>
+</td>
+</tr>
+<tr>
+<td style="border-bottom: none;">
+</td>
+<td style="border-bottom: none;">
+<span style="color:#0059a1"><strong>A</strong></span>
+</td>
+<td style="border-bottom: none;">
+<span class="strikethrough-diagonal"
+style="color:#A0A0A0"><strong>A</strong></span>
+</td>
+</tr>
+<tr>
+<td style="border-bottom: none;">
+</td>
+<td style="border-bottom: none;">
+</td>
+<td style="border-bottom: none;">
+<span style="color:#347e00"><strong>V</strong></span>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</section>
+<section id="ejemplo-18" class="slide level2"
+data-transition="none-in none-out">
+<h2 data-transition="none-in none-out">Ejemplo</h2>
+<div class="columns">
+<div class="column">
+<p style="text-align: center;">
+<img data-src="Tema7/GrafoIncrD.svg" />
+</p>
+</div><div class="column">
+<table>
+<tr>
+<th>
+0
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+<th>
+3
+</th>
+<th>
+4
+</th>
+</tr>
+<tr>
+<td style="border-bottom: none;">
+<span style="color:#930202"><strong>R</strong></span>
+</td>
+<td style="border-bottom: none;">
+<span class="strikethrough-diagonal"
+style="color:#A0A0A0"><strong>R</strong></span>
+</td>
+<td style="border-bottom: none;">
+<span class="strikethrough-diagonal"
+style="color:#A0A0A0"><strong>R</strong></span>
+</td>
+<td style="border-bottom: none;">
+<span style="color:#930202"><strong>R</strong></span>
+</td>
+<td style="border-bottom: none;">
+<span style="color:#FFFFFF"><strong>R</strong></span>
+</td>
+</tr>
+<tr>
+<td style="border-bottom: none;">
+</td>
+<td style="border-bottom: none;">
+<span style="color:#0059a1"><strong>A</strong></span>
+</td>
+<td style="border-bottom: none;">
+<span class="strikethrough-diagonal"
+style="color:#A0A0A0"><strong>A</strong></span>
+</td>
+</tr>
+<tr>
+<td style="border-bottom: none;">
+</td>
+<td style="border-bottom: none;">
+</td>
+<td style="border-bottom: none;">
+<span style="color:#347e00"><strong>V</strong></span>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</section>
+<section id="ejemplo-19" class="slide level2"
+data-transition="none-in none-out">
+<h2 data-transition="none-in none-out">Ejemplo</h2>
+<div class="columns">
+<div class="column">
+<p style="text-align: center;">
+<img data-src="Tema7/GrafoIncrE.svg" />
+</p>
+</div><div class="column">
+<table>
+<tr>
+<th>
+0
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+<th>
+3
+</th>
+<th>
+4
+</th>
+</tr>
+<tr>
+<td style="border-bottom: none;">
+<span style="color:#930202"><strong>R</strong></span>
+</td>
+<td style="border-bottom: none;">
+<span class="strikethrough-diagonal"
+style="color:#A0A0A0"><strong>R</strong></span>
+</td>
+<td style="border-bottom: none;">
+<span class="strikethrough-diagonal"
+style="color:#A0A0A0"><strong>R</strong></span>
+</td>
+<td style="border-bottom: none;">
+<span style="color:#930202"><strong>R</strong></span>
+</td>
+<td style="border-bottom: none;">
+<span style="color:#930202"><strong>R</strong></span>
+</td>
+</tr>
+<tr>
+<td style="border-bottom: none;">
+</td>
+<td style="border-bottom: none;">
+<span style="color:#0059a1"><strong>A</strong></span>
+</td>
+<td style="border-bottom: none;">
+<span class="strikethrough-diagonal"
+style="color:#A0A0A0"><strong>A</strong></span>
+</td>
+</tr>
+<tr>
+<td style="border-bottom: none;">
+</td>
+<td style="border-bottom: none;">
+</td>
+<td style="border-bottom: none;">
+<span style="color:#347e00"><strong>V</strong></span>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</section>
+<section id="ejemplo-20" class="slide level2"
+data-transition="none-in none-out">
+<h2 data-transition="none-in none-out">Ejemplo</h2>
+<div class="columns">
+<div class="column">
+<p style="text-align: center;">
+<img data-src="Tema7/GrafoIncrF.svg" />
+</p>
+</div><div class="column">
+<table>
+<tr>
+<th>
+0
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+<th>
+3
+</th>
+<th>
+4
+</th>
+</tr>
+<tr>
+<td style="border-bottom: none;">
+<span style="color:#930202"><strong>R</strong></span>
+</td>
+<td style="border-bottom: none;">
+<span class="strikethrough-diagonal"
+style="color:#A0A0A0"><strong>R</strong></span>
+</td>
+<td style="border-bottom: none;">
+<span class="strikethrough-diagonal"
+style="color:#A0A0A0"><strong>R</strong></span>
+</td>
+<td style="border-bottom: none;">
+<span style="color:#930202"><strong>R</strong></span>
+</td>
+<td style="border-bottom: none;">
+<span class="strikethrough-diagonal"
+style="color:#A0A0A0"><strong>R</strong></span>
+</td>
+</tr>
+<tr>
+<td style="border-bottom: none;">
+</td>
+<td style="border-bottom: none;">
+<span style="color:#0059a1"><strong>A</strong></span>
+</td>
+<td style="border-bottom: none;">
+<span class="strikethrough-diagonal"
+style="color:#A0A0A0"><strong>A</strong></span>
+</td>
+<td style="border-bottom: none;">
+</td>
+<td style="border-bottom: none;">
+<span style="color:#0059a1"><strong>A</strong></span>
+</td>
+</tr>
+<tr>
+<td style="border-bottom: none;">
+</td>
+<td style="border-bottom: none;">
+</td>
+<td style="border-bottom: none;">
+<span style="color:#347e00"><strong>V</strong></span>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</section>
+<section id="ejemplo-21" class="slide level2"
+data-transition="none-in none-out">
+<h2 data-transition="none-in none-out">Ejemplo</h2>
+<div class="columns">
+<div class="column">
+<p style="text-align: center;">
+<img data-src="Tema7/GrafoIncrG.svg" />
+</p>
+</div><div class="column">
+<table>
+<tr>
+<th>
+0
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+<th>
+3
+</th>
+<th>
+4
+</th>
+</tr>
+<tr>
+<td style="border-bottom: none;">
+<span style="color:#930202"><strong>R</strong></span>
+</td>
+<td style="border-bottom: none;">
+<span class="strikethrough-diagonal"
+style="color:#A0A0A0"><strong>R</strong></span>
+</td>
+<td style="border-bottom: none;">
+<span class="strikethrough-diagonal"
+style="color:#A0A0A0"><strong>R</strong></span>
+</td>
+<td style="border-bottom: none;">
+<span style="color:#930202"><strong>R</strong></span>
+</td>
+<td style="border-bottom: none;">
+<span class="strikethrough-diagonal"
+style="color:#A0A0A0"><strong>R</strong></span>
+</td>
+</tr>
+<tr>
+<td style="border-bottom: none;">
+</td>
+<td style="border-bottom: none;">
+<span style="color:#0059a1"><strong>A</strong></span>
+</td>
+<td style="border-bottom: none;">
+<span class="strikethrough-diagonal"
+style="color:#A0A0A0"><strong>A</strong></span>
+</td>
+<td style="border-bottom: none;">
+</td>
+<td style="border-bottom: none;">
+<span class="strikethrough-diagonal"
+style="color:#A0A0A0"><strong>A</strong></span>
+</td>
+</tr>
+<tr>
+<td style="border-bottom: none;">
+</td>
+<td style="border-bottom: none;">
+</td>
+<td style="border-bottom: none;">
+<span style="color:#347e00"><strong>V</strong></span>
+</td>
+<td style="border-bottom: none;">
+</td>
+<td style="border-bottom: none;">
+<span style="color:#347e00"><strong>V</strong></span>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<p class="fragment" style="text-align:center">
+Solución: <strong>[<span
+style="color:#930202"><strong>R</strong></span>, <span
+style="color:#0059a1"><strong>A</strong></span>, <span
+style="color:#347e00"><strong>V</strong></span>, <span
+style="color:#930202"><strong>R</strong></span>, <span
+style="color:#347e00"><strong>V</strong></span>]</strong>
+</p>
+</section></section>
+<section>
+<section id="espacios-de-soluciones-y-árbol-de-exploración"
+class="title-slide slide level1 center"
+data-background-image="img/OrangeBackground.jpg">
+<h1 class="center"
+data-background-image="img/OrangeBackground.jpg"><span
+class="sc_number">7.3</span>Espacios de soluciones y árbol de
+exploración</h1>
+
+</section>
+<section id="construcción-incremental-de-soluciones-1"
+class="slide level2">
+<h2>Construcción incremental de soluciones</h2>
+<ul>
+<li><p>Consideramos algoritmos en los que la solución se construye por
+etapas.</p></li>
+<li><p>Una <strong>solución</strong> es un array <span
+class="math inline">\(X[0..n)\)</span>, donde cada <span
+class="math inline">\(X[i]\)</span> pertenece a un conjunto finito <span
+class="math inline">\(S_i\)</span>.</p></li>
+</ul>
+<div class="fragment">
+<p>Tenemos dos tipos de restricciones:</p>
+<ul>
+<li class="fragment"><p><strong>Restricciones explícitas</strong>, que
+ha de cumplir cada componente de manera individual: <span
+class="math inline">\(X[i] \in S_i\)</span> para cada <span
+class="math inline">\(i\)</span>.</p>
+<ul>
+<li class="fragment">Por ejemplo, en el coloreado de grafos: <span
+class="math inline">\(S_i = \{\)</span><span
+style="color:#930202"><strong>R</strong></span>, <span
+style="color:#0059a1"><strong>A</strong></span>, <span
+style="color:#347e00"><strong>V</strong></span><span
+class="math inline">\(\}\)</span> para todo <span
+class="math inline">\(i\)</span>.</li>
+</ul></li>
+<li class="fragment"><p><strong>Restricciones implícitas</strong>, que
+involucran a varias componentes.</p>
+<ul>
+<li class="fragment">Por ejemplo, en el coloreado de grafos: <span
+class="math inline">\(X[i]\)</span> y <span
+class="math inline">\(X[j]\)</span> no pueden tener el mismo color si
+<span class="math inline">\(i\)</span> y <span
+class="math inline">\(j\)</span> son vértices adyacentes.</li>
+</ul></li>
+</ul>
+</div>
+</section>
+<section id="espacio-de-soluciones" class="slide level2">
+<h2>Espacio de soluciones</h2>
+<ul>
+<li class="fragment"><p>Suponemos que las soluciones de un problema son
+arrays de tamaño <span class="math inline">\(n\)</span>.</p></li>
+<li class="fragment"><p>Una <strong>solución parcial</strong> es un
+array <span class="math inline">\(X[0..k)\)</span>, donde <span
+class="math inline">\(k \leq n\)</span>.</p></li>
+<li class="fragment"><p>El <strong>espacio de soluciones</strong> está
+formado por todas las soluciones parciales que satisfacen las
+restricciones explícitas.</p>
+<p>En el coloreado de grafos: <strong>[<span
+style="color:#930202"><strong>R</strong></span>, <span
+style="color:#0059a1"><strong>A</strong></span>, <span
+style="color:#347e00"><strong>V</strong></span>, <span
+style="color:#930202"><strong>R</strong></span>, <span
+style="color:#347e00"><strong>V</strong></span>]</strong>,
+<strong>[<span
+style="color:#930202"><strong>R</strong></span>]</strong>,
+<strong>[ ]</strong>, <strong>[<span
+style="color:#347e00"><strong>V</strong></span>, <span
+style="color:#347e00"><strong>V</strong></span>, <span
+style="color:#347e00"><strong>V</strong></span>]</strong></p></li>
+<li class="fragment"><p>El espacio de soluciones puede estructurarse
+mediante un <strong>árbol de exploración</strong>.</p></li>
+</ul>
+</section>
+<section id="árbol-de-exploración" class="slide level2">
+<h2>Árbol de exploración</h2>
+<p style="text-align:center">
+<img data-src="Tema7/EspacioSoluciones.svg" style="width:80.0%" />
+</p>
+</section>
+<section id="test-de-factibilidad-o-función-de-poda"
+class="slide level2" data-transition="slide-in none-out">
+<h2 data-transition="slide-in none-out">Test de factibilidad (o
+<em>función de poda</em>)</h2>
+<p>Determina si una solución parcial puede conducir a una solución
+satisfactoria.</p>
+<p style="text-align:center">
+<img data-src="Tema7/EspacioSoluciones.svg" style="width:80.0%" />
+</p>
+</section>
+<section id="test-de-factibilidad-o-función-de-poda-1"
+class="slide level2" data-transition="none-in slide-out">
+<h2 data-transition="none-in slide-out">Test de factibilidad (o
+<em>función de poda</em>)</h2>
+<p>Determina si una solución parcial puede conducir a una solución
+satisfactoria.</p>
+<p style="text-align:center">
+<img data-src="Tema7/Poda.svg" style="width:80.0%" />
+</p>
+</section>
+<section id="cómo-recorrer-el-árbol-de-exploración"
+class="slide level2">
+<h2>Cómo recorrer el árbol de exploración</h2>
+<div class="fragment">
+<dl>
+<dt>Vuelta atrás (<em>backtracking</em>)</dt>
+<dd>
+<p>Se recorre el árbol de manera ordenada mediante una función recursiva
+(<em>recorrido en profundidad</em>). No se recorre un hijo mientras no
+se hayan recorrido sus hermanos anteriores.</p>
+</dd>
+</dl>
+</div>
+<div class="fragment">
+<dl>
+<dt>Ramificación y poda (<em>branch and bound</em>)</dt>
+<dd>
+<p>En cada momento se expande el nodo más «prometedor». Es posible
+saltar de una rama a otra. Se implementa de manera iterativa utilizando
+una cola de prioridad de nodos.</p>
+</dd>
+</dl>
+</div>
+</section></section>
+<section>
+<section id="algoritmos-de-vuelta-atrás-backtracking"
+class="title-slide slide level1 center"
+data-background-image="img/OrangeBackground.jpg">
+<h1 class="center"
+data-background-image="img/OrangeBackground.jpg"><span
+class="sc_number">7.4</span>Algoritmos de vuelta atrás
+(<em>backtracking</em>)</h1>
+
+</section>
+<section id="coloreado-de-grafos-2" class="slide level2">
+<h2>Coloreado de grafos</h2>
+<div class="columns">
+<div class="column" style="width:60%;">
+<p>Dado un grafo <code>g</code>, y un número natural
+<code>num_colores</code>, imprimir las formas posibles de colorear el
+grafo con un máximo de <code>num_colores</code> colores.</p>
+</div><div class="column" style="width:40%;">
+<p style="text-align: center; width: 450px">
+<img data-src="Tema7/GrafoColoreado.svg" />
+</p>
+</div>
+</div>
+<div class="fragment">
+<div class="cpp cpp_block">
+<p><span class="type">void</span> colorear_grafo(<span
+class="type">const</span> Grafo &amp;g, <span class="type">int</span>
+num_colores);</p>
+</div>
+</div>
+<div class="fragment">
+<p>Resultado:</p>
+<pre class="text"><code>[R, A, V, R, V]
+[R, V, A, R, A]
+[A, R, V, A, V]
+[A, V, R, A, R]
+[V, R, A, V, A]
+[V, A, R, V, R]</code></pre>
+</div>
+</section>
+<section id="representación-de-soluciones" class="slide level2">
+<h2>Representación de soluciones</h2>
+<ul>
+<li class="fragment"><p>Si el grafo <code>g</code> tiene <em>n</em>
+vértices, representamos una <strong>solución</strong> como un vector
+<code>sol</code> de <em>n</em> elementos.</p>
+<ul>
+<li class="fragment"><span class="color_tema"><code>sol[i] =</code>
+color asignado al vértice <code>i</code></span></li>
+</ul></li>
+<li class="fragment"><p>Una <strong>solución parcial</strong> se
+representa mediante un par <code>(sol, k)</code>, donde <code>sol</code>
+es un vector de <em>n</em> elementos y <code>k</code> es un número ≤
+<em>n</em>, que indica el segmento <code>sol[0..k)</code> que constituye
+la solución parcial.</p></li>
+</ul>
+</section>
+<section id="generalización-de-la-función-colorear_grafo"
+class="slide level2">
+<h2>Generalización de la función <code>colorear_grafo</code></h2>
+<ul>
+<li class="fragment"><p>Generalizamos la función
+<code>colorear_grafo</code> incluyendo la solución parcial construida
+hasta ahora:</p>
+<div class="cpp cpp_block" style="font-size:65%">
+<p><span class="type">void</span> colorear_grafo_gen(<span
+class="type">const</span> grafo &amp;g, <span class="type">int</span>
+num_colores, <span class="hl"><span class="type">int</span> k</span>,
+<span class="hl"><span class="type">vector</span>&lt;<span
+class="type">int</span>&gt; &amp;sol</span>);<br><br><span
+class="comment">// Precondiciones:  1) num_colores &gt;=
+1</span><br><span class="comment">//                  2) sol.size() ==
+num_vertices(g)</span><br><span class="comment">//                  3) 0
+&lt;= k &lt;= num_vertices(g)</span><br><span
+class="comment">//                  4) El segmento sol[0..k) es una
+solución factible</span></p>
+</div></li>
+<li class="fragment"><p>Llamada inicial:</p>
+<div class="cpp cpp_block" style="font-size:65%">
+<p><span class="type">void</span> colorear_grafo(<span
+class="type">const</span> grafo &amp;g, <span class="type">int</span>
+num_colores) {<br>  <span class="type">vector</span>&lt;<span
+class="type">int</span>&gt;
+sol(num_vertices(g));<br>  colorear_grafo_gen(g, num_colores, <span
+class="hl"><span class="number">0</span></span>, <span
+class="hl">sol</span>);<br>}</p>
+</div>
+<p>Cumple la precondición, porque <code>sol[0..0)</code> es una solución
+factible.</p></li>
+</ul>
+</section>
+<section id="caso-base-colorear_grafo_gen" class="slide level2">
+<h2>Caso base: <code>colorear_grafo_gen</code></h2>
+<ul>
+<li><p>Cuando <code>k == n</code>, la solución construida
+<code>sol[0..k)</code> ya está completa.</p></li>
+<li><p>Todos los vértices del grafo tienen asignado un color, y además
+la asignación cumple las restricciones del problema.</p></li>
+</ul>
+<div class="cpp cpp_block">
+<p><span class="type">void</span> colorear_grafo_gen(<span
+class="type">const</span> grafo &amp;g, <span class="type">int</span>
+num_colores, <span class="type">int</span> k, <span
+class="type">vector</span>&lt;<span class="type">int</span>&gt;
+&amp;sol) {<br>  <strong>if</strong> (k == sol.size())
+{<br>    imprimir_solucion(sol);<br>  } <strong>else</strong>
+{<br>    <span class="comment">// ... caso recursivo
+...</span><br>  }<br>}</p>
+</div>
+</section>
+<section id="caso-recursivo-colorear_grafo_gen" class="slide level2">
+<h2>Caso recursivo: <code>colorear_grafo_gen</code></h2>
+<ul>
+<li><p>Cuando <code>k &lt; n</code>, tenemos una solución parcial
+<code>sol[0..k)</code> que hemos de extender con un color más.</p></li>
+<li><p>Para cada color <code>i</code> comprobamos si es posible asignar
+el color <code>i</code> al vértice <code>k</code></p></li>
+<li><p>Si es posible, extendemos la solución y exploramos el árbol
+correspondiente.</p></li>
+</ul>
+<div class="cpp cpp_block" style="font-size:65%">
+<p><span class="type">void</span> colorear_grafo_gen(<span
+class="type">const</span> grafo &amp;g, <span class="type">int</span>
+num_colores, <span class="type">int</span> k, <span
+class="type">vector</span>&lt;<span class="type">int</span>&gt;
+&amp;sol) {<br>  <strong>if</strong> (k == sol.size())
+{<br>    imprimir_solucion(sol);<br>  } <strong>else</strong>
+{<br>    <strong>for</strong> (<span class="type">int</span> i = <span
+class="number">0</span>; i &lt; num_colores; i++)
+{<br>      <strong>if</strong> (es_factible(g, sol, k, i)) {  <span
+class="comment">// ¿Se puede asignar el color i al vértice
+k?</span><br>        <span class="comment">// Asignamos color i-ésimo al
+vértice k-ésimo.</span><br>        <span class="hl">sol[k] =
+i;</span><br>        <span class="comment">// Extendemos la solución
+resultante sol[0..k+1) mediante una llamada
+recursiva</span><br>        colorear_grafo_gen(g, num_colores, <span
+class="hl">k + <span class="number">1</span></span>,
+sol);<br>      }<br>    }<br>  }<br>}</p>
+</div>
+</section>
+<section id="test-de-factibilidad" class="slide level2">
+<h2>Test de factibilidad</h2>
+<ul>
+<li>Dado un grafo y una solución parcial <code>sol[0..k)</code>, ¿es
+posible extenderla asignando el color <code>i</code> al vértice
+<code>k</code>?</li>
+</ul>
+<div class="cpp cpp_block">
+<p><span class="type">bool</span> es_factible(<span
+class="type">const</span> grafo &amp;g, <span
+class="type">vector</span>&lt;<span class="type">int</span>&gt;
+&amp;sol, <span class="type">int</span> k, <span class="type">int</span>
+i) {<br>  <span class="type">bool</span> factible = <span
+class="type">true</span>;<br>  <span class="comment">// Recorremos las
+aristas adyacentes</span><br>  <span class="type">const</span> <span
+class="type">vector</span>&lt;arista&gt; &amp;as = aristas(g,
+k);<br>  <span class="type">int</span> j = <span
+class="number">0</span>;<br>  <strong>while</strong> (j &lt; as.size()
+&amp;&amp; factible) {<br>    <span class="type">int</span> v =
+as[j].destino;<br>    <span class="comment">// Si el vértice v
+(adyacente a k) forma parte de la solución parcial (es decir,
+ya</span><br>    <span class="comment">// tiene asignado un color), y
+además coincide con el color i, entonces no podemos</span><br>    <span
+class="comment">// asignar el color i al vértice
+k.</span><br>    <strong>if</strong> (v &lt; k &amp;&amp; sol[v] == i) {
+factible = <span class="type">false</span>;
+}<br>    j++;<br>  }<br>  <strong>return</strong> factible;<br>}</p>
+</div>
+</section>
+<section id="coste" class="slide level2">
+<h2>Coste</h2>
+<ul>
+<li><p>Supongamos que el grafo tiene <span
+class="math inline">\(V\)</span> vértices y queremos colorearlo con
+<span class="math inline">\(N\)</span> colores.</p></li>
+<li><p>¿Cuál es el tamaño del árbol de exploración?</p></li>
+</ul>
+<div class="fragment">
+<p><span class="math display">\[
+\mathcal{O}(N^V)
+\]</span></p>
+</div>
+</section>
+<section id="esquema-general-de-algoritmos-vuelta-atrás"
+class="slide level2 subsection center">
+<h2 class="subsection center">Esquema general de algoritmos vuelta
+atrás</h2>
+</section>
+<section id="esquema-general" class="slide level2">
+<h2>Esquema general</h2>
+<div class="pseudo">
+<p><strong>method</strong> vueltaAtras(entrada<span
+class="colon">:</span> T, k<span class="colon">:</span> <span
+class="type">int</span>, <strong>inout</strong> sol[0..n)<span
+class="colon">:</span> <span
+class="type">array&lt;S&gt;</span>)<br>  <strong>requires</strong> n
+&gt;= 0 <span class="math inline">\({\wedge}\)</span> 0 &lt;= k &lt;= n
+<span class="math inline">\({\wedge}\)</span>
+factible(sol[0..k))<br>{<br>  <strong>if</strong> (k == n)
+{<br>    tratar_solucion(sol);<br>  } <strong>else</strong>
+{<br>    <strong>for each</strong> i <span
+class="math inline">\(\in\)</span> S {<br>      <strong>if</strong>
+factible(sol[0..k) ++ [i]) {<br>        sol[k] :=
+i;<br>        vueltaAtras(entrada, k + 1,
+sol);<br>      }<br>    }<br>  }<br>}</p>
+</div>
+</section>
+<section id="obtener-una-única-solución"
+class="slide level2 subsection center">
+<h2 class="subsection center">Obtener una única solución</h2>
+</section>
+<section id="coloreado-de-grafos-3" class="slide level2">
+<h2>Coloreado de grafos</h2>
+<ul>
+<li><p>El algoritmo de vuelta atrás utilizado hasta ahora imprime todas
+las soluciones.</p></li>
+<li><p>¿Y si queremos que la exploración del árbol se detenga cuando se
+ha encontrado <em>una</em> solución?</p></li>
+</ul>
+<div class="fragment">
+<ul>
+<li><p>Modificamos la signatura de la función generalizada:</p>
+<div class="cpp cpp_block">
+<p><span class="hl"><span class="type">bool</span></span>
+colorear_grafo_gen(<span class="type">const</span> grafo &amp;g, <span
+class="type">int</span> num_colores, <span class="type">int</span> k,
+<span class="type">vector</span>&lt;<span class="type">int</span>&gt;
+&amp;sol);</p>
+</div>
+<ul>
+<li>Devuelve <code>true</code> si existe una solución total factible que
+extienda a la solución parcial <code>sol[0..k)</code>.</li>
+</ul></li>
+</ul>
+</div>
+</section>
+<section id="coloreado-de-grafos-una-solución" class="slide level2">
+<h2>Coloreado de grafos: una solución</h2>
+<div class="cpp cpp_block">
+<p><span class="type">bool</span> colorear_grafo_gen(<span
+class="type">const</span> grafo &amp;g, <span class="type">int</span>
+num_colores, <span class="type">int</span> k, <span
+class="type">vector</span>&lt;<span class="type">int</span>&gt;
+&amp;sol) {<br>  <strong>if</strong> (k == sol.size())
+{<br>    <strong>return</strong> <span class="type">true</span>;<br>  }
+<strong>else</strong> {<br>    <span class="type">bool</span>
+solucion_encontrada = <span class="type">false</span>;<br>    <span
+class="type">int</span> i = <span
+class="number">0</span>;<br>    <strong>while</strong> (i &lt;
+num_colores &amp;&amp; !solucion_encontrada)
+{<br>      <strong>if</strong> (es_factible(g, sol, k, i))
+{<br>        sol[k] = i;<br>        solucion_encontrada =
+colorear_grafo_gen(g, num_colores, k + <span class="number">1</span>,
+sol);<br>      }<br>      i++;<br>    }<br>    <strong>return</strong>
+solucion_encontrada;<br>  }<br>}</p>
+</div>
+</section></section>
+<section>
+<section id="técnica-de-marcaje-el-problema-de-las-n-reinas"
+class="title-slide slide level1 center"
+data-background-image="img/OrangeBackground.jpg">
+<h1 class="center"
+data-background-image="img/OrangeBackground.jpg"><span
+class="sc_number">7.5</span>Técnica de marcaje:<br/>el problema de las
+<em>n</em> reinas</h1>
+
+</section>
+<section id="el-problema-de-las-n-reinas" class="slide level2">
+<h2>El problema de las <em>n</em> reinas</h2>
+<ul>
+<li><p>Tenemos un tablero de ajedrez de tamaño <em>n</em> ×
+<em>n</em>.</p></li>
+<li><p>Queremos colocar <em>n</em> reinas en el tablero <strong>sin que
+se ataquen entre ellas</strong>.</p>
+<ul>
+<li>Es decir, sin que haya dos reinas en la misma fila, en la misma
+columna o en la misma diagonal.</li>
+</ul></li>
+</ul>
+</section>
+<section id="representación-de-la-solución-n-8" class="slide level2"
+data-transition="slide-in none-out">
+<h2 data-transition="slide-in none-out">Representación de la solución
+(<em>n</em> = 8)</h2>
+<style>
+    .chess-board { border-spacing: 0; border-collapse: collapse; }
+    .chess-board th { padding: .5em; text-align:center; }
+    .chess-board th + th { border: none; text-align:center; }
+    .chess-board th:first-child,
+    .chess-board td:last-child { border: none }
+    .chess-board tr:last-child td { border: none }
+    .chess-board th:empty { border: none; }
+    .chess-board td { text-align: center; font-size: 35px; margin-left: 0px; width: 30px;}
+    .chess-board .light { background: #eee; }
+    .chess-board .dark { background: #bbb; }
+</style>
+<table class="chess-board">
+<tbody>
+<tr>
+<th>
+</th>
+<th>
+0
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+<th>
+3
+</th>
+<th>
+4
+</th>
+<th>
+5
+</th>
+<th>
+6
+</th>
+<th>
+7
+</th>
+</tr>
+<tr>
+<th>
+0
+</th>
+<td class="light">
+♛
+</td>
+<td class="dark">
+</td>
+<td class="light">
+</td>
+<td class="dark">
+</td>
+<td class="light">
+</td>
+<td class="dark">
+</td>
+<td class="light">
+</td>
+<td class="dark">
+</td>
+</tr>
+<tr>
+<th>
+1
+</th>
+<td class="dark">
+</td>
+<td class="light">
+</td>
+<td class="dark">
+</td>
+<td class="light">
+</td>
+<td class="dark">
+♛
+</td>
+<td class="light">
+</td>
+<td class="dark">
+</td>
+<td class="light">
+</td>
+</tr>
+<tr>
+<th>
+2
+</th>
+<td class="light">
+</td>
+<td class="dark">
+</td>
+<td class="light">
+</td>
+<td class="dark">
+</td>
+<td class="light">
+</td>
+<td class="dark">
+</td>
+<td class="light">
+</td>
+<td class="dark">
+♛
+</td>
+</tr>
+<tr>
+<th>
+3
+</th>
+<td class="dark">
+</td>
+<td class="light">
+</td>
+<td class="dark">
+</td>
+<td class="light">
+</td>
+<td class="dark">
+</td>
+<td class="light">
+♛
+</td>
+<td class="dark">
+</td>
+<td class="light">
+</td>
+</tr>
+<tr>
+<th>
+4
+</th>
+<td class="light">
+</td>
+<td class="dark">
+</td>
+<td class="light">
+♛
+</td>
+<td class="dark">
+</td>
+<td class="light">
+</td>
+<td class="dark">
+</td>
+<td class="light">
+</td>
+<td class="dark">
+</td>
+</tr>
+<tr>
+<th>
+5
+</th>
+<td class="dark">
+</td>
+<td class="light">
+</td>
+<td class="dark">
+</td>
+<td class="light">
+</td>
+<td class="dark">
+</td>
+<td class="light">
+</td>
+<td class="dark">
+♛
+</td>
+<td class="light">
+</td>
+</tr>
+<tr>
+<th>
+6
+</th>
+<td class="light">
+</td>
+<td class="dark">
+♛
+</td>
+<td class="light">
+</td>
+<td class="dark">
+</td>
+<td class="light">
+</td>
+<td class="dark">
+</td>
+<td class="light">
+</td>
+<td class="dark">
+</td>
+</tr>
+<tr>
+<th>
+7
+</th>
+<td class="dark">
+</td>
+<td class="light">
+</td>
+<td class="dark">
+</td>
+<td class="light">
+♛
+</td>
+<td class="dark">
+</td>
+<td class="light">
+</td>
+<td class="dark">
+</td>
+<td class="light">
+</td>
+</tr>
+</tbody>
+</table>
+<p style="text-align: center;" class="color_tema">
+<code>sol = [(0,0), (1,4), (2,7), (3,5), (4,2), (5,6), (6,1), (7,3)]</code>
+</p>
+</section>
+<section id="representación-simplificada-n-8" class="slide level2"
+data-transition="none-in slide-out">
+<h2 data-transition="none-in slide-out">Representación simplificada
+(<em>n</em> = 8)</h2>
+<table class="chess-board">
+<tbody>
+<tr>
+<th>
+</th>
+<th>
+0
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+<th>
+3
+</th>
+<th>
+4
+</th>
+<th>
+5
+</th>
+<th>
+6
+</th>
+<th>
+7
+</th>
+</tr>
+<tr>
+<th>
+0
+</th>
+<td class="light">
+♛
+</td>
+<td class="dark">
+</td>
+<td class="light">
+</td>
+<td class="dark">
+</td>
+<td class="light">
+</td>
+<td class="dark">
+</td>
+<td class="light">
+</td>
+<td class="dark">
+</td>
+</tr>
+<tr>
+<th>
+1
+</th>
+<td class="dark">
+</td>
+<td class="light">
+</td>
+<td class="dark">
+</td>
+<td class="light">
+</td>
+<td class="dark">
+♛
+</td>
+<td class="light">
+</td>
+<td class="dark">
+</td>
+<td class="light">
+</td>
+</tr>
+<tr>
+<th>
+2
+</th>
+<td class="light">
+</td>
+<td class="dark">
+</td>
+<td class="light">
+</td>
+<td class="dark">
+</td>
+<td class="light">
+</td>
+<td class="dark">
+</td>
+<td class="light">
+</td>
+<td class="dark">
+♛
+</td>
+</tr>
+<tr>
+<th>
+3
+</th>
+<td class="dark">
+</td>
+<td class="light">
+</td>
+<td class="dark">
+</td>
+<td class="light">
+</td>
+<td class="dark">
+</td>
+<td class="light">
+♛
+</td>
+<td class="dark">
+</td>
+<td class="light">
+</td>
+</tr>
+<tr>
+<th>
+4
+</th>
+<td class="light">
+</td>
+<td class="dark">
+</td>
+<td class="light">
+♛
+</td>
+<td class="dark">
+</td>
+<td class="light">
+</td>
+<td class="dark">
+</td>
+<td class="light">
+</td>
+<td class="dark">
+</td>
+</tr>
+<tr>
+<th>
+5
+</th>
+<td class="dark">
+</td>
+<td class="light">
+</td>
+<td class="dark">
+</td>
+<td class="light">
+</td>
+<td class="dark">
+</td>
+<td class="light">
+</td>
+<td class="dark">
+♛
+</td>
+<td class="light">
+</td>
+</tr>
+<tr>
+<th>
+6
+</th>
+<td class="light">
+</td>
+<td class="dark">
+♛
+</td>
+<td class="light">
+</td>
+<td class="dark">
+</td>
+<td class="light">
+</td>
+<td class="dark">
+</td>
+<td class="light">
+</td>
+<td class="dark">
+</td>
+</tr>
+<tr>
+<th>
+7
+</th>
+<td class="dark">
+</td>
+<td class="light">
+</td>
+<td class="dark">
+</td>
+<td class="light">
+♛
+</td>
+<td class="dark">
+</td>
+<td class="light">
+</td>
+<td class="dark">
+</td>
+<td class="light">
+</td>
+</tr>
+</tbody>
+</table>
+<p style="text-align: center;">
+<span
+class="color_tema"><code>sol = [0, 4, 7, 5, 2, 6, 1, 3]</code></span><br/>
+<span class="fragment"><code>sol[i] = j</code> <span
+class="math inline">\(\Longleftrightarrow\)</span> hay una reina en la
+casilla <code>(i, j)</code></span>
+</p>
+</section>
+<section id="test-de-factibilidad-1" class="slide level2">
+<h2>Test de factibilidad</h2>
+<ul>
+<li>Suponemos que tenemos <code>k</code> reinas en las filas
+<code>[0..k)</code> del tablero, cuyas columnas están en
+<code>sol[0..k)</code>, ¿podemos añadir una nueva reina en la fila
+<code>k</code>, columna <code>col</code>?</li>
+</ul>
+<div class="fragment">
+<div class="cpp cpp_block">
+<p><span class="type">bool</span> es_factible(<span
+class="type">const</span> <span class="type">vector</span>&lt;<span
+class="type">int</span>&gt; &amp;sol, <span class="type">int</span> k,
+<span class="type">int</span> col) {<br>  <span class="type">bool</span>
+factible = <span class="type">true</span>;<br>  <span
+class="type">int</span> i = <span
+class="number">0</span>;<br>  <strong>while</strong> (i &lt; k
+&amp;&amp; factible) {<br>    <strong>if</strong> (<span
+class="meta">(i, sol[i]) está en la misma columna o diagonal que (k,
+col)</span>) {<br>      factible = <span
+class="type">false</span>;<br>    }<br>    i++;<br>  }<br>  <strong>return</strong>
+factible;<br>}</p>
+</div>
+</div>
+</section>
+<section id="test-de-factibilidad-2" class="slide level2">
+<h2>Test de factibilidad</h2>
+<div class="columns">
+<div class="column" style="width:50%">
+<p>Para saber si dos reinas colocadas en <span class="math inline">\((i,
+j)\)</span>, <span class="math inline">\((i&#39;, j&#39;)\)</span> están
+en la misma diagonal, calculamos:</p>
+<ul>
+<li><span class="math inline">\(|i - i&#39;|\)</span></li>
+<li><span class="math inline">\(|j - j&#39;|\)</span></li>
+</ul>
+<p>Si ambas coinciden, están en la misma diagonal.</p>
+</div><div class="column" style="width:50%">
+<table class="chess-board">
+<tbody>
+<tr>
+<th>
+</th>
+<th>
+0
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+<th>
+3
+</th>
+<th>
+4
+</th>
+<th>
+5
+</th>
+<th>
+6
+</th>
+<th>
+7
+</th>
+</tr>
+<tr>
+<th>
+0
+</th>
+<td class="light">
+</td>
+<td class="dark">
+♛
+</td>
+<td class="light">
+</td>
+<td class="dark">
+</td>
+<td class="light">
+</td>
+<td class="dark">
+</td>
+<td class="light">
+</td>
+<td class="dark">
+</td>
+</tr>
+<tr>
+<th>
+1
+</th>
+<td class="dark">
+</td>
+<td class="light">
+</td>
+<td class="dark">
+</td>
+<td class="light">
+</td>
+<td class="dark">
+</td>
+<td class="light">
+</td>
+<td class="dark">
+</td>
+<td class="light">
+</td>
+</tr>
+<tr>
+<th>
+2
+</th>
+<td class="light">
+</td>
+<td class="dark">
+</td>
+<td class="light">
+</td>
+<td class="dark">
+</td>
+<td class="light">
+</td>
+<td class="dark">
+</td>
+<td class="light">
+</td>
+<td class="dark">
+</td>
+</tr>
+<tr>
+<th>
+3
+</th>
+<td class="dark">
+</td>
+<td class="light">
+</td>
+<td class="dark">
+</td>
+<td class="light">
+</td>
+<td class="dark">
+♛
+</td>
+<td class="light">
+</td>
+<td class="dark">
+</td>
+<td class="light">
+</td>
+</tr>
+<tr>
+<th>
+4
+</th>
+<td class="light">
+</td>
+<td class="dark">
+</td>
+<td class="light">
+</td>
+<td class="dark">
+</td>
+<td class="light">
+</td>
+<td class="dark">
+</td>
+<td class="light">
+</td>
+<td class="dark">
+</td>
+</tr>
+<tr>
+<th>
+5
+</th>
+<td class="dark">
+</td>
+<td class="light">
+</td>
+<td class="dark">
+</td>
+<td class="light">
+</td>
+<td class="dark">
+</td>
+<td class="light">
+</td>
+<td class="dark">
+</td>
+<td class="light">
+</td>
+</tr>
+<tr>
+<th>
+6
+</th>
+<td class="light">
+</td>
+<td class="dark">
+</td>
+<td class="light">
+</td>
+<td class="dark">
+</td>
+<td class="light">
+</td>
+<td class="dark">
+</td>
+<td class="light">
+</td>
+<td class="dark">
+</td>
+</tr>
+<tr>
+<th>
+7
+</th>
+<td class="dark">
+</td>
+<td class="light">
+</td>
+<td class="dark">
+</td>
+<td class="light">
+</td>
+<td class="dark">
+</td>
+<td class="light">
+</td>
+<td class="dark">
+</td>
+<td class="light">
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="test-de-factibilidad-3" class="slide level2">
+<h2>Test de factibilidad</h2>
+<div class="cpp cpp_block">
+<p><span class="type">bool</span> es_factible(<span
+class="type">const</span> <span class="type">vector</span>&lt;<span
+class="type">int</span>&gt; &amp;sol, <span class="type">int</span> k,
+<span class="type">int</span> col) {<br>  <span class="type">bool</span>
+factible = <span class="type">true</span>;<br>  <span
+class="type">int</span> i = <span
+class="number">0</span>;<br>  <strong>while</strong> (i &lt; k
+&amp;&amp; factible) {<br>    <span class="comment">// Si
+<code>sol[i]</code> está en la misma columna o diagonal que
+la</span><br>    <span class="comment">// reina (k, col), la solución no
+es factible.</span><br>    <strong>if</strong> (sol[i] == col || abs(k -
+i) == abs(col - sol[i])) {<br>      factible = <span
+class="type">false</span>;<br>    }<br>    i++;<br>  }<br>  <strong>return</strong>
+factible;<br>}</p>
+</div>
+</section>
+<section id="algoritmo-de-vuelta-atrás" class="slide level2">
+<h2>Algoritmo de vuelta atrás</h2>
+<div class="cpp cpp_block">
+<p><span class="type">void</span> n_reinas_gen(<span
+class="type">int</span> n, <span class="type">int</span> k, <span
+class="type">vector</span>&lt;<span class="type">int</span>&gt;
+&amp;sol) {<br>  <strong>if</strong> (k == n)
+{<br>    imprimir_solucion(sol);<br>  } <strong>else</strong>
+{<br>    <strong>for</strong> (<span class="type">int</span> col = <span
+class="number">0</span>; col &lt; n; col++)
+{<br>      <strong>if</strong> (es_factible(sol, k, col))
+{<br>        sol[k] = col;<br>        n_reinas_gen(n, k + <span
+class="number">1</span>, sol);<br>      }<br>    }<br>  }<br>}</p>
+</div>
+<div class="fragment">
+<p>Llamada inicial:</p>
+<div class="cpp cpp_block">
+<p><span class="type">vector</span>&lt;<span class="type">int</span>&gt;
+sol(n);<br>n_reinas_gen(n, <span class="number">0</span>, sol);</p>
+</div>
+</div>
+</section>
+<section id="coste-del-test-de-factibilidad" class="slide level2">
+<h2>¿Coste del test de factibilidad?</h2>
+<div class="cpp cpp_block">
+<p><span class="type">bool</span> es_factible(<span
+class="type">const</span> <span class="type">vector</span>&lt;<span
+class="type">int</span>&gt; &amp;sol, <span class="type">int</span> k,
+<span class="type">int</span> col) {<br>  <span class="type">bool</span>
+factible = <span class="type">true</span>;<br>  <span
+class="type">int</span> i = <span
+class="number">0</span>;<br>  <strong>while</strong> (i &lt; k
+&amp;&amp; factible) {<br>    <strong>if</strong> (sol[i] == col ||
+abs(k - i) == abs(col - sol[i])) {<br>      factible = <span
+class="type">false</span>;<br>    }<br>    i++;<br>  }<br>  <strong>return</strong>
+factible;<br>}</p>
+</div>
+<div class="fragment">
+<p>Coste en tiempo: <span class="color_tema"><span
+class="math inline">\(\Theta(k)\)</span></span></p>
+<div class="fragment info_box">
+<p>¿Podríamos hacer el test de factibilidad en tiempo <span
+class="math inline">\(\Theta(1)\)</span>?</p>
+</div>
+</div>
+</section>
+<section id="marcaje" class="slide level2 subsection center">
+<h2 class="subsection center">Marcaje</h2>
+</section>
+<section id="técnica-de-marcaje" class="slide level2">
+<h2>Técnica de marcaje</h2>
+<ul>
+<li class="fragment"><p>Consiste en almacenar información adicional que
+ayuda a decidir, de manera eficiente, si una solución parcial es válida
+o no.</p></li>
+<li class="fragment"><p>Esta información adicional es <strong>específica
+del problema</strong>.</p></li>
+<li class="fragment"><p>En el problema de las <em>n</em> reinas,
+necesitamos tres vectores de booleanos:</p>
+<ul>
+<li class="fragment"><p><code>cols[i]</code>: indica si en la columna
+<code>i</code> se ha colocado una reina.</p></li>
+<li class="fragment"><p><code>diag_ps[i]</code>: indica si en la
+<code>i</code>-ésima diagonal de dirección ↘ se ha colocado una
+reina.</p></li>
+<li class="fragment"><p><code>diag_ss[i]</code>: indica si en la
+<code>i</code>-ésima diagonal de dirección ↗ se ha colocado una
+reina.</p></li>
+</ul></li>
+<li class="fragment"><p>Cada vez que colocamos una reina en una
+posición, ponemos a <code>true</code> la columna correspondiente en
+<code>cols</code>, y las diagonales correspondientes en
+<code>diag_ps</code> y <code>diag_ss</code></p></li>
+</ul>
+</section>
+<section id="cómo-numeramos-las-diagonales" class="slide level2">
+<h2>¿Cómo numeramos las diagonales ↘?</h2>
+<table class="chess-board">
+<tbody>
+<tr>
+<th>
+</th>
+<th>
+0
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+<th>
+3
+</th>
+<th>
+4
+</th>
+<th>
+5
+</th>
+<th>
+6
+</th>
+<th>
+7
+</th>
+</tr>
+<tr>
+<th>
+0
+</th>
+<td class="light">
+0
+</td>
+<td class="dark">
+1
+</td>
+<td class="light">
+2
+</td>
+<td class="dark">
+3
+</td>
+<td class="light">
+4
+</td>
+<td class="dark">
+5
+</td>
+<td class="light">
+6
+</td>
+<td class="dark">
+7
+</td>
+</tr>
+<tr>
+<th>
+1
+</th>
+<td class="dark">
+-1
+</td>
+<td class="light">
+0
+</td>
+<td class="dark">
+1
+</td>
+<td class="light">
+2
+</td>
+<td class="dark">
+3
+</td>
+<td class="light">
+4
+</td>
+<td class="dark">
+5
+</td>
+<td class="light">
+6
+</td>
+</tr>
+<tr>
+<th>
+2
+</th>
+<td class="light">
+-2
+</td>
+<td class="dark">
+-1
+</td>
+<td class="light">
+0
+</td>
+<td class="dark">
+1
+</td>
+<td class="light">
+2
+</td>
+<td class="dark">
+3
+</td>
+<td class="light">
+4
+</td>
+<td class="dark">
+5
+</td>
+</tr>
+<tr>
+<th>
+3
+</th>
+<td class="dark">
+-3
+</td>
+<td class="light">
+-2
+</td>
+<td class="dark">
+-1
+</td>
+<td class="light">
+0
+</td>
+<td class="dark">
+1
+</td>
+<td class="light">
+2
+</td>
+<td class="dark">
+3
+</td>
+<td class="light">
+4
+</td>
+</tr>
+<tr>
+<th>
+4
+</th>
+<td class="light">
+-4
+</td>
+<td class="dark">
+-3
+</td>
+<td class="light">
+-2
+</td>
+<td class="dark">
+-1
+</td>
+<td class="light">
+0
+</td>
+<td class="dark">
+1
+</td>
+<td class="light">
+2
+</td>
+<td class="dark">
+3
+</td>
+</tr>
+<tr>
+<th>
+5
+</th>
+<td class="dark">
+-5
+</td>
+<td class="light">
+-4
+</td>
+<td class="dark">
+-3
+</td>
+<td class="light">
+-2
+</td>
+<td class="dark">
+-1
+</td>
+<td class="light">
+0
+</td>
+<td class="dark">
+1
+</td>
+<td class="light">
+2
+</td>
+</tr>
+<tr>
+<th>
+6
+</th>
+<td class="light">
+-6
+</td>
+<td class="dark">
+-5
+</td>
+<td class="light">
+-4
+</td>
+<td class="dark">
+-3
+</td>
+<td class="light">
+-2
+</td>
+<td class="dark">
+-1
+</td>
+<td class="light">
+0
+</td>
+<td class="dark">
+1
+</td>
+</tr>
+<tr>
+<th>
+7
+</th>
+<td class="dark">
+-7
+</td>
+<td class="light">
+-6
+</td>
+<td class="dark">
+-5
+</td>
+<td class="light">
+-4
+</td>
+<td class="dark">
+-3
+</td>
+<td class="light">
+-2
+</td>
+<td class="dark">
+-1
+</td>
+<td class="light">
+0
+</td>
+</tr>
+</tbody>
+</table>
+<div class="fragment">
+<p>La casilla <span class="math inline">\((i, j)\)</span> se encuentra
+en la diagonal <span class="color_tema"><span class="math inline">\(j -
+i\)</span></span>.</p>
+<p>Como el vector <code>diag_ps</code> se numera desde <span
+class="math inline">\(0\)</span> hasta <span class="math inline">\(2n -
+2\)</span>, hay que sumar <span class="math inline">\(n-1\)</span> a la
+diagonal para obtener su posición correspondiente en el vector
+<code>diag_ps</code>.</p>
+</div>
+</section>
+<section id="cómo-numeramos-las-diagonales-1" class="slide level2">
+<h2>¿Cómo numeramos las diagonales ↗?</h2>
+<table class="chess-board">
+<tbody>
+<tr>
+<th>
+</th>
+<th>
+0
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+<th>
+3
+</th>
+<th>
+4
+</th>
+<th>
+5
+</th>
+<th>
+6
+</th>
+<th>
+7
+</th>
+</tr>
+<tr>
+<th>
+0
+</th>
+<td class="light">
+0
+</td>
+<td class="dark">
+1
+</td>
+<td class="light">
+2
+</td>
+<td class="dark">
+3
+</td>
+<td class="light">
+4
+</td>
+<td class="dark">
+5
+</td>
+<td class="light">
+6
+</td>
+<td class="dark">
+7
+</td>
+</tr>
+<tr>
+<th>
+1
+</th>
+<td class="dark">
+1
+</td>
+<td class="light">
+2
+</td>
+<td class="dark">
+3
+</td>
+<td class="light">
+4
+</td>
+<td class="dark">
+5
+</td>
+<td class="light">
+6
+</td>
+<td class="dark">
+7
+</td>
+<td class="light">
+8
+</td>
+</tr>
+<tr>
+<th>
+2
+</th>
+<td class="light">
+2
+</td>
+<td class="dark">
+3
+</td>
+<td class="light">
+4
+</td>
+<td class="dark">
+5
+</td>
+<td class="light">
+6
+</td>
+<td class="dark">
+7
+</td>
+<td class="light">
+8
+</td>
+<td class="dark">
+9
+</td>
+</tr>
+<tr>
+<th>
+3
+</th>
+<td class="dark">
+3
+</td>
+<td class="light">
+4
+</td>
+<td class="dark">
+5
+</td>
+<td class="light">
+6
+</td>
+<td class="dark">
+7
+</td>
+<td class="light">
+8
+</td>
+<td class="dark">
+9
+</td>
+<td class="light">
+10
+</td>
+</tr>
+<tr>
+<th>
+4
+</th>
+<td class="light">
+4
+</td>
+<td class="dark">
+5
+</td>
+<td class="light">
+6
+</td>
+<td class="dark">
+7
+</td>
+<td class="light">
+8
+</td>
+<td class="dark">
+9
+</td>
+<td class="light">
+10
+</td>
+<td class="dark">
+11
+</td>
+</tr>
+<tr>
+<th>
+5
+</th>
+<td class="dark">
+5
+</td>
+<td class="light">
+6
+</td>
+<td class="dark">
+7
+</td>
+<td class="light">
+8
+</td>
+<td class="dark">
+9
+</td>
+<td class="light">
+10
+</td>
+<td class="dark">
+11
+</td>
+<td class="light">
+12
+</td>
+</tr>
+<tr>
+<th>
+6
+</th>
+<td class="light">
+6
+</td>
+<td class="dark">
+7
+</td>
+<td class="light">
+8
+</td>
+<td class="dark">
+9
+</td>
+<td class="light">
+10
+</td>
+<td class="dark">
+11
+</td>
+<td class="light">
+12
+</td>
+<td class="dark">
+13
+</td>
+</tr>
+<tr>
+<th>
+7
+</th>
+<td class="dark">
+7
+</td>
+<td class="light">
+8
+</td>
+<td class="dark">
+9
+</td>
+<td class="light">
+10
+</td>
+<td class="dark">
+11
+</td>
+<td class="light">
+12
+</td>
+<td class="dark">
+13
+</td>
+<td class="light">
+14
+</td>
+</tr>
+</tbody>
+</table>
+<div class="fragment">
+<p>La casilla <span class="math inline">\((i, j)\)</span> se encuentra
+en la diagonal <span class="color_tema"><span class="math inline">\(i +
+j\)</span></span>.</p>
+</div>
+</section>
+<section id="test-de-factibilidad-con-marcaje" class="slide level2">
+<h2>Test de factibilidad con marcaje</h2>
+<ul>
+<li class="fragment"><p>Queremos añadir una reina en la posición
+<code>(k, col)</code>.</p>
+<ul>
+<li class="fragment"><p>Comprobamos si está marcada la columna
+<code>col</code>.</p></li>
+<li class="fragment"><p>La posición <code>(k, col)</code> pertenece a la
+diagonal (↘) con número <code>col - k</code>.</p>
+<ul>
+<li class="fragment">Comprobamos si está marcada la posición
+<code>col - k + (n - 1)</code> del array <code>diag_ps</code>.</li>
+</ul></li>
+<li class="fragment"><p>La posición <code>(k, col)</code> pertenece a la
+diagonal (↗) con número <code>k + col</code>.</p>
+<ul>
+<li class="fragment">Comprobamos si está marcada la posición
+<code>k + col</code> del array <code>diag_ss</code>.</li>
+</ul></li>
+</ul></li>
+</ul>
+<div class="fragment">
+<div class="cpp cpp_block">
+<p><span class="type">bool</span> es_factible(<span
+class="type">int</span> n, <span class="type">int</span> k, <span
+class="type">int</span> col,<br>      <span class="type">const</span>
+<span class="type">vector</span>&lt;<span class="type">bool</span>&gt;
+&amp;cols, <span class="type">const</span> <span
+class="type">vector</span>&lt;<span class="type">bool</span>&gt;
+&amp;diag_ps, <span class="type">const</span> <span
+class="type">vector</span>&lt;<span class="type">bool</span>&gt;
+&amp;diag_ss) {<br>  <strong>return</strong> !cols[col] &amp;&amp;
+!diag_ps[col - k + (n - <span class="number">1</span>)] &amp;&amp;
+!diag_ss[k + col];<br>}</p>
+</div>
+</div>
+<div class="fragment">
+<p>Coste: <span class="color_tema"><span
+class="math inline">\(\Theta(1)\)</span></span></p>
+</div>
+</section>
+<section id="algoritmo-de-vuelta-atrás-1" class="slide level2">
+<h2>Algoritmo de vuelta atrás</h2>
+<ul>
+<li><p>Los vectores de booleanos <code>cols</code>,
+<code>diags_ps</code>, <code>diags_ss</code> son parámetros de
+entrada/salida de la función que implementa el algoritmo de vuelta
+atrás.</p></li>
+<li><p>Estos vectores se propagan a lo largo de todo el árbol de
+exploración.</p></li>
+</ul>
+<div class="cpp cpp_block">
+<p><span class="type">void</span> n_reinas(<span class="type">int</span>
+n, <span class="type">int</span> k, <span
+class="type">vector</span>&lt;<span class="type">int</span>&gt;
+&amp;sol,<br>              <span class="hl"><span
+class="type">vector</span>&lt;<span class="type">bool</span>&gt;
+&amp;cols</span>, <span class="hl"><span
+class="type">vector</span>&lt;<span class="type">bool</span>&gt;
+&amp;diag_ps</span>, <span class="hl"><span
+class="type">vector</span>&lt;<span class="type">bool</span>&gt;
+&amp;diag_ss</span>);</p>
+</div>
+<div class="fragment">
+<ul>
+<li>En la llamada inicial, inicializamos todos estos vectores a
+<code>false</code>.</li>
+</ul>
+<div class="cpp cpp_block">
+<p><span class="type">void</span> n_reinas(<span class="type">int</span>
+n) {<br>  <span class="type">vector</span>&lt;<span
+class="type">int</span>&gt; sol(n);<br>  <span
+class="type">vector</span>&lt;<span class="type">bool</span>&gt; cols(n,
+<span class="type">false</span>);<br>  <span
+class="type">vector</span>&lt;<span class="type">bool</span>&gt;
+diag_ps(<span class="number">2</span>*n - <span class="number">1</span>,
+<span class="type">false</span>);<br>  <span
+class="type">vector</span>&lt;<span class="type">bool</span>&gt;
+diag_ss(<span class="number">2</span>*n - <span class="number">1</span>,
+<span class="type">false</span>);<br>  n_reinas(n, <span
+class="number">0</span>, sol, cols, diag_ps, diag_ss);<br>}</p>
+</div>
+</div>
+</section>
+<section id="algoritmo-de-vuelta-atrás-2" class="slide level2">
+<h2>Algoritmo de vuelta atrás</h2>
+<div class="columns">
+<div class="column" style="width:60%;">
+<div class="cpp cpp_block" style="font-size:60%">
+<p><span class="type">void</span> n_reinas(<span class="type">int</span>
+n, <span class="type">int</span> k, <span
+class="type">vector</span>&lt;<span class="type">int</span>&gt;
+&amp;sol,<br>              <span class="type">vector</span>&lt;<span
+class="type">bool</span>&gt; &amp;cols, <br>              <span
+class="type">vector</span>&lt;<span class="type">bool</span>&gt;
+&amp;diag_ps, <br>              <span
+class="type">vector</span>&lt;<span class="type">bool</span>&gt;
+&amp;diag_ss) {<br>  <strong>if</strong> (k == n)
+{<br>    imprimir_solucion(sol);<br>  } <strong>else</strong>
+{<br>    <strong>for</strong> (<span class="type">int</span> col = <span
+class="number">0</span>; col &lt; n; col++)
+{<br>      <strong>if</strong> (es_factible(n, k, col, cols, diag_ps,
+diag_ss)) {<br>        sol[k] = col;<br>        cols[col] = <span
+class="type">true</span>;                   <span
+class="arrow_box_left">Marcaje</span> <br>        diag_ps[col - k + (n -
+<span class="number">1</span>)] = <span class="type">true</span>;  <span
+class="arrow_box_left">Marcaje</span> <br>        diag_ss[k + col] =
+<span class="type">true</span>;            <span
+class="arrow_box_left">Marcaje</span> <br>        n_reinas(n, k + <span
+class="number">1</span>, sol, cols, diag_ps,
+diag_ss);<br>        cols[col] = <span
+class="type">false</span>;                  <span
+class="arrow_box_left">Desmarcaje</span>  <br>        diag_ps[col - k +
+(n - <span class="number">1</span>)] = <span class="type">false</span>;
+<span class="arrow_box_left">Desmarcaje</span> <br>        diag_ss[k +
+col] = <span class="type">false</span>;           <span
+class="arrow_box_left">Desmarcaje</span>  <br>      }<br>    }<br>  }<br>}</p>
+</div>
+</div><div class="column" style="width:40%;">
+<ul>
+<li><p><strong>Marcamos</strong> antes de la llamada recursiva</p></li>
+<li><p><strong>Desmarcamos</strong> después de la llamada
+recursiva.</p></li>
+</ul>
+</div>
+</div>
+</section>
+<section id="esquema-general-1" class="slide level2 subsection center">
+<h2 class="subsection center">Esquema general</h2>
+</section>
+<section id="vuelta-atrás-con-marcaje" class="slide level2">
+<h2>Vuelta atrás con marcaje</h2>
+<div class="pseudo">
+<p><strong>method</strong> vueltaAtras(entrada<span
+class="colon">:</span> T, k<span class="colon">:</span> <span
+class="type">int</span>, <br>                   <strong>inout</strong>
+sol[0..n)<span class="colon">:</span> <span
+class="type">array&lt;S&gt;</span>,<br>                   <span
+class="hl"><strong>inout</strong> m<span class="colon">:</span>
+M</span>)<br>  <strong>requires</strong> n &gt;= 0 <span
+class="math inline">\({\wedge}\)</span> 0 &lt;= k &lt;= n <span
+class="math inline">\({\wedge}\)</span>
+factible(sol[0..k))<br>{<br>  <strong>if</strong> (k == n)
+{<br>    tratar_solucion(sol);<br>  } <strong>else</strong>
+{<br>    <strong>for each</strong> i <span
+class="math inline">\(\in\)</span> S {<br>      <strong>if</strong>
+factible(sol[0..k) ++ [i], <span class="hl">m</span>)
+{<br>        sol[k] := i;<br>        <span class="hl">marcar(m, k,
+i);</span><br>        vueltaAtras(entrada, k + 1, sol);<br>        <span
+class="hl">desmarcar(m, k,
+i);</span><br>      }<br>    }<br>  }<br>}</p>
+</div>
+</section></section>
+<section>
+<section
+id="problemas-de-optimización-mediante-vuelta-atrás-el-problema-del-viajante"
+class="title-slide slide level1 center"
+data-background-image="img/OrangeBackground.jpg">
+<h1 class="center"
+data-background-image="img/OrangeBackground.jpg"><span
+class="sc_number">7.6</span>Problemas de optimización mediante vuelta
+atrás:<br/>el problema del viajante</h1>
+
+</section>
+<section id="el-problema-del-viajante" class="slide level2"
+data-transition="slide-in none-out">
+<h2 data-transition="slide-in none-out">El problema del viajante</h2>
+<ul>
+<li>Tenemos un grafo valorado con <span class="math inline">\(V\)</span>
+vértices, que representa conexiones entre ciudades, y el coste que
+conlleva desplazarse de una ciudad a otra.</li>
+</ul>
+<p style="text-align:center">
+<img data-src="Tema7/GrafoViajante.svg" width="600" />
+</p>
+<div class="fragment">
+<ul>
+<li>Un viajante empieza en la ciudad 0, y ha de recorrer todas las
+ciudades del grafo exactamente una vez cada una, y terminar en la ciudad
+de partida.</li>
+</ul>
+</div>
+<div class="fragment">
+<p class="color_tema" style="text-align: center;">
+<em>¿Cuál es el recorrido de menor coste?</em>
+</p>
+</div>
+</section>
+<section id="el-problema-del-viajante-1" class="slide level2"
+data-transition="none-in slide-out">
+<h2 data-transition="none-in slide-out">El problema del viajante</h2>
+<ul>
+<li>Tenemos un grafo valorado con <span class="math inline">\(V\)</span>
+vértices, que representa conexiones entre ciudades, y el coste que
+conlleva desplazarse de una ciudad a otra.</li>
+</ul>
+<p style="text-align:center">
+<img data-src="Tema7/GrafoViajanteResuelto.svg" width="600" />
+</p>
+<ul>
+<li>Un viajante empieza en la ciudad 0, y ha de recorrer todas las
+ciudades del grafo exactamente una vez cada una, y terminar en la ciudad
+de partida.</li>
+</ul>
+<p class="color_tema" style="text-align: center;">
+<em>¿Cuál es el recorrido de menor coste?</em>
+</p>
+</section>
+<section id="representación-de-la-solución" class="slide level2">
+<h2>Representación de la solución</h2>
+<ul>
+<li>Una <strong>solución</strong> es un vector <span
+class="pseudo inline">sol[0..V)</span> que representa el orden de visita
+de las ciudades.</li>
+</ul>
+<div class="fragment">
+<ul>
+<li><strong>Restricciones explícitas</strong>
+<ul>
+<li><span class="pseudo inline">sol[0] = 0</span>.</li>
+<li><span class="pseudo inline">sol[i] <span
+class="math inline">\(\in\)</span> {1,…,V-1}</span> para <span
+class="pseudo inline">1 &lt;= i &lt; V</span>.</li>
+</ul></li>
+</ul>
+</div>
+<div class="fragment">
+<ul>
+<li><strong>Restricciones implícitas</strong>:
+<ul>
+<li><span class="pseudo inline">sol[i]</span> y <span
+class="pseudo inline">sol[i+1]</span> son adyacentes para <span
+class="pseudo inline">0 &lt;= i &lt; V - 1</span>.</li>
+<li><span class="pseudo inline">sol[V - 1]</span> y <span
+class="pseudo inline">sol[0]</span> son adyacentes.</li>
+<li>No existe <span class="pseudo inline">i != j</span> tal que <span
+class="pseudo inline">sol[i] == sol[j]</span>.</li>
+</ul></li>
+</ul>
+</div>
+</section>
+<section id="función-objetivo" class="slide level2">
+<h2>Función objetivo</h2>
+<ul>
+<li><p>Los problemas de optimización tratan de minimizar (o maximizar)
+una <strong>función objetivo</strong> <span
+class="math inline">\(C\)</span>.</p></li>
+<li><p>En el problema del viajante, la función objetivo de una solución
+es la suma de los costes de las aristas que atraviesa esa
+solución:</p></li>
+</ul>
+<p><span class="math display">\[
+C(\texttt{sol}) = \sum_{i=0}^{V-2} \mathit{coste}(\texttt{sol}[i],
+\texttt{sol}[i + 1]) + \mathit{coste}(\texttt{sol}[V-1],
+\texttt{sol}[0])
+\]</span></p>
+</section>
+<section id="soluciones-parciales" class="slide level2">
+<h2>Soluciones parciales</h2>
+<ul>
+<li><p>Una <strong>solución parcial</strong> <span
+class="pseudo inline">sol[0..k)</span> con <span class="pseudo inline">1
+&lt;= k &lt;= V</span> contiene el recorrido del viajante determinado
+hasta el momento.</p></li>
+<li><p><strong>Restricciones explícitas</strong> (mismas que antes pero
+cambiando <code>V</code> por <code>k</code>):</p>
+<ul>
+<li><span class="pseudo inline">sol[0] = 0</span>.</li>
+<li><span class="pseudo inline">sol[i] <span
+class="math inline">\(\in\)</span> {1,…,V-1}</span> para <span
+class="pseudo inline">1 &lt;= i &lt; k</span>.</li>
+</ul></li>
+<li><p><strong>Restricciones implícitas</strong> (mismas que antes pero
+cambiando <code>V</code> por <code>k</code>):</p>
+<ul>
+<li><span class="pseudo inline">sol[i]</span> y <span
+class="pseudo inline">sol[i+1]</span> son adyacentes para <span
+class="pseudo inline">0 &lt;= i &lt; k - 1</span>.</li>
+<li>Si <span class="pseudo inline">k == V</span>, entonces <span
+class="pseudo inline">sol[V - 1]</span> y <span
+class="pseudo inline">sol[0]</span> son adyacentes.</li>
+<li>No existe <span class="pseudo inline">i != j</span> tal que <span
+class="pseudo inline">sol[i] == sol[j]</span>.</li>
+</ul></li>
+</ul>
+</section>
+<section id="test-de-factibilidad-4" class="slide level2">
+<h2>Test de factibilidad</h2>
+<ul>
+<li><p>Para determinar que <code>sol[0..k)</code> no recorre una misma
+ciudad varias veces, necesitamos aplicar técnicas de marcaje.</p></li>
+<li><p>Supongamos un vector <code>visitadas[0..V)</code> tal que
+<code>visitadas[i] == true</code> si el vértice <code>i</code> forma
+parte de <code>sol[0..k)</code>.</p></li>
+</ul>
+<div class="fragment">
+<ul>
+<li>La función <code>es_factible</code> determina si es posible ampliar
+una solución parcial <code>sol[0..k)</code> añadiendo la
+<code>ciudad</code> dada como vértice <code>k</code>-ésimo del
+recorrido.</li>
+</ul>
+<div class="cpp cpp_block">
+<p><span class="type">bool</span> es_factible(<span
+class="type">const</span> grafo&lt;<span class="type">int</span>&gt;
+&amp;g, <span class="type">int</span> k, <span class="type">int</span>
+ciudad, <span class="type">const</span> <span
+class="type">vector</span>&lt;<span class="type">int</span>&gt;
+&amp;sol,<br>                 <span class="type">const</span> <span
+class="type">vector</span>&lt;<span class="type">bool</span>&gt;
+&amp;visitadas) {<br>  <strong>return</strong> adyacentes(g, sol[k -
+<span class="number">1</span>], ciudad) &amp;&amp; !visitadas[ciudad]
+&amp;&amp;<br>         (k != sol.size() - <span class="number">1</span>
+|| adyacentes(g, ciudad, sol[<span class="number">0</span>]));<br>}</p>
+</div>
+</div>
+</section>
+<section id="función-de-vuelta-atrás-versión-1" class="slide level2">
+<h2>Función de vuelta atrás (versión 1)</h2>
+<div class="cpp cpp_block">
+<p><span class="type">void</span> viajante(<span
+class="type">const</span> grafo&lt;<span class="type">int</span>&gt;
+&amp;g, <span class="type">int</span> k, <span
+class="type">vector</span>&lt;<span class="type">int</span>&gt;
+&amp;sol,<br>              <span class="type">vector</span>&lt;<span
+class="type">bool</span>&gt; &amp;visitadas, <span
+class="type">vector</span>&lt;<span class="type">int</span>&gt;
+&amp;sol_mejor);</p>
+</div>
+<ul>
+<li><p><code>g</code>: grafo de entrada.</p></li>
+<li><p><code>k</code>, <code>sol</code>: determinan la solución parcial
+encontrada hasta el momento.</p></li>
+<li><p><code>visitadas</code> (parám. E/S): indica qué ciudades forman
+parte de <code>sol[0..k)</code>.</p></li>
+<li><p><code>sol_mejor</code> (parám. E/S): indica la solución total de
+menor coste encontrada hasta el momento.</p></li>
+</ul>
+</section>
+<section id="función-de-vuelta-atrás-versión-1-1" class="slide level2">
+<h2>Función de vuelta atrás (versión 1)</h2>
+<div class="cpp cpp_block" style="font-size:65%">
+<p><span class="type">void</span> viajante(<span
+class="type">const</span> grafo&lt;<span class="type">int</span>&gt;
+&amp;g, <span class="type">int</span> k, <span
+class="type">vector</span>&lt;<span class="type">int</span>&gt;
+&amp;sol,<br>              <span class="type">vector</span>&lt;<span
+class="type">bool</span>&gt; &amp;visitadas, <span
+class="type">vector</span>&lt;<span class="type">int</span>&gt;
+&amp;sol_mejor) {<br>  <strong>if</strong> (k == sol.size())
+{<br>    <strong>if</strong> (coste(g, sol) &lt; coste(g, sol_mejor))
+{<br>      sol_mejor = sol;<br>    }<br>  } <strong>else</strong>
+{<br>    <strong>for</strong> (<span class="type">int</span> c = <span
+class="number">0</span>; c &lt; num_vertices(g); c++)
+{<br>      <strong>if</strong> (es_factible(g, k, c, sol, visitadas))
+{<br>        sol[k] = c;<br><br>        visitadas[c] = <span
+class="type">true</span>;        <span class="comment">//
+Marcaje</span><br>        viajante(g, k + <span class="number">1</span>,
+sol, visitadas, sol_mejor);<br>        visitadas[c] = <span
+class="type">false</span>;       <span class="comment">//
+Desmarcaje</span><br>      }<br>    }<br>  }<br>}</p>
+</div>
+<div class="fragment">
+<ul>
+<li><strong>Problema</strong>: En cada hoja del árbol de exploración se
+calcula la función objetivo de esa solución. Esto tiene coste <span
+class="math inline">\(\Theta(V)\)</span>.</li>
+</ul>
+</div>
+</section>
+<section id="añadir-marcaje-coste-del-camino-actual"
+class="slide level2 subsection center">
+<h2 class="subsection center">Añadir marcaje: coste del camino
+actual</h2>
+</section>
+<section id="función-de-vuelta-atrás-versión-2" class="slide level2">
+<h2>Función de vuelta atrás (versión 2)</h2>
+<div class="cpp cpp_block">
+<p><span class="type">void</span> viajante(<span
+class="type">const</span> grafo&lt;<span class="type">int</span>&gt;
+&amp;g, <span class="type">int</span> k, <span
+class="type">vector</span>&lt;<span class="type">int</span>&gt;
+&amp;sol, <span class="hl"><span class="type">int</span>
+coste_acum</span>,<br>              <span
+class="type">vector</span>&lt;<span class="type">bool</span>&gt;
+&amp;visitadas, <span class="type">vector</span>&lt;<span
+class="type">int</span>&gt; &amp;sol_mejor, <span class="hl"><span
+class="type">int</span> &amp;coste_mejor</span>);</p>
+</div>
+<p>Añadimos dos parámetros:</p>
+<ul>
+<li class="fragment"><p><code>coste_acum</code>: coste de la solución
+parcial <code>sol[0..k)</code>.</p>
+<p><span class="math display">\[
+  \texttt{coste\_acum} = \sum_{i=0}^{k-1}
+\mathit{coste}(\texttt{sol}[i], \texttt{sol}[i + 1])
+  \]</span></p></li>
+<li class="fragment"><p><code>coste_mejor</code> (param. E/S): coste de
+la mejor solución total encontrada hasta el momento.</p>
+<p><span class="math display">\[
+  \texttt{coste\_mejor} = C(\texttt{sol\_mejor})
+  \]</span></p></li>
+</ul>
+</section>
+<section id="función-de-vuelta-atrás-versión-2-1" class="slide level2">
+<h2>Función de vuelta atrás (versión 2)</h2>
+<div class="cpp cpp_block" style="font-size:65%">
+<p><span class="type">void</span> viajante(<span
+class="type">const</span> grafo&lt;<span class="type">int</span>&gt;
+&amp;g, <span class="type">int</span> k, <span
+class="type">vector</span>&lt;<span class="type">int</span>&gt;
+&amp;sol, <span class="hl"><span class="type">int</span>
+coste_acum</span>,<br>              <span
+class="type">vector</span>&lt;<span class="type">bool</span>&gt;
+&amp;visitadas, <span class="type">vector</span>&lt;<span
+class="type">int</span>&gt; &amp;sol_mejor, <span class="hl"><span
+class="type">int</span> &amp;coste_mejor</span>)
+{<br>  <strong>if</strong> (k == sol.size()) {<br>    <span
+class="hl">coste_acum += g[sol[k - <span class="number">1</span>]][<span
+class="number">0</span>]</span>;<br>    <strong>if</strong> (<span
+class="hl">coste_acum &lt; coste_mejor</span>) {<br>      coste_mejor =
+coste_acum;<br>      sol_mejor = sol;<br>    }<br>  }
+<strong>else</strong> {<br>    <strong>for</strong> (<span
+class="type">int</span> c = <span class="number">0</span>; c &lt;
+num_vertices(g); c++) {<br>      <strong>if</strong> (es_factible(g, k,
+c, sol, visitadas)) {<br>        sol[k] = c;<br><br>        visitadas[c]
+= <span class="type">true</span>;<br>        viajante(g, k + <span
+class="number">1</span>, sol, <span class="hl">coste_acum +
+g[sol[k-<span class="number">1</span>]][c]</span>, visitadas, sol_mejor,
+<span class="hl">coste_mejor</span>);<br>        visitadas[c] = <span
+class="type">false</span>;<br>      }<br>    }<br>  }<br>}</p>
+</div>
+</section>
+<section id="llamada-inicial" class="slide level2">
+<h2>Llamada inicial</h2>
+<div class="cpp cpp_block">
+<p><span class="type">vector</span>&lt;<span class="type">int</span>&gt;
+viajante(<span class="type">const</span> grafo&lt;<span
+class="type">int</span>&gt; &amp;g) {<br>  <span
+class="type">vector</span>&lt;<span class="type">int</span>&gt;
+sol(num_vertices(g));<br>  <span class="type">vector</span>&lt;<span
+class="type">int</span>&gt; sol_mejor(num_vertices(g));<br>  <span
+class="type">vector</span>&lt;<span class="type">bool</span>&gt;
+visitadas(num_vertices(g), <span
+class="type">false</span>);<br><br>  <span class="comment">// Comenzamos
+en la ciudad <span class="number">0</span></span><br>  sol[<span
+class="number">0</span>] = <span
+class="number">0</span>;<br>  visitadas[<span class="number">0</span>] =
+<span class="type">true</span>;<br><br>  <span class="comment">//
+Inicializamos el coste mejor a +INF</span><br>  <span
+class="type">int</span> coste_mejor = numeric_limits&lt;<span
+class="type">int</span>&gt;::max();<br><br>  <span class="comment">//
+Hacemos la llamada inicial con k = <span class="number">1</span> y
+coste_acum = <span class="number">0</span></span><br>  viajante(g, <span
+class="number">1</span>, sol, <span class="number">0</span>, visitadas,
+sol_mejor, coste_mejor);<br><br>  <strong>return</strong>
+sol_mejor;<br>}</p>
+</div>
+</section>
+<section id="esquema-general-2" class="slide level2 subsection center">
+<h2 class="subsection center">Esquema general</h2>
+</section>
+<section id="optimización-mediante-vuelta-atrás" class="slide level2">
+<h2>Optimización mediante vuelta atrás</h2>
+<div class="pseudo no_subst" style="font-size:65%">
+<p><strong>method</strong> vueltaAtras(entrada<span
+class="colon">:</span> T, k<span class="colon">:</span> <span
+class="type">int</span>, <br>                   <strong>inout</strong>
+sol[0..n)<span class="colon">:</span> <span
+class="type">array&lt;S&gt;</span>, <span class="hl">coste_acum<span
+class="colon">:</span> <span
+class="type">int</span></span>,<br>                   <strong>inout</strong>
+<span class="hl">sol_mejor[0..n)<span class="colon">:</span> <span
+class="type">array&lt;S&gt;</span></span>, <strong>inout</strong> <span
+class="hl">coste_mejor<span class="colon">:</span> <span
+class="type">int</span></span>)<br>  <strong>requires</strong> n &gt;= 0
+<span class="math inline">\({\wedge}\)</span> 0 &lt;= k &lt;= n <span
+class="math inline">\({\wedge}\)</span> factible(sol[0..k)) <span
+class="math inline">\({\wedge}\)</span> coste_mejor == <span
+class="math inline">\(C\)</span>(sol_mejor)<br>{<br>  <strong>if</strong>
+(k == n) {<br>    <strong>if</strong> coste_acum &lt; coste_mejor
+{<br>      coste_mejor := coste; sol_mejor := sol;<br>    }<br>  }
+<strong>else</strong> {<br>    <strong>for each</strong> i <span
+class="math inline">\(\in\)</span> S {<br>      <strong>if</strong>
+factible(sol[0..k) ++ [i]) {<br>        sol[k] :=
+i;<br>        vueltaAtras(entrada, k + 1, sol,
+<br>                    coste_acum + coste_nuevo(sol, k, i), sol_mejor,
+coste_mejor);<br>      }<br>    }<br>  }<br>}</p>
+</div>
+</section></section>
+<section>
+<section id="optimización-mediante-estimación-optimista"
+class="title-slide slide level1 center"
+data-background-image="img/OrangeBackground.jpg">
+<h1 class="center"
+data-background-image="img/OrangeBackground.jpg"><span
+class="sc_number">7.7</span>Optimización mediante estimación
+optimista</h1>
+
+</section>
+<section id="introducción-2" class="slide level2">
+<h2>Introducción</h2>
+<ul>
+<li><p>Los algoritmos de <em>vuelta atrás</em> vistos hasta ahora
+solamente descartan nodos del árbol de exploración cuando corresponden a
+soluciones no factibles.</p>
+<ul>
+<li>Test de factibilidad / función de poda.</li>
+</ul></li>
+</ul>
+<div class="fragment">
+<ul>
+<li>Cuando los algoritmos son de <strong>optimización</strong>, también
+podemos decidir no explorar un nodo si sabemos con seguridad que
+<strong>no va a llevar a ninguna solución mejor</strong> que la ya
+encontrada hasta ahora.</li>
+</ul>
+</div>
+</section>
+<section id="estimación-optimista-minimización" class="slide level2">
+<h2>Estimación optimista (minimización)</h2>
+<ul>
+<li class="fragment"><p>Suponemos una solución parcial <span
+class="math inline">\(\texttt{sol}[0..k)\)</span> de un problema de
+<strong>minimización</strong> con una función objetivo <span
+class="math inline">\(C\)</span>.</p></li>
+<li class="fragment"><p>Decimos que <span
+class="math inline">\(K\)</span> es una <strong>estimación
+optimista</strong> de <span
+class="math inline">\(C(\texttt{sol}[0..k))\)</span> si para toda
+solución total <span class="math inline">\(\texttt{sol}[0..n)\)</span>
+que extienda a la solución parcial <span
+class="math inline">\(\texttt{sol}[0..k)\)</span> se cumple que:</p>
+<p><span class="math display">\[K \leq
+C(\texttt{sol}[0..n))\]</span></p></li>
+<li class="fragment"><p>Si la estimación optimista <span
+class="math inline">\(K\)</span> del valor de una solución parcial es
+mayor o igual que <span
+class="math inline">\(C(\texttt{solMejor}[0..n))\)</span>, donde <span
+class="math inline">\(\texttt{solMejor}\)</span> es la solución total
+óptima encontrada hasta el momento, entonces <strong>podemos
+podar</strong> el nodo del árbol de exploración correspondiente a la
+solución parcial.</p></li>
+</ul>
+</section>
+<section id="estimación-optimista-maximización" class="slide level2">
+<h2>Estimación optimista (maximización)</h2>
+<ul>
+<li class="fragment"><p>Suponemos una solución parcial <span
+class="math inline">\(\texttt{sol}[0..k)\)</span> de un problema de
+<strong>maximización</strong> con una función objetivo <span
+class="math inline">\(G\)</span>.</p></li>
+<li class="fragment"><p>Decimos que <span
+class="math inline">\(K\)</span> es una <strong>estimación
+optimista</strong> de <span
+class="math inline">\(G(\texttt{sol}[0..k))\)</span> si para toda
+solución total <span class="math inline">\(\texttt{sol}[0..n)\)</span>
+que extienda a la solución parcial <span
+class="math inline">\(\texttt{sol}[0..k)\)</span> se cumple que:</p>
+<p><span class="math display">\[K \geq
+G(\texttt{sol}[0..n))\]</span></p></li>
+<li class="fragment"><p>Si la estimación optimista <span
+class="math inline">\(K\)</span> del valor de una solución parcial es
+menor o igual que <span
+class="math inline">\(G(\texttt{solMejor}[0..n))\)</span>, donde <span
+class="math inline">\(\texttt{solMejor}\)</span> es la solución total
+óptima encontrada hasta el momento, entonces <strong>podemos
+podar</strong> el nodo del árbol de exploración correspondiente a la
+solución parcial.</p></li>
+</ul>
+</section>
+<section id="estimación-optimista-en-el-problema-del-viajante"
+class="slide level2 subsection center">
+<h2 class="subsection center">Estimación optimista en el problema del
+viajante</h2>
+</section>
+<section id="el-problema-del-viajante-2" class="slide level2">
+<h2>El problema del viajante</h2>
+<ul>
+<li>Tenemos un grafo valorado con <span class="math inline">\(V\)</span>
+vértices, que representa conexiones entre ciudades, y el coste que
+conlleva desplazarse de una ciudad a otra.</li>
+</ul>
+<p style="text-align:center">
+<img data-src="Tema7/GrafoViajante.svg" width="600" />
+</p>
+</section>
+<section id="estimación-optimista-de-una-solución-parcial"
+class="slide level2">
+<h2>Estimación optimista de una solución parcial</h2>
+<ul>
+<li>Supongamos una solución parcial que ya ha recorrido tres ciudades,
+con un coste acumulado de 27.</li>
+</ul>
+<p style="text-align:center">
+<img data-src="Tema7/GrafoViajanteSinAristas.svg" width="600" />
+</p>
+<div class="fragment">
+<ul>
+<li>Quedan por recorrer otras 5 ciudades y volver a la ciudad de partida
+<span class="math inline">\(\Rightarrow\)</span> 6 aristas.</li>
+</ul>
+</div>
+<div class="fragment">
+<p style="text-align: center;" class="color_tema">
+Estimación optimista <span class="math inline">\(=\)</span> <span
+class="math inline">\(27 + 6 * (\)</span>arista de coste mínimo en <span
+class="math inline">\(G\)</span><span class="math inline">\()\)</span>
+</p>
+</div>
+</section>
+<section id="estimación-optimista-de-una-solución-parcial-1"
+class="slide level2">
+<h2>Estimación optimista de una solución parcial</h2>
+<ul>
+<li><p>Sea <span class="math inline">\(\texttt{sol}[0..k)\)</span> una
+solución parcial en un grafo de <span class="math inline">\(V\)</span>
+vértices.</p></li>
+<li><p>Debemos visitar <span class="math inline">\(V - k\)</span>
+vértices para completarla, y luego regresar a la ciudad de partida.</p>
+<ul>
+<li><span class="math inline">\(V - k + 1\)</span> aristas por
+recorrer.</li>
+</ul></li>
+<li><p>Sea <span class="math inline">\(\mathit{min\_arista}\)</span> el
+coste de la arista de mínimo coste en todo el grafo.</p>
+<ul>
+<li>Puede calcularse de antemano, antes del algoritmo <em>vuelta
+atrás</em>.</li>
+</ul></li>
+</ul>
+<p style="text-align: center;" class="color_tema">
+Estimación optimista <span class="math inline">\(=\)</span> <span
+class="math inline">\(C(\texttt{sol}[0..k)) + (V - k + 1) *
+\mathit{min\_arista}\)</span>
+</p>
+</section>
+<section id="función-de-vuelta-atrás" class="slide level2">
+<h2>Función de <em>vuelta atrás</em></h2>
+<div class="cpp cpp_block" style="font-size:65%">
+<p><span class="type">void</span> viajante(<span
+class="type">const</span> Grafo&lt;<span class="type">int</span>&gt;
+&amp;g, <span class="type">int</span> min_arista, <span
+class="type">int</span> k, <span class="type">vector</span>&lt;<span
+class="type">int</span>&gt; &amp;sol, <span class="type">int</span>
+coste_acum,<br>              <span class="type">vector</span>&lt;<span
+class="type">bool</span>&gt; &amp;visitadas, <span
+class="type">vector</span>&lt;<span class="type">int</span>&gt;
+&amp;sol_mejor, <span class="type">int</span> &amp;coste_mejor)
+{<br>  <strong>if</strong> (k == sol.size()) {<br>    <span
+class="comment">// ... igual que antes ...</span><br>  }
+<strong>else</strong> {<br>    <strong>for</strong> (<span
+class="type">int</span> c = <span class="number">0</span>; c &lt;
+g.size(); c++) {<br>      <strong>if</strong> (es_factible(g, k, c, sol,
+visitadas)) {<br>        sol[k] = c;<br>        <span
+class="type">int</span> <span class="hl">coste_optimista</span> =
+coste_acum + g[sol[k-<span class="number">1</span>]][c] + (g.size() - k)
+* min_arista;<br><br>        <strong>if</strong> (<span
+class="hl">coste_optimista &lt; coste_mejor</span>)
+{<br>          visitadas[c] = <span
+class="type">true</span>;<br>          viajante(g, min_arista, k + <span
+class="number">1</span>, sol, coste_acum + g[sol[k-<span
+class="number">1</span>]][c], visitadas,
+<br>                   sol_mejor,
+coste_mejor);<br>          visitadas[c] = <span
+class="type">false</span>;  <br>        }<br>      }<br>    }<br>  }<br>}</p>
+</div>
+</section>
+<section id="ejemplo-de-ejecución" class="slide level2">
+<h2>Ejemplo de ejecución</h2>
+<ul>
+<li>Suponemos el siguiente grafo:</li>
+</ul>
+<p style="text-align:center">
+<img data-src="Tema7/GrafoViajanteResuelto.svg" width="600" />
+</p>
+<ul>
+<li>Sin estimación, se visitan <strong>137</strong> nodos del árbol de
+exploración.</li>
+<li>Con estimación optimista, se visitan <strong>95</strong> nodos del
+árbol de exploración.</li>
+</ul>
+</section></section>
+<section>
+<section id="ramificación-y-poda"
+class="title-slide slide level1 center"
+data-background-image="img/OrangeBackground.jpg">
+<h1 class="center"
+data-background-image="img/OrangeBackground.jpg"><span
+class="sc_number">7.8</span>Ramificación y poda</h1>
+
+</section>
+<section id="vuelta-atrás-vs-ramificación-y-poda" class="slide level2">
+<h2>Vuelta atrás vs Ramificación y poda</h2>
+<ul>
+<li><p>En los algoritmos de vuelta atrás, el árbol de exploración se
+explora mediante un recorrido en profundidad.</p>
+<ul>
+<li>Los hijos de un nodo se exploran de izquierda a derecha.</li>
+<li>No se explora un nodo hasta no haber finalizado la exploración del
+hermano que está a su izquierda.</li>
+</ul></li>
+</ul>
+<p style="text-align:center">
+<svg
+   width="244.71407mm"
+   height="100.451191mm"
+   viewBox="0 0 122.71407 49.451191"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.4.3 (0d15f75042, 2025-12-25)"
+   sodipodi:docname="vuelta_atras_arbol.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     inkscape:zoom="1.0393815"
+     inkscape:cx="338.66295"
+     inkscape:cy="15.874826"
+     inkscape:window-width="1920"
+     inkscape:window-height="1011"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs1" />
+  <g
+     inkscape:label="Capa 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-27.452949,-14.412)">
+    <rect
+       style="fill:#ffecb1;fill-opacity:1;stroke:#000000;stroke-width:0.212751"
+       id="rect1"
+       width="14.163245"
+       height="8.9432507"
+       x="92.098373"
+       y="14.518375" />
+    <rect
+       style="fill:#ffecb1;fill-opacity:1;stroke:#000000;stroke-width:0.212751"
+       id="rect1-3"
+       width="14.163245"
+       height="8.9432507"
+       x="47.419704"
+       y="35.610542" />
+    <rect
+       style="fill:#ffecb1;fill-opacity:1;stroke:#000000;stroke-width:0.212751"
+       id="rect1-1"
+       width="14.163245"
+       height="8.9432507"
+       x="91.400543"
+       y="35.370125" />
+    <rect
+       style="fill:#ffecb1;fill-opacity:1;stroke:#000000;stroke-width:0.212751"
+       id="rect1-36"
+       width="14.163245"
+       height="8.9432507"
+       x="126.63539"
+       y="35.433044" />
+    <path
+       style="fill:#ffecb1;fill-opacity:1;stroke:#000000;stroke-width:0.336"
+       d="M 98.768674,23.419376 V 35.256343"
+       id="path2" />
+    <path
+       style="fill:#ffecb1;fill-opacity:1;stroke:#000000;stroke-width:0.337456"
+       d="m 54.074483,44.420377 -0.172228,10.24292"
+       id="path5"
+       sodipodi:nodetypes="cc" />
+    <rect
+       style="fill:#ffecb1;fill-opacity:1;stroke:#000000;stroke-width:0.212751"
+       id="rect1-3-1"
+       width="14.163245"
+       height="8.9432507"
+       x="27.559324"
+       y="54.668907" />
+    <rect
+       style="fill:#ffecb1;fill-opacity:1;stroke:#000000;stroke-width:0.212751"
+       id="rect1-3-0"
+       width="14.163245"
+       height="8.9432507"
+       x="46.194363"
+       y="54.608387" />
+    <rect
+       style="fill:#ffecb1;fill-opacity:1;stroke:#000000;stroke-width:0.212751"
+       id="rect1-3-0-9"
+       width="14.163245"
+       height="8.9432507"
+       x="64.20089"
+       y="54.659775" />
+    <path
+       style="fill:#ffecb1;fill-opacity:1;stroke:#000000;stroke-width:0.336"
+       d="M 48.601502,44.420448 36.509977,54.730065"
+       id="path6" />
+    <path
+       style="fill:#ffecb1;fill-opacity:1;stroke:#000000;stroke-width:0.336"
+       d="M 59.674795,44.420448 69.729854,54.475506"
+       id="path7" />
+    <rect
+       style="fill:#ffecb1;fill-opacity:1;stroke:#000000;stroke-width:0.212751"
+       id="rect1-3-0-7"
+       width="14.163245"
+       height="8.9432507"
+       x="82.471992"
+       y="54.634003" />
+    <rect
+       style="fill:#ffecb1;fill-opacity:1;stroke:#000000;stroke-width:0.212751"
+       id="rect1-3-0-9-3"
+       width="14.163245"
+       height="8.9432507"
+       x="100.47851"
+       y="54.685394" />
+    <path
+       style="fill:#ffecb1;fill-opacity:1;stroke:#000000;stroke-width:0.336"
+       d="M 95.332136,44.420448 89.350013,54.475506"
+       id="path8" />
+    <path
+       style="fill:#ffecb1;fill-opacity:1;stroke:#000000;stroke-width:0.336"
+       d="m 102.20521,44.16589 5.09117,10.436894"
+       id="path9" />
+    <rect
+       style="fill:#ffecb1;fill-opacity:1;stroke:#000000;stroke-width:0.212751"
+       id="rect1-3-0-7-3"
+       width="14.163245"
+       height="8.9432507"
+       x="117.89088"
+       y="54.762173" />
+    <rect
+       style="fill:#ffecb1;fill-opacity:1;stroke:#000000;stroke-width:0.212751"
+       id="rect1-3-0-9-3-1"
+       width="14.163245"
+       height="8.9432507"
+       x="135.8974"
+       y="54.813564" />
+    <path
+       style="fill:#ffecb1;fill-opacity:1;stroke:#000000;stroke-width:0.336"
+       d="m 131.86127,44.420448 c -0.76367,0 -7.12763,10.309617 -7.12763,10.309617"
+       id="path10" />
+    <path
+       style="fill:#ffecb1;fill-opacity:1;stroke:#000000;stroke-width:0.336"
+       d="m 136.44332,44.293168 6.36396,10.564174"
+       id="path11" />
+    <path
+       style="fill:#ffecb1;fill-opacity:1;stroke:#000000;stroke-width:0.336"
+       d="M 93.486588,23.546655 54.602784,35.510901"
+       id="path12"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:#ffecb1;fill-opacity:1;stroke:#000000;stroke-width:0.336"
+       d="m 103.478,23.546655 30.0379,11.836968"
+       id="path13"
+       sodipodi:nodetypes="cc" />
+    <text
+       xml:space="preserve"
+       style="font-weight:bold;font-size:5.64444px;font-family:Raleway;-inkscape-font-specification:'Raleway Bold';text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.336"
+       x="99.15052"
+       y="21.128357"
+       id="text13"><tspan
+         sodipodi:role="line"
+         id="tspan13"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.64444px;font-family:monospace;-inkscape-font-specification:monospace;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.336"
+         x="99.15052"
+         y="21.128357" class="fragment" data-fragment-index="1">1</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-weight:bold;font-size:5.64444px;font-family:Raleway;-inkscape-font-specification:'Raleway Bold';text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.336"
+       x="54.363228"
+       y="42.014664"
+       id="text13-4"><tspan
+         sodipodi:role="line"
+         id="tspan13-5"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.64444px;font-family:monospace;-inkscape-font-specification:monospace;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.336"
+         x="54.363228"
+         y="42.014664" class="fragment" data-fragment-index="2">2</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-weight:bold;font-size:5.64444px;font-family:Raleway;-inkscape-font-specification:'Raleway Bold';text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.336"
+       x="34.560986"
+       y="61.247787"
+       id="text13-0"><tspan
+         sodipodi:role="line"
+         id="tspan13-6"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.64444px;font-family:monospace;-inkscape-font-specification:monospace;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.336"
+         x="34.560986"
+         y="61.247787" class="fragment" data-fragment-index="3">3</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.64444px;font-family:monospace;-inkscape-font-specification:monospace;text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.336"
+       x="53.32999"
+       y="61.094032"
+       id="text14"><tspan
+         sodipodi:role="line"
+         id="tspan14"
+         style="stroke-width:0.336"
+         x="53.32999"
+         y="61.094032" class="fragment" data-fragment-index="4">4</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.64444px;font-family:monospace;-inkscape-font-specification:monospace;text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.336"
+       x="71.371918"
+       y="60.945477"
+       id="text14-1"><tspan
+         sodipodi:role="line"
+         id="tspan14-5"
+         style="stroke-width:0.336"
+         x="71.371918"
+         y="60.945477" class="fragment" data-fragment-index="5">5</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.64444px;font-family:monospace;-inkscape-font-specification:monospace;text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.336"
+       x="98.789719"
+       y="41.975296"
+       id="text14-1-5"><tspan
+         sodipodi:role="line"
+         id="tspan14-5-6"
+         style="stroke-width:0.336"
+         x="98.789719"
+         y="41.975296" class="fragment" data-fragment-index="6">6</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.64444px;font-family:monospace;-inkscape-font-specification:monospace;text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.336"
+       x="89.477386"
+       y="60.918961"
+       id="text14-1-52"><tspan
+         sodipodi:role="line"
+         id="tspan14-5-5"
+         style="stroke-width:0.336"
+         x="89.477386"
+         y="60.918961" class="fragment" data-fragment-index="7">7</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.64444px;font-family:monospace;-inkscape-font-specification:monospace;text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.336"
+       x="107.78859"
+       y="61.000053"
+       id="text14-1-3"><tspan
+         sodipodi:role="line"
+         id="tspan14-5-0"
+         style="stroke-width:0.336"
+         x="107.78859"
+         y="61.000053" class="fragment" data-fragment-index="8">8</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.64444px;font-family:monospace;-inkscape-font-specification:monospace;text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.336"
+       x="133.77046"
+       y="41.6203"
+       id="text15"><tspan
+         sodipodi:role="line"
+         id="tspan15"
+         style="stroke-width:0.336"
+         x="133.77046"
+         y="41.6203" class="fragment" data-fragment-index="9">9</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.64444px;font-family:monospace;-inkscape-font-specification:monospace;text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.336"
+       x="124.47907"
+       y="61.348583"
+       id="text16"><tspan
+         sodipodi:role="line"
+         id="tspan16"
+         style="stroke-width:0.336"
+         x="124.47907"
+         y="61.348583" class="fragment" data-fragment-index="10">10</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.64444px;font-family:monospace;-inkscape-font-specification:monospace;text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.336"
+       x="143.18912"
+       y="61.094021"
+       id="text17"><tspan
+         sodipodi:role="line"
+         id="tspan17"
+         style="stroke-width:0.336"
+         x="143.18912"
+         y="61.094021" class="fragment" data-fragment-index="11">11</tspan></text>
+  </g>
+</svg>
+
+</p>
+</section>
+<section id="vuelta-atrás-vs-ramificación-y-poda-1"
+class="slide level2">
+<h2>Vuelta atrás vs Ramificación y poda</h2>
+<ul>
+<li><p>El esquema de <strong>ramificación y poda</strong> se utiliza,
+principalmente, en algoritmos de optimización con estimación
+optimista.</p></li>
+<li><p>En lugar de explorar el árbol de manera sistemática, se priorizan
+los nodos en función de su estimación optimista.</p></li>
+<li><p>Para ello, mantenemos una <strong>cola de prioridad</strong> que
+contendrá los nodos pendientes de explorar y selecciona, entre ellos,
+aquel de mayor estimación optimista (en problemas de maximización) o de
+menor estimación optimista (en problemas de minimización). Cuando se
+selecciona un nodo, se añaden sus hijos a la cola de prioridad.</p></li>
+</ul>
+</section>
+<section id="ejemplo-22" class="slide level2"
+data-transition="slide-in none-out">
+<h2 data-transition="slide-in none-out">Ejemplo</h2>
+<div class="columns">
+<div class="column" style="width:40%">
+<ul>
+<li><p>Suponemos un problema de <strong>minimización</strong>. El nodo
+raíz del árbol de exploración tiene una estimación optimista de
+3.</p></li>
+<li><p>Insertamos el nodo raíz en la cola de prioridad.</p></li>
+<li><p>Contenido de la cola de prioridad:</p>
+<p><img data-src="Tema7/cp_1.svg" style="width:100.0%" /></p></li>
+</ul>
+</div><div class="column" style="width:60%">
+<p><img data-src="Tema7/ryp_arbol_1.svg" style="width:100.0%" /></p>
+</div>
+</div>
+</section>
+<section id="ejemplo-23" class="slide level2"
+data-transition="none-in none-out">
+<h2 data-transition="none-in none-out">Ejemplo</h2>
+<div class="columns">
+<div class="column" style="width:40%">
+<ul>
+<li><p>Sacamos el nodo raíz de la cola de prioridad e insertamos sus
+hijos.</p></li>
+<li><p>Contenido de la cola de prioridad:</p>
+<p><img data-src="Tema7/cp_2.svg" style="width:100.0%" /></p></li>
+</ul>
+</div><div class="column" style="width:60%">
+<p><img data-src="Tema7/ryp_arbol_2.svg" style="width:100.0%" /></p>
+</div>
+</div>
+</section>
+<section id="ejemplo-24" class="slide level2"
+data-transition="none-in none-out">
+<h2 data-transition="none-in none-out">Ejemplo</h2>
+<div class="columns">
+<div class="column" style="width:40%">
+<ul>
+<li><p>Sacamos de la cola el nodo de menor estimación optimista e
+insertamos sus hijos.</p></li>
+<li><p>Contenido de la cola de prioridad:</p>
+<p><img data-src="Tema7/cp_3.svg" style="width:100.0%" /></p></li>
+</ul>
+</div><div class="column" style="width:60%">
+<p><img data-src="Tema7/ryp_arbol_3.svg" style="width:100.0%" /></p>
+</div>
+</div>
+</section>
+<section id="ejemplo-25" class="slide level2"
+data-transition="none-in none-out">
+<h2 data-transition="none-in none-out">Ejemplo</h2>
+<div class="columns">
+<div class="column" style="width:40%">
+<ul>
+<li><p>Volvemos a sacar el nodo de menor estimación de la cola (nodo con
+estimación <code>10</code>) e insertamos sus hijos.</p></li>
+<li><p>Contenido de la cola de prioridad:</p>
+<p><img data-src="Tema7/cp_4.svg" style="width:100.0%" /></p></li>
+</ul>
+</div><div class="column" style="width:60%">
+<p><img data-src="Tema7/ryp_arbol_4.svg" style="width:100.0%" /></p>
+</div>
+</div>
+</section>
+<section id="ejemplo-26" class="slide level2"
+data-transition="none-in none-out">
+<h2 data-transition="none-in none-out">Ejemplo</h2>
+<div class="columns">
+<div class="column" style="width:40%">
+<ul>
+<li><p>Sacamos el nodo de menor estimación (<code>12</code>).</p></li>
+<li><p>Supongamos que solo tiene un hijo, que es una solución completa
+con valor <code>19</code>.</p></li>
+<li><p>Anotamos esa solución como la mejor solución óptima encontrada
+hasta el momento.</p></li>
+<li><p>Cola de prioridad:</p>
+<p><img data-src="Tema7/cp_5.svg" style="width:100.0%" /></p></li>
+</ul>
+</div><div class="column" style="width:60%">
+<p><img data-src="Tema7/ryp_arbol_5.svg" style="width:100.0%" /></p>
+</div>
+</div>
+</section>
+<section id="ejemplo-27" class="slide level2"
+data-transition="none-in none-out">
+<h2 data-transition="none-in none-out">Ejemplo</h2>
+<div class="columns">
+<div class="column" style="width:40%">
+<ul>
+<li><p>Mejor valor encontrado hasta el momento:
+<strong>19</strong></p></li>
+<li><p>Hay nodos en la cola con estimaciones optimistas más bajas, así
+que seguimos explorando el árbol.</p></li>
+<li><p>Cola de prioridad:</p>
+<p><img data-src="Tema7/cp_5.svg" style="width:100.0%" /></p></li>
+</ul>
+</div><div class="column" style="width:60%">
+<p><img data-src="Tema7/ryp_arbol_5.svg" style="width:100.0%" /></p>
+</div>
+</div>
+</section>
+<section id="ejemplo-28" class="slide level2"
+data-transition="none-in none-out">
+<h2 data-transition="none-in none-out">Ejemplo</h2>
+<div class="columns">
+<div class="column" style="width:40%">
+<ul>
+<li><p>Mejor valor encontrado hasta el momento:
+<strong>19</strong></p></li>
+<li><p>Sacamos el nodo de la cola con menor estimación (<code>14</code>)
+y exploramos sus hijos.</p></li>
+<li><p>Supongamos que los dos son soluciones completas, y que una de
+ellas con valor 15 y otra con valor 31.</p></li>
+<li><p>La solución con valor 15 mejora el óptimo conocido hasta el
+momento.</p></li>
+</ul>
+</div><div class="column" style="width:60%">
+<p><img data-src="Tema7/ryp_arbol_6.svg" style="width:100.0%" /></p>
+</div>
+</div>
+</section>
+<section id="ejemplo-29" class="slide level2"
+data-transition="none-in slide-out">
+<h2 data-transition="none-in slide-out">Ejemplo</h2>
+<div class="columns">
+<div class="column" style="width:40%">
+<ul>
+<li><p>Mejor valor encontrado hasta el momento:
+<strong>15</strong></p></li>
+<li><p>Cola de prioridad:</p>
+<p><img data-src="Tema7/cp_6.svg" style="width:100.0%" /></p></li>
+<li><p>Todos los nodos de la cola tienen valores de estimación optimista
+mayores que 15. Por tanto, podemos finalizar la exploración aquí, porque
+no vamos a encontrar ninguna solución mejor en todo el árbol.</p></li>
+</ul>
+</div><div class="column" style="width:60%">
+<p><img data-src="Tema7/ryp_arbol_6.svg" style="width:100.0%" /></p>
+</div>
+</div>
+</section>
+<section id="implementación-de-algoritmos-de-ramificación-y-poda"
+class="slide level2 subsection center">
+<h2 class="subsection center">Implementación de algoritmos de
+ramificación y poda</h2>
+</section>
+<section id="cuestiones-de-implementación" class="slide level2">
+<h2>Cuestiones de implementación</h2>
+<ul>
+<li><p>El árbol de exploración es un mecanismo conceptual para diseñar
+el algoritmo. <strong>El árbol no se crea en memoria durante la
+ejecución del algoritmo.</strong></p></li>
+<li><p>En los algoritmos de vuelta atrás, este árbol «virtual» se
+recorría mediante un esquema recursivo.</p></li>
+<li><p>En los algoritmos de ramificación y poda, el árbol se recorre
+mediante un algoritmo iterativo. Aunque el árbol sigue sin existir en
+memoria, los nodos sí se crean y se añaden a la cola de
+prioridad.</p></li>
+</ul>
+</section>
+<section id="qué-se-almacena-en-cada-nodo" class="slide level2">
+<h2>¿Qué se almacena en cada nodo?</h2>
+<ul>
+<li><p>La solución parcial <span class="math inline">\(X[0..k)\)</span>
+correspondiente a ese nodo, incluyendo el nivel <code>k</code> de esa
+solución en el árbol de exploración.</p></li>
+<li><p>Los atributos de marcaje correspondientes a ese nodo.</p></li>
+<li><p>La estimación optimista de la solución parcial <span
+class="math inline">\(X[0..k)\)</span>.</p></li>
+</ul>
+<div class="pseudo">
+<p>struct nodo {<br>    sol[0..k) <span class="colon">:</span>
+array&lt;S&gt;;<br>    k <span class="colon">:</span> <span
+class="type">int</span>;<br>    marcaje <span class="colon">:</span>
+…;<br>    coste <span class="colon">:</span>
+…;<br>    estimacion_optimista <span class="colon">:</span> <span
+class="type">int</span>;<br>};</p>
+</div>
+</section>
+<section id="esquema-general-minimización" class="slide level2">
+<h2>Esquema general (minimización)</h2>
+<div class="pseudo no_subst" style="font-size:65%">
+<p>  <strong>var</strong> cp <span class="colon">:</span>
+cola-prioridad&lt;nodo&gt;;<br><br>  <strong>var</strong> raiz <span
+class="colon">:</span> nodo := <span class="meta">crear nodo
+raiz</span>;<br>  cp.push(raiz);<br><br>  <strong>var</strong>
+coste_mejor := <span
+class="math inline">\(+\infty\)</span>;<br>  <strong>var</strong>
+sol_mejor[0..n) <span class="colon">:</span>
+array&lt;S&gt;;<br><br>  <strong>while</strong> <span
+class="math inline">\(\neg\)</span>cp.empty() <span
+class="math inline">\({\wedge}\)</span> cp.top().estimacion_optimista
+&lt; coste_mejor {<br>    <strong>var</strong> x := cp.top();
+cp.pop();<br>    <strong>for</strong> i = 1 <strong>until</strong> <span
+class="meta">número de hijos de x</span> {<br>      <strong>var</strong>
+hijo <span class="colon">:</span> nodo := <span class="meta">crear hijo
+i-ésimo</span>;<br>      <strong>if</strong> (es_factible(hijo))
+{<br>        <strong>if</strong> (hijo.k == n))
+{<br>          <strong>if</strong> (hijo.coste &lt; coste_mejor) {
+coste_mejor := hijo.coste; sol_mejor := hijo.sol; }<br>        }
+<strong>else</strong> <strong>if</strong> (hijo.estimacion_optimista
+&lt; coste_mejor)
+{<br>          cp.push(hijo);<br>        }<br>      }<br>    }<br>  }</p>
+</div>
+</section>
+<section id="ejemplo-el-problema-del-viajante"
+class="slide level2 subsection center">
+<h2 class="subsection center">Ejemplo: el problema del viajante</h2>
+</section>
+<section id="representación-de-los-nodos-del-árbol-de-exploración"
+class="slide level2">
+<h2>Representación de los nodos del árbol de exploración</h2>
+<div class="cpp cpp_block">
+<p><strong>struct</strong> Nodo {<br>  <span
+class="type">vector</span>&lt;<span class="type">int</span>&gt;
+sol;          <span class="comment">// Camino seguido por el
+viajante</span><br>  <span class="type">int</span>
+k;                    <span class="comment">// Nivel de la
+solución</span><br>  <span class="type">vector</span>&lt;<span
+class="type">bool</span>&gt; visitadas;   <span class="comment">//
+Ciudades visitadas</span><br>  <span class="type">int</span>
+coste_acum;           <span class="comment">// Coste
+acumulado</span><br>  <span class="type">int</span>
+estimacion_optimista; <span class="comment">// Estimación
+optimista</span><br>};</p>
+</div>
+<div class="fragment">
+<ul>
+<li>En C++, las colas de prioridad son, por defecto, de
+<strong>máximos</strong>.</li>
+<li>Definimos el orden entre nodos del siguiente modo: un nodo
+<code>n2</code> es más prioritario que otro nodo <code>n1</code>, si la
+estimación optimista de <code>n2</code> es menor que la estimación
+optimista de <code>n1</code>.</li>
+</ul>
+<div class="cpp fragment cpp_block">
+<p><span class="type">bool</span> <strong>operator</strong>&lt;(<span
+class="type">const</span> Nodo &amp;n1, <span class="type">const</span>
+Nodo &amp;n2) {<br>  <strong>return</strong> n1.estimacion_optimista
+&lt; n2.estimacion_optimista;<br>}</p>
+</div>
+</div>
+</section>
+<section id="algoritmo-de-ramificación-y-poda" class="slide level2">
+<h2>Algoritmo de ramificación y poda</h2>
+<div class="cpp cpp_block">
+<p><span class="type">int</span> n = num_vertices(g);        <span
+class="comment">// g = grafo de entrada</span><br><span
+class="type">int</span> min_arista =
+coste_min_arista(g);<br>priority_queue&lt;Nodo&gt; cp;<br><br><span
+class="comment">// Raíz del árbol de exploración</span><br>Nodo
+raiz;           <br>raiz.sol = <span class="type">vector</span>&lt;<span
+class="type">int</span>&gt;(n);<br>raiz.sol[<span
+class="number">0</span>] = <span class="number">0</span>;<br>raiz.k =
+<span class="number">1</span>;<br>raiz.visitadas = <span
+class="type">vector</span>&lt;<span class="type">bool</span>&gt;(n,
+<span class="type">false</span>);<br>raiz.visitadas[<span
+class="number">0</span>] = <span
+class="type">true</span>;<br>raiz.coste_acum = <span
+class="number">0</span>;<br>raiz.estimacion_optimista = num_vertices(g)
+* min_arista;<br><span class="comment">// Añadimos la raíz a la cola de
+prioridad</span><br>cp.push(raiz);<br><br><span class="type">int</span>
+coste_mejor = numeric_limits&lt;<span
+class="type">int</span>&gt;::max();<br><span
+class="type">vector</span>&lt;<span class="type">int</span>&gt;
+sol_mejor;<br>...</p>
+</div>
+</section>
+<section class="slide level2">
+
+<div class="cpp cpp_block" style="font-size:62%">
+<p><span class="comment">// Finalizamos el bucle cuando la cola de
+prioridad esté vacía (no quedan más nodos por explorar)</span><br><span
+class="comment">// o el nodo más prioritario no puede superar la mejor
+solución encontrada hasta el momento.</span><br><strong>while</strong>
+(!cp.empty() &amp;&amp; cp.top().estimacion_optimista &lt; coste_mejor)
+{<br>  <span class="comment">// Sacamos nodo más
+prioritario</span><br>  Nodo x = cp.top(); cp.pop();<br>  <span
+class="comment">// Recorremos los vértices
+restantes</span><br>  <strong>for</strong> (<span
+class="type">int</span> c = <span class="number">0</span>; c &lt;
+num_vertices(g); c++) {<br>    <strong>if</strong> (es_factible(g, x.k,
+c, x.sol, x.visitadas)) {<br>      <span class="comment">// Si es
+factible añadir el nodo c, construimos el hijo que añade el nodo
+c</span><br>      <span class="comment">// al
+camino.</span><br>      Nodo hijo = x;<br>      hijo.sol[x.k] =
+c;<br>      hijo.k = x.k + <span
+class="number">1</span>;<br>      hijo.visitadas[c] = <span
+class="type">true</span>;<br>      hijo.coste_acum = x.coste_acum +
+g[hijo.sol[x.k - <span
+class="number">1</span>]][c];<br>      hijo.estimacion_optimista =
+hijo.coste_acum + (num_vertices(g) - hijo.k + <span
+class="number">1</span>) * min_arista;<br><br>      <strong>if</strong>
+(hijo.k == n) {          <span class="comment">// Si es solución
+completa</span><br>        hijo.coste_acum += g[hijo.sol[n-<span
+class="number">1</span>]][<span
+class="number">0</span>];<br>        <strong>if</strong>
+(hijo.coste_acum &lt; coste_mejor) { coste_mejor = hijo.coste_acum;
+sol_mejor = hijo.sol; }<br>      } <strong>else</strong>
+<strong>if</strong> (hijo.estimacion_optimista &lt; coste_mejor)
+{<br>        <span class="comment">// Si es una solución parcial, la
+añadimos a la cola de
+prioridad</span><br>        cp.push(hijo);<br>      }<br>    }<br>  }<br>}</p>
+</div>
+</section></section>
+    </div>
+  </div>
+
+  <script src="dist/reveal.js"></script>
+
+  <!-- reveal.js plugins -->
+  <script src="plugin/notes/notes.js"></script>
+  <script src="plugin/search/search.js"></script>
+  <script src="plugin/zoom/zoom.js"></script>
+  <script src="plugin/highlight/highlight.js"></script>
+  <script src="plugin/math/math.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+        // Display controls in the bottom right corner
+        controls: false,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: true,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'bottom-right',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: false,
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: false,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: false,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'default',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Prints all fragments in their visible states on the same slide 
+        pdfSeparateFragments: false,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: true,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'slide',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'fade',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1600,
+
+        height: 900,
+
+        math: {
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom,
+          // RevealHighlight          
+        ]
+      });
+    </script>
+    </body>
+</html>
