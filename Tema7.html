@@ -216,7 +216,7 @@ class="slide level2">
 array <span class="math inline">\(X[0..k)\)</span>, donde <span
 class="math inline">\(k \leq n\)</span>.</p></li>
 <li class="fragment"><p>Una solución parcial es
-<strong>prometedora</strong> si no asigna el mismo color a dos vértices
+<strong>factible</strong> si no asigna el mismo color a dos vértices
 adyacentes del grafo.</p></li>
 <li class="fragment"><p>Si <span class="math inline">\(k &lt;
 n\)</span>, debemos extender la solución con otro color <span
@@ -226,16 +226,16 @@ class="math inline">\(z\)</span>:</p>
 \]</span></p>
 <ul>
 <li class="fragment"><p>Si <span class="math inline">\(X&#39;\)</span>
-es prometedora, podemos seguir explorando esa solución.</p></li>
+es factible, podemos seguir explorando esa solución.</p></li>
 <li class="fragment"><p>Si <span class="math inline">\(X&#39;\)</span>
-no es prometedora, podemos descartar <span
+no es factible, podemos descartar <span
 class="math inline">\(X&#39;\)</span> y buscar otro <span
 class="math inline">\(z&#39;\)</span> con el que extender <span
 class="math inline">\(X\)</span>.</p></li>
 <li class="fragment"><p>Si no es posible extender <span
 class="math inline">\(X&#39;\)</span> con un color para obtener otra
-solución parcial prometedora, debemos rectificar algunas de las
-componentes de <span class="math inline">\(X\)</span> y volver a
+solución parcial factible, debemos rectificar algunas de las componentes
+de <span class="math inline">\(X\)</span> y volver a
 intentarlo.</p></li>
 </ul></li>
 </ul>
@@ -1974,12 +1974,12 @@ factible = <span class="type">false</span>;
 <ul>
 <li><p>Supongamos que el grafo tiene <span
 class="math inline">\(V\)</span> vértices y queremos colorearlo con
-<span class="math inline">\(N\)</span> colores.</p></li>
+<span class="math inline">\(c\)</span> colores.</p></li>
 <li><p>¿Cuál es el tamaño del árbol de exploración?</p></li>
 </ul>
 <div class="fragment">
 <p><span class="math display">\[
-\mathcal{O}(N^V)
+\mathcal{O}(c^V)
 \]</span></p>
 </div>
 </section>
