@@ -3891,6 +3891,8 @@ class="hl">coste_mejor<span class="colon">:</span> <span
 class="type">int</span></span>)<br>  <strong>requires</strong> n &gt;= 0
 <span class="math inline">\({\wedge}\)</span> 0 &lt;= k &lt;= n <span
 class="math inline">\({\wedge}\)</span> factible(sol[0..k)) <span
+class="math inline">\({\wedge}\)</span> coste_acum == <span
+class="math inline">\(C\)</span>(sol) <span
 class="math inline">\({\wedge}\)</span> coste_mejor == <span
 class="math inline">\(C\)</span>(sol_mejor)<br>{<br>  <strong>if</strong>
 (k == n) {<br>    <strong>if</strong> coste_acum &lt; coste_mejor
